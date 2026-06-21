@@ -1,0 +1,80 @@
+.shift-color-chip{width:14px;height:14px;border-radius:3px;display:inline-block;vertical-align:middle}
+.nav-tabs[role="tablist"]{
+  --shift-tab-border: color-mix(in srgb, var(--bs-border-color) 78%, transparent);
+  --shift-tab-bg: color-mix(in srgb, var(--bs-body-bg) 84%, var(--brand-secondary) 16%);
+  --shift-tab-active: var(--brand-secondary);
+  display:flex;
+  flex-wrap:wrap;
+  gap:.6rem;
+  padding:.6rem;
+  margin-bottom:1rem!important;
+  border:1px solid var(--shift-tab-border);
+  border-radius:1.1rem;
+  background: var(--shift-tab-bg);
+  box-shadow:0 12px 28px rgba(22,64,75,.08);
+}
+.nav-tabs[role="tablist"] .nav-item{
+  margin:0;
+}
+.nav-tabs[role="tablist"] .nav-link{
+  border:none;
+  border-radius:.9rem;
+  padding:.8rem 1rem;
+  font-weight:700;
+  letter-spacing:.01em;
+  color:var(--bs-emphasis-color);
+  background:transparent;
+  transition:background-color .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease;
+}
+.nav-tabs[role="tablist"] .nav-link:hover{
+  background:rgba(226,255,94,.18);
+  color:var(--bs-primary);
+  transform:translateY(-1px);
+}
+.nav-tabs[role="tablist"] .nav-link.active{
+  color:var(--brand-primary);
+  background:var(--shift-tab-active);
+  box-shadow:
+    inset 0 0 0 1px rgba(22,64,75,.16),
+    0 10px 18px rgba(22,64,75,.12);
+}
+.tab-content>.tab-pane .glass:first-child{
+  margin-top:.15rem;
+}
+.roster-table th,.roster-table td{white-space:nowrap;vertical-align:middle}
+.roster-table .emp-col{position:sticky;left:0;background:var(--bs-body-bg);z-index:2}
+.roster-table .head-sticky{position:sticky;top:0;z-index:3}
+.fc .fc-daygrid-day.fc-day-today{background:rgba(226,255,94,.16)!important}
+.summary-badge{font-size:.78rem;margin-right:.35rem}
+.shift-legend{display:flex;flex-wrap:wrap;gap:.5rem}
+.shift-legend-item{display:flex;align-items:center;gap:.35rem;padding:.25rem .5rem;border:1px solid var(--bs-border-color);border-radius:999px}
+.widget-grid .glass{min-height:110px}
+.roster-month-wrap{overflow:auto;max-height:70vh;border:1px solid var(--bs-border-color);border-radius:.75rem}
+.roster-month-table{min-width:1400px}
+.roster-month-table th,.roster-month-table td{padding:.35rem .45rem;min-width:46px;text-align:center;vertical-align:middle;border-color:var(--bs-border-color)}
+.roster-month-table .employee-col{position:sticky;left:0;background:var(--bs-body-bg);z-index:2;min-width:180px;text-align:left}
+.roster-month-table thead th{position:sticky;top:0;background:var(--bs-body-bg);z-index:3}
+.roster-head-num{font-weight:700;line-height:1}
+.roster-head-day{font-size:.75rem;color:var(--bs-secondary-color)}
+.roster-pill{border:1px solid var(--bs-border-color);background:transparent;border-radius:.6rem;padding:.2rem .35rem;font-size:.72rem;min-width:34px}
+.roster-pill.empty{opacity:.55}
+.roster-pill.multi-selected{box-shadow:0 0 0 .16rem rgba(226,255,94,.35);border-color:var(--bs-primary)!important}
+.status-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.status-btn{border:1px solid var(--bs-border-color);border-radius:.75rem;padding:.45rem .55rem;background:transparent;font-weight:600}
+.status-btn.active{box-shadow:0 0 0 .15rem rgba(226,255,94,.24)}
+@media (max-width: 767.98px){
+  .nav-tabs[role="tablist"]{
+    gap:.45rem;
+    padding:.5rem;
+    border-radius:.95rem;
+  }
+  .nav-tabs[role="tablist"] .nav-item{
+    flex:1 1 calc(50% - .45rem);
+  }
+  .nav-tabs[role="tablist"] .nav-link{
+    width:100%;
+    text-align:center;
+    padding:.72rem .85rem;
+    font-size:.94rem;
+  }
+}

@@ -1,0 +1,231 @@
+/* LIGHT (default) */
+    :root{
+      --app-bg:#f5f4fb;
+      --panel:#ffffff;
+      --panel-2:#e7e6f7;
+      --border:rgba(69,69,76,.14);
+      --muted:rgba(69,69,76,.76);
+      --muted-2:rgba(69,69,76,.60);
+      --card:#ffffff;
+      --card2:rgba(231,230,247,.68);
+      --shadow:0 18px 40px rgba(69,69,76,.12);
+      --radius:16px;
+      --text:#45454c;
+    }
+    [data-bs-theme="dark"]{
+      --app-bg:#2d2c33;
+      --panel:#393840;
+      --panel-2:#45454c;
+      --border:rgba(226,255,94,.14);
+      --muted:rgba(212,215,194,.76);
+      --muted-2:rgba(231,230,247,.62);
+      --card:rgba(231,230,247,.06);
+      --card2:rgba(212,215,194,.08);
+      --shadow:0 20px 60px rgba(20,20,24,.34);
+      --text:#e7e6f7;
+    }
+
+    html, body{ overflow-x:hidden; }
+    body{ background:var(--app-bg); color:var(--text); }
+    .app{ display:flex; min-height:100vh; }
+    .sidebar{
+      width:280px;
+      background:var(--panel);
+      border-right:1px solid var(--border);
+      position:fixed; left:0; top:0; height:100vh;
+      padding:18px; display:none;
+      overflow:hidden;
+      z-index:1030;
+    }
+    @media (min-width:992px){
+      .sidebar{ display:flex; flex-direction:column; }
+      .content{ margin-left:280px; }
+    }
+    .content{ flex:1; min-width:0; }
+
+    .topbar{
+      position:sticky; top:0; z-index:1040;
+      background: color-mix(in srgb, var(--app-bg) 85%, transparent);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--border);
+    }
+    .topbar-inner{ padding:14px 16px; }
+    @media (min-width:992px){ .topbar-inner{ padding:14px 24px; } }
+
+    .glass{ background:var(--card); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); }
+    .glass-soft{ background:var(--card2); border:1px solid var(--border); border-radius:16px; }
+
+    .brand{ display:flex; align-items:center; gap:10px; padding:10px 10px 14px; }
+    .brand-mark{
+      width:40px; height:40px; border-radius:12px;
+      display:grid; place-items:center;
+      background: color-mix(in srgb, var(--app-bg) 85%, var(--panel));
+      border:1px solid color-mix(in srgb, var(--text) 16%, transparent);
+      color:var(--text);
+    }
+    .sidebar-scroll{
+      flex:1;
+      min-height:0;
+      overflow-y:auto;
+      overflow-x:hidden;
+      padding-right:6px;
+      margin-right:-6px;
+    }
+    .nav-link{
+      color: color-mix(in srgb, var(--text) 78%, transparent);
+      border-radius:12px;
+      padding:10px 12px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .nav-link:hover{ background: color-mix(in srgb, var(--text) 6%, transparent); color:var(--text); }
+    .nav-link.active{
+      background: color-mix(in srgb, var(--bs-primary) 16%, transparent);
+      border:1px solid color-mix(in srgb, var(--bs-primary) 22%, transparent);
+      color:var(--text);
+    }
+    .nav-section-title{
+      font-size:.75rem; color:var(--muted-2);
+      text-transform:uppercase; letter-spacing:.08em;
+      padding:14px 10px 8px;
+    }
+    .text-muted-3{ color:var(--muted-2)!important; }
+
+    .btn{ border-radius:12px; }
+    .form-control,.form-select,.input-group-text{ border-radius:12px; border:1px solid var(--border); }
+    .form-control:focus,.form-select:focus{ box-shadow:none; border-color: color-mix(in srgb, var(--bs-primary) 60%, transparent); }
+
+    .badge-soft{
+      background: color-mix(in srgb, var(--text) 7%, transparent);
+      border:1px solid var(--border);
+      color:var(--text);
+      border-radius:999px;
+      padding:.35rem .6rem;
+      font-size:.8rem;
+    }
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+    }
+    .offcanvas{
+      background:var(--panel);
+      color:var(--text);
+    }
+
+    /* Tom Select */
+    .ts-control{
+      border-radius:12px !important;
+      min-height: calc(1.5em + .75rem + 2px);
+      padding: .375rem .75rem;
+      border: 1px solid var(--border) !important;
+      background: transparent !important;
+      color: var(--text) !important;
+      box-shadow: none !important;
+    }
+    [data-bs-theme="dark"] .ts-control{
+      background: color-mix(in srgb, var(--panel) 70%, transparent) !important;
+    }
+    .ts-control input{ font-size: 1rem; color: var(--text) !important; }
+    .ts-dropdown{
+      border-radius:14px; overflow:hidden;
+      border:1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      z-index: 2000;
+    }
+    .ts-dropdown .option{ padding:.65rem .8rem; }
+    .ts-dropdown .active{ background: color-mix(in srgb, var(--bs-primary) 10%, transparent); }
+
+    /* Calendar grid */
+    .cal-wrap{ overflow:auto; border-radius:16px; }
+    .cal-table{ min-width: 980px; }
+    .cal-table th, .cal-table td{ border-color: var(--border) !important; }
+    .cal-table thead th{
+      position: sticky; top: 0;
+      background: color-mix(in srgb, var(--card) 92%, transparent);
+      z-index: 2;
+      font-weight:800;
+      color: var(--muted);
+    }
+    .cal-table tbody th{
+      position: sticky; left:0;
+      background: color-mix(in srgb, var(--card) 92%, transparent);
+      z-index: 1;
+      font-weight:800;
+      white-space: nowrap;
+      min-width: 200px;
+    }
+    .cell{
+      display:flex; align-items:center; justify-content:center;
+      width:34px; height:34px;
+      border-radius:10px;
+      border:1px solid transparent;
+      user-select:none;
+      cursor:pointer;
+      font-weight:700;
+      font-size:.85rem;
+    }
+    .cell:hover{ border-color: color-mix(in srgb, var(--text) 20%, transparent); }
+
+    /* Attendance codes */
+    .st-P { background: rgba(34,197,94,.14); border-color: rgba(34,197,94,.25); }
+    .st-A { background: rgba(239,68,68,.14); border-color: rgba(239,68,68,.25); }
+    .st-WO{ background: rgba(148,163,184,.16); border-color: rgba(148,163,184,.25); }
+    .st-CL{ background: rgba(59,130,246,.14); border-color: rgba(59,130,246,.25); }
+    .st-SL{ background: rgba(226,255,94,.18); border-color: rgba(22,64,75,.16); color: var(--brand-primary); }
+    .st-EL{ background: rgba(168,85,247,.14); border-color: rgba(168,85,247,.25); }
+    .st-LOP{ background: rgba(245,158,11,.16); border-color: rgba(245,158,11,.28); }
+
+    .legend .item{
+      display:flex; align-items:center; gap:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background: color-mix(in srgb, var(--text) 4%, transparent);
+    }
+    .dot{ width:14px; height:14px; border-radius:6px; border:1px solid var(--border); }
+    .sticky-actions{
+      position: sticky;
+      bottom: 16px;
+      z-index: 10;
+    }
+    #summaryCards .glass-soft{
+      padding: .65rem !important;
+    }
+    #summaryCards .fs-4{
+      font-size: 1.15rem !important;
+    }
+    #summaryCards i.fs-4{
+      font-size: 1rem !important;
+    }
+      .profile-icon-btn{
+      border:0 !important;
+      background:transparent !important;
+      color: color-mix(in srgb, var(--text, #334155) 90%, transparent) !important;
+      padding:.2rem .35rem;
+      line-height:1;
+    }
+    .profile-icon-btn:hover,
+    .profile-icon-btn:focus,
+    .profile-icon-btn:active{
+      border:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+      color: color-mix(in srgb, var(--text, #334155) 90%, transparent) !important;
+    }
+    .profile-icon-btn::after{ display:none !important; }
+    .profile-icon-btn i{ font-size:1.25rem; }
+      .theme-icon-btn{
+      border:0 !important;
+      background:transparent !important;
+      color: color-mix(in srgb, var(--text, #334155) 90%, transparent) !important;
+      padding:.2rem .35rem;
+      line-height:1;
+    }
+    .theme-icon-btn:hover,
+    .theme-icon-btn:focus,
+    .theme-icon-btn:active{
+      border:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+      color: color-mix(in srgb, var(--text, #334155) 90%, transparent) !important;
+    }
+    .theme-icon-btn i{ font-size:1.25rem; }

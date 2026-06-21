@@ -1,0 +1,36 @@
+# Runtime data and SQLite databases
+storage/clients/**
+!storage/clients/.gitkeep
+backend/app.db
+*.db
+*.sqlite
+*.sqlite3
+
+# Local SMTP credentials (copy from mail-config.example.php)
+backend/mail-config.php
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs and temp files
+*.log
+*.tmp
+*.temp
+*.cache
+
+# OS metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# PHP
+vendor/

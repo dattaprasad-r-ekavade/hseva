@@ -1,0 +1,199 @@
+:root{
+      --app-bg:#f5f4fb; --panel:#fff; --panel-2:#e7e6f7;
+      --border:rgba(69,69,76,.14);
+      --muted:rgba(69,69,76,.76); --muted-2:rgba(69,69,76,.60);
+      --card:#fff; --card2:rgba(231,230,247,.68); --shadow:0 18px 40px rgba(69,69,76,.12);
+      --radius:16px; --text:#45454c;
+    }
+    [data-bs-theme="dark"]{
+      --app-bg:#2d2c33; --panel:#393840; --panel-2:#45454c;
+      --border:rgba(226,255,94,.14);
+      --muted:rgba(212,215,194,.76); --muted-2:rgba(231,230,247,.62);
+      --card:rgba(231,230,247,.06); --card2:rgba(212,215,194,.08);
+      --shadow:0 20px 60px rgba(20,20,24,.34); --text:#e7e6f7;
+    }
+
+    body{ background:var(--app-bg); color:var(--text); }
+    .app{ display:flex; min-height:100vh; }
+    .sidebar{
+      width:280px;
+      background:var(--panel);
+      border-right:1px solid var(--border);
+      position:sticky; top:0; height:100vh;
+      padding:18px; display:none;
+    }
+    @media (min-width:992px){ .sidebar{ display:flex; flex-direction:column; } }
+    .content{ flex:1; }
+    .topbar{
+      position:sticky; top:0; z-index:1020;
+      background: color-mix(in srgb, var(--app-bg) 85%, transparent);
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid var(--border);
+    }
+    .topbar-inner{ padding:14px 16px; }
+    @media (min-width:992px){ .topbar-inner{ padding:14px 24px; } }
+
+    .glass{ background:var(--card); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); }
+    .glass-soft{ background:var(--card2); border:1px solid var(--border); border-radius:var(--radius); }
+
+    .brand{ display:flex; align-items:center; gap:10px; padding:10px 10px 14px; }
+    .brand-mark{
+      width:42px; height:42px; border-radius:14px;
+      display:grid; place-items:center;
+      background: color-mix(in srgb, var(--text) 7%, transparent);
+      border:1px solid var(--border); color:var(--text);
+    }
+
+    .nav-link{
+      color: color-mix(in srgb, var(--text) 78%, transparent);
+      border-radius:12px; padding:10px 12px;
+      display:flex; align-items:center; gap:10px;
+      text-decoration:none;
+    }
+    .nav-link:hover{ background: color-mix(in srgb, var(--text) 6%, transparent); color:var(--text); }
+    .nav-link.active{
+      background: color-mix(in srgb, var(--bs-primary) 16%, transparent);
+      border:1px solid color-mix(in srgb, var(--bs-primary) 22%, transparent);
+      color:var(--text);
+    }
+
+    .nav-section-title{
+      font-size:.75rem; color:var(--muted-2);
+      text-transform:uppercase; letter-spacing:.08em;
+      padding:14px 10px 8px;
+    }
+    .text-muted-3{ color:var(--muted-2)!important; }
+
+    .btn{ border-radius:12px; }
+    .form-control,.form-select,.input-group-text{ border-radius:12px; border:1px solid var(--border); }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; }
+
+    .table thead th{
+      color:var(--muted); font-weight:800;
+      border-bottom:1px solid var(--border);
+      background: color-mix(in srgb, var(--card) 92%, transparent);
+      white-space:nowrap;
+    }
+    .table td{ border-top:1px solid var(--border); vertical-align:middle; }
+
+    /* Tom Select - match leave page style */
+    .ts-control{
+      border-radius:12px !important;
+      min-height: calc(1.5em + .75rem + 2px);
+      padding: .375rem .75rem;
+      border: 1px solid var(--border) !important;
+      background: transparent !important;
+      color: var(--text) !important;
+      box-shadow: none !important;
+    }
+    [data-bs-theme="dark"] .ts-control{
+      background: color-mix(in srgb, var(--panel) 70%, transparent) !important;
+    }
+    .ts-control input{
+      font-size: 1rem;
+      color: var(--text) !important;
+    }
+    .ts-dropdown{
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid var(--border);
+      background: var(--panel);
+      color: var(--text);
+      z-index: 2000;
+    }
+    .ts-dropdown .option{ padding:.65rem .8rem; }
+    .ts-dropdown .active{ background: color-mix(in srgb, var(--bs-primary) 10%, transparent); }
+    .ts-wrapper.invalid .ts-control{
+      border-color: var(--bs-danger) !important;
+    }
+
+    /* Payslip preview */
+    .payslip-wrap{ background:#fff; color:#45454c; border:1px solid rgba(69,69,76,.22); border-radius:12px; overflow:hidden; box-shadow:0 8px 24px rgba(69,69,76,.08); print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+    .ps-topbar{ background:#45454c; color:#fff; padding:10px 14px; font-weight:800; letter-spacing:.5px; text-align:center; border-bottom:3px solid #d4d7c2; }
+    .ps-company{ text-align:center; padding:14px 14px 12px; border-bottom:1px solid rgba(69,69,76,.18); background:#f2f1fa; }
+    .ps-company .name{ font-weight:900; color:#45454c; }
+    .ps-company .meta{ font-size:.875rem; color:rgba(69,69,76,.74); }
+    .ps-grid{ width:100%; border-collapse:collapse; border:1px solid rgba(69,69,76,.26); }
+    .ps-grid td,.ps-grid th{ padding:8px 10px; border:1px solid rgba(69,69,76,.22); vertical-align:top; }
+    .ps-grid th{ background:#efeff8; font-weight:800; color:#45454c; }
+    .ps-meta th{ background:#ecebdd; }
+    .ps-emp tr:nth-child(even) td{ background:#fafafe; }
+    .ps-key-row th,.ps-key-row td{ background:#f4f3fb; font-weight:700; }
+    .ps-sec-head{ background:#45454c; color:#fff; font-weight:900; letter-spacing:.2px; }
+    .ps-ledger table{ width:100%; border-collapse:collapse; border:1px solid rgba(69,69,76,.26); }
+    .ps-ledger table td{ border:1px solid rgba(69,69,76,.22); padding:8px 10px; }
+    .ps-totals{ background:#ecebdd; font-weight:900; color:#45454c; }
+    .ps-netbar{ background:#45454c; color:#fff; padding:10px 14px; font-weight:900; display:flex; justify-content:space-between; }
+    .ps-note{ padding:10px 14px 12px; text-align:center; font-size:.8rem; color:rgba(69,69,76,.74); border-top:1px solid rgba(69,69,76,.16); background:#fafafe; }
+
+    .notif-dot{
+      position:absolute; top:6px; right:6px;
+      width:10px; height:10px; border-radius:999px;
+      background:#dc3545; border:2px solid var(--card);
+    }
+
+    @media print{
+      .no-print{ display:none!important; }
+      body{ background:#fff!important; }
+      .modal{ position: static; display:block; }
+      .modal-dialog{ max-width: 100% !important; margin:0 !important; }
+      .modal-content{ border:0 !important; }
+    }
+      .sidebar{overflow:hidden;}
+    .sidebar-scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:6px;margin-right:-6px;}
+    .brand-mark{width:40px;height:40px;border-radius:12px;background:color-mix(in srgb, var(--app-bg) 85%, var(--panel));border:1px solid color-mix(in srgb, var(--text) 16%, transparent);}
+      .theme-icon-btn{
+      border:0 !important;
+      background:transparent !important;
+      color: color-mix(in srgb, var(--text, #334155) 90%, transparent) !important;
+      padding:.2rem .35rem;
+      line-height:1;
+    }
+    .theme-icon-btn:hover,
+    .theme-icon-btn:focus,
+    .theme-icon-btn:active{
+      border:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+      color: color-mix(in srgb, var(--text, #334155) 90%, transparent) !important;
+    }
+    .theme-icon-btn i{ font-size:1.25rem; }
+    .profile-icon-btn{
+      border:0 !important;
+      background:transparent !important;
+      color: color-mix(in srgb, var(--text, #334155) 90%, transparent) !important;
+      padding:.2rem .35rem;
+      line-height:1;
+    }
+    .profile-icon-btn:hover,
+    .profile-icon-btn:focus,
+    .profile-icon-btn:active{
+      border:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+      color: color-mix(in srgb, var(--text, #334155) 90%, transparent) !important;
+    }
+    .profile-icon-btn::after{ display:none !important; }
+    .profile-icon-btn i{ font-size:1.25rem; }
+
+    [data-bs-theme="dark"] .alert-light{
+      background: color-mix(in srgb, var(--card) 96%, transparent) !important;
+      border-color: var(--border) !important;
+      color: var(--text) !important;
+    }
+
+    /* Generated Payslips table action buttons */
+    #filesTbody .btn-group .btn.btn-outline-secondary{
+      border-color:var(--brand-tertiary) !important;
+      color:var(--brand-primary) !important;
+      background:transparent !important;
+    }
+    #filesTbody .btn-group .btn.btn-outline-secondary:hover,
+    #filesTbody .btn-group .btn.btn-outline-secondary:focus,
+    #filesTbody .btn-group .btn.btn-outline-secondary:focus-visible,
+    #filesTbody .btn-group .btn.btn-outline-secondary:active{
+      border-color:var(--brand-tertiary) !important;
+      background:var(--brand-tertiary) !important;
+      color:var(--brand-primary) !important;
+      box-shadow:none !important;
+    }

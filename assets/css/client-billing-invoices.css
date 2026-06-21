@@ -1,0 +1,51 @@
+.metric-card .label{
+  font-size: .78rem;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.metric-card .value{
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.table-wrap{
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.status-pill{
+  border-radius: 999px;
+  padding: .28rem .62rem;
+  font-size: .75rem;
+  font-weight: 700;
+  display: inline-block;
+  line-height: 1;
+  border: 1px solid transparent;
+}
+
+.status-pill.paid{
+  color: #146c43;
+  background: rgba(25, 135, 84, .14);
+  border-color: rgba(25, 135, 84, .35);
+}
+
+.status-pill.pending{
+  color: #9a6700;
+  background: rgba(255, 193, 7, .18);
+  border-color: rgba(255, 193, 7, .45);
+}
+
+[data-bs-theme="dark"] .status-pill.paid{
+  color: #79dfb8;
+  background: rgba(25, 135, 84, .25);
+  border-color: rgba(121, 223, 184, .45);
+}
+
+[data-bs-theme="dark"] .status-pill.pending{
+  color: #ffd86d;
+  background: rgba(255, 193, 7, .20);
+  border-color: rgba(255, 216, 109, .42);
+}

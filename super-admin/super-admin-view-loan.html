@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>View Loan Details | Super Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app-common.css" rel="stylesheet">
+  <link href="../assets/css/client-fnf.css" rel="stylesheet">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar"><div class="brand"><div class="brand-mark"><i class="bi bi-shield-check fs-5"></i></div><div><div class="fw-semibold">HR Seva</div><div class="small text-muted-3">Loading user...</div></div></div><div class="sidebar-scroll"></div></aside>
+  <main class="content">
+    <header class="topbar">
+      <div class="topbar-inner d-flex align-items-center gap-2">
+        <button class="btn btn-outline-secondary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar"><i class="bi bi-list"></i></button>
+        <div class="me-auto">
+          <div id="loanHeading" class="fw-semibold">Loan Details</div>
+          <div id="loanSub" class="small text-muted-3">Loading loan details...</div>
+        </div>
+        <button class="btn theme-icon-btn" id="themeToggle" type="button"><i class="bi bi-moon" id="themeIcon"></i></button>
+      </div>
+    </header>
+    <div class="container-fluid py-4 px-3 px-lg-4">
+      <div id="pageMsg" class="d-none"></div>
+      <div class="glass p-4 p-lg-5 mb-3">
+        <div class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-md-center">
+          <div>
+            <h2 class="h4 mb-1">View Loan Details</h2>
+            <p class="text-muted-3 mb-0">Employee, loan, recovery summary, and EMI deduction history.</p>
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <span id="topStatus" class="badge text-bg-light border">-</span>
+            <a class="btn btn-outline-secondary" href="super-admin-loan.html">Back</a>
+            <a id="btnEdit" class="btn btn-primary" href="super-admin-loan.html">Edit Loan</a>
+          </div>
+        </div>
+      </div>
+      <div class="glass p-4 p-lg-5 mb-3">
+        <h3 class="h5 mb-3">Employee Details</h3>
+        <div id="employeeDetailGrid" class="row g-3"></div>
+      </div>
+      <div class="glass p-4 p-lg-5 mb-3">
+        <h3 class="h5 mb-3">Loan Details</h3>
+        <div id="loanDetailGrid" class="row g-3"></div>
+      </div>
+      <div class="glass p-4 p-lg-5 mb-3">
+        <h3 class="h5 mb-3">Recovery Details</h3>
+        <div id="recoveryDetailGrid" class="row g-3"></div>
+      </div>
+      <div class="glass p-4 p-lg-5">
+        <h3 class="h5 mb-3">EMI Deduction History</h3>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0" data-no-datetime="true" data-no-srno="true">
+            <thead><tr><th>Month</th><th class="text-end">EMI Deducted</th><th class="text-end">Balance</th></tr></thead>
+            <tbody id="deductionHistory"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar"><div class="offcanvas-header"><div class="d-flex align-items-center gap-2"><div class="brand-mark u-brand-mark-36"><i class="bi bi-shield-check"></i></div><div><div class="fw-semibold" id="mobileSidebarLabel">HR Seva</div><div class="small text-muted-3">Loading user...</div></div></div><button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button></div><div class="offcanvas-body"></div></div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/app-common.js"></script>
+<script src="../assets/js/view-loan.js"></script>
+</body>
+</html>

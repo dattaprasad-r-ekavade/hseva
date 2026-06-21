@@ -1,0 +1,40 @@
+<svg width="720" height="420" viewBox="0 0 720 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="720" height="420" rx="32" fill="url(#bg)"/>
+  <circle cx="580" cy="82" r="86" fill="url(#glow)" fill-opacity="0.8"/>
+  <circle cx="128" cy="316" r="110" fill="url(#glow2)" fill-opacity="0.9"/>
+  <rect x="56" y="56" width="608" height="308" rx="28" fill="#F8FBFF" fill-opacity="0.92" stroke="#D8E5F5"/>
+  <rect x="88" y="92" width="240" height="120" rx="22" fill="#FFFFFF" stroke="#D9E4F1"/>
+  <rect x="104" y="114" width="116" height="14" rx="7" fill="#C7D9F0"/>
+  <rect x="104" y="140" width="160" height="48" rx="16" fill="#143F7D"/>
+  <rect x="284" y="92" width="348" height="120" rx="22" fill="#F2F7FD" stroke="#D9E4F1"/>
+  <path d="M322 172C344 150 356 156 376 136C390 122 413 116 438 132C455 143 475 169 494 169C513 169 532 124 557 124C586 124 598 167 612 180" stroke="url(#line)" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="438" cy="132" r="9" fill="#143F7D"/>
+  <circle cx="557" cy="124" r="9" fill="#2B67B2"/>
+  <rect x="88" y="236" width="170" height="92" rx="22" fill="#143F7D"/>
+  <rect x="282" y="236" width="170" height="92" rx="22" fill="#FFFFFF" stroke="#D9E4F1"/>
+  <rect x="476" y="236" width="156" height="92" rx="22" fill="#FFFFFF" stroke="#D9E4F1"/>
+  <rect x="110" y="258" width="82" height="10" rx="5" fill="#9FBCE0"/>
+  <rect x="110" y="278" width="116" height="24" rx="12" fill="#FFFFFF" fill-opacity="0.28"/>
+  <rect x="304" y="258" width="94" height="10" rx="5" fill="#C4D8F0"/>
+  <rect x="304" y="280" width="52" height="18" rx="9" fill="#E8F0FA"/>
+  <rect x="498" y="258" width="82" height="10" rx="5" fill="#C4D8F0"/>
+  <rect x="498" y="279" width="96" height="18" rx="9" fill="#E8F0FA"/>
+  <defs>
+    <linearGradient id="bg" x1="54" y1="28" x2="669" y2="388" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F4F8FD"/>
+      <stop offset="1" stop-color="#E6EEF8"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(580 82) rotate(90) scale(86)">
+      <stop stop-color="#7EA6DA"/>
+      <stop offset="1" stop-color="#7EA6DA" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(128 316) rotate(90) scale(110)">
+      <stop stop-color="#C7DAF2"/>
+      <stop offset="1" stop-color="#C7DAF2" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="line" x1="322" y1="143" x2="612" y2="143" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#143F7D"/>
+      <stop offset="1" stop-color="#75A1D8"/>
+    </linearGradient>
+  </defs>
+</svg>

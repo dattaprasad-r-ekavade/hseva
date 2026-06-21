@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Company Profile | Client Portal</title>
+
+  <!-- Bootstrap 5.3.x -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app-common.css" rel="stylesheet">
+  <link href="../assets/css/client-profile.css" rel="stylesheet">
+</head>
+
+<body class="hr-header-loading">
+  <div class="app">
+
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark"><i class="bi bi-shield-check fs-5"></i></div>
+      <div>
+        <div class="fw-semibold">HR Seva</div>
+        <div class="small text-muted-3">Super Admin</div>
+      </div>
+    </div>
+    <div class="sidebar-scroll">
+      <div class="nav-section-title">Main</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="super-admin-dashboard.html"><i class="bi bi-speedometer2"></i> Super Dashboard</a>
+        <a class="nav-link" href="index.html"><i class="bi bi-grid"></i> Client Dashboard</a>
+        <a class="nav-link" href="super-admin-module.html"><i class="bi bi-building"></i> Client Module</a>
+        <a class="nav-link" href="super-admin-employee-master.html"><i class="bi bi-people"></i> Employee Master</a>
+      </nav>
+
+      <div class="nav-section-title">Statutory</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="super-admin-payroll-calc.html"><i class="bi bi-calculator"></i> Salary Sheet</a>
+        <a class="nav-link" href="super-admin-payslips.html"><i class="bi bi-receipt"></i> Payslip Generator</a>
+        <a class="nav-link" href="super-admin-compliance-calendar.html"><i class="bi bi-calendar3"></i> Compliance challan</a>
+      </nav>
+
+      <div class="nav-section-title">Attendance and Leave</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="super-admin-attendance.html"><i class="bi bi-calendar2-check"></i> Attendance Sheet</a>
+        <a class="nav-link" href="super-admin-leave.html"><i class="bi bi-calendar2-check"></i> Leave Management</a>
+      </nav>
+
+      <div class="nav-section-title">Returns & Sheets</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="super-admin-fnf.html"><i class="bi bi-clipboard-check"></i> FNF</a>
+        <a class="nav-link" href="super-admin-pf-sheet.html"><i class="bi bi-file-earmark-spreadsheet"></i> PF / ECR Sheet</a>
+        <a class="nav-link" href="super-admin-pf-return.html"><i class="bi bi-cloud-upload"></i> PF Return</a>
+        <a class="nav-link" href="super-admin-esic-sheet.html"><i class="bi bi-file-earmark-spreadsheet"></i> ESIC Sheet</a>
+        <a class="nav-link" href="super-admin-esic-return.html"><i class="bi bi-cloud-upload"></i> ESIC Return</a>
+      </nav>
+
+      <div class="nav-section-title">Settings</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="super-admin-control.html"><i class="bi bi-sliders"></i> Control Page</a>
+        <a class="nav-link" href="super-admin-access-control.html"><i class="bi bi-shield-lock"></i> Access Control</a>
+      </nav>
+
+      <div class="nav-section-title">Account</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link active" href="super-admin-profile.html"><i class="bi bi-building"></i> Company Profile</a>
+        <a class="nav-link" href="super-admin-subscriptions.html"><i class="bi bi-card-checklist"></i> Subscriptions</a>
+        <a class="nav-link" href="super-admin-billing.html"><i class="bi bi-receipt-cutoff"></i> Billing & Invoice</a>
+        <a class="nav-link" href="super-admin-logout.html"><i class="bi bi-box-arrow-right"></i> Logout</a>
+      </nav>
+    </div>
+  </aside>
+
+    <!-- Main -->
+    <main class="content">
+
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-inner d-flex align-items-center gap-2">
+
+          <button class="btn btn-outline-secondary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <div class="me-auto">
+            <div class="fw-semibold">Company Profile</div>
+            <div class="small text-muted-3">Company details + statutory IDs + contacts</div>
+          </div>
+
+          <!-- Theme toggle -->
+          <button class="btn btn-primary" id="btnSaveTop" type="button">
+            <i class="bi bi-check2-circle"></i> Save
+          </button>
+          <button class="btn theme-icon-btn" id="themeToggle" type="button" aria-label="Toggle theme">
+            <i class="bi bi-moon" id="themeIcon"></i>
+
+          </button>          <button class="btn profile-icon-btn" type="button" aria-label="Notifications">
+            <i class="bi bi-bell"></i>
+          </button>
+
+          <div class="dropdown">
+            <button class="btn profile-icon-btn" data-bs-toggle="dropdown" aria-label="Account menu">
+              <i class="bi bi-person-circle"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="super-admin-profile.html"><i class="bi bi-building me-2"></i>Profile</a></li>
+              <li><a class="dropdown-item" href="#"><i class="bi bi-headset me-2"></i>Support</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="super-admin-logout.html"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+            </ul>
+          </div>
+        </div>
+
+        </header>
+
+      <div class="container-fluid py-4 px-3 px-lg-4">
+
+        <!-- Profile header -->
+        <div class="row g-3">
+          <div class="col-12">
+            <div class="glass p-3">
+              <div class="d-flex flex-column flex-lg-row gap-3 align-items-lg-center justify-content-between">
+                <div class="d-flex align-items-center gap-3">
+                  <div class="avatar" id="avatarTxt">MI</div>
+                  <div>
+                    <div class="fw-semibold fs-5" id="headerCompany">-</div>
+                    <div class="small text-muted-3" id="headerLocation">-</div>
+                    <div class="mt-2 d-flex flex-wrap gap-2">
+                      <span class="pill"><i class="bi bi-shield-check"></i> Client</span>
+                      <span class="pill"><i class="bi bi-file-earmark-text"></i> Payslip/Returns</span>
+                      <span class="pill"><i class="bi bi-geo-alt"></i> Address saved</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                  <button class="btn btn-outline-secondary" id="btnLoadFromControl" type="button" title="Pull from Control Page (if saved)">
+                    <i class="bi bi-arrow-repeat"></i> Load from Control
+                  </button>
+                  <button class="btn btn-outline-danger" id="btnResetAll" type="button" title="Clear all portal data and reset defaults">
+                    <i class="bi bi-trash3"></i> Reset All Data
+                  </button>
+                  <button class="btn btn-outline-secondary" id="btnResetDemo" type="button">
+                    <i class="bi bi-arrow-counterclockwise"></i> Reset Demo
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main form -->
+        <div class="row g-3 mt-0">
+
+          <!-- Company details -->
+          <div class="col-12 col-xl-7">
+            <div class="glass p-3 h-100">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="fw-semibold">Company Details</div>
+                <span class="pill"><i class="bi bi-buildings"></i> Master</span>
+              </div>
+
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Company Name *</label>
+                  <input class="form-control" id="companyName" required />
+                  <div class="small text-muted-3 mt-1">Used in payslips, returns, registers.</div>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label">Company Address *</label>
+                  <textarea class="form-control" id="companyAddress" rows="4" required></textarea>
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label class="form-label">City</label>
+                  <input class="form-control" id="city" placeholder="Bicholim" />
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label">State</label>
+                  <input class="form-control" id="state" placeholder="Goa" />
+                </div>
+
+                <div class="col-12 col-md-6">
+                  <label class="form-label">Pincode</label>
+                  <input class="form-control" id="pincode" placeholder="403504" />
+                </div>
+                <div class="col-12 col-md-6">
+                  <label class="form-label">Country</label>
+                  <input class="form-control" id="country" value="India" />
+                </div>
+
+                <div class="col-12">
+                  <div class="glass-soft p-3">
+                    <div class="fw-semibold mb-2">Branding (Optional)</div>
+                    <div class="row g-3">
+                      <div class="col-12 col-md-6">
+                        <label class="form-label">Company Logo</label>
+                        <input class="form-control" type="file" accept="image/*" />
+                        <div class="small text-muted-3 mt-1">(Backend: store logo + show on payslip PDF)</div>
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <label class="form-label">Website</label>
+                        <input class="form-control" id="website" placeholder="https://example.com" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- Statutory + contacts -->
+          <div class="col-12 col-xl-5">
+            <div class="row g-3">
+
+              <div class="col-12">
+                <div class="glass p-3">
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="fw-semibold">Statutory IDs</div>
+                    <span class="pill"><i class="bi bi-file-earmark-lock"></i> PF/ESI/Tax</span>
+                  </div>
+
+                  <div class="row g-3">
+                    <div class="col-12">
+                      <label class="form-label">CIN / LLPIN / Reg. No</label>
+                      <input class="form-control" id="regNo" />
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                      <label class="form-label">PAN</label>
+                      <input class="form-control" id="pan" />
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="form-label">TAN</label>
+                      <input class="form-control" id="tan" />
+                    </div>
+
+                    <div class="col-12">
+                      <label class="form-label">GSTIN</label>
+                      <input class="form-control" id="gstin" />
+                    </div>
+
+                    <div class="col-12">
+                      <label class="form-label">PF Establishment ID (Optional)</label>
+                      <input class="form-control" id="pfEstId" placeholder="PF Establishment ID" />
+                    </div>
+
+                    <div class="col-12">
+                      <label class="form-label">ESIC Employer Code (Optional)</label>
+                      <input class="form-control" id="esicCode" placeholder="ESIC Employer Code" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="glass p-3">
+                  <div class="d-flex align-items-center justify-content-between mb-2">
+                    <div class="fw-semibold">Contact Details</div>
+                    <span class="pill"><i class="bi bi-telephone"></i> Support</span>
+                  </div>
+
+                  <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                      <label class="form-label">Primary Contact Name</label>
+                      <input class="form-control" id="contactName" placeholder="HR / Owner name" />
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="form-label">Primary Contact No</label>
+                      <input class="form-control" id="contactNo" placeholder="Enter contact number" />
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                      <label class="form-label">Email</label>
+                      <input class="form-control" id="email" type="email" placeholder="hr@company.com" />
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label class="form-label">Alt Contact No</label>
+                      <input class="form-control" id="altContactNo" placeholder="Optional" />
+                    </div>
+
+                    <div class="col-12">
+                      <label class="form-label">Notes</label>
+                      <textarea class="form-control" id="notes" rows="3" placeholder="Any notes for agency..."></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Sticky actions -->
+        <div class="sticky-actions mt-3">
+          <div class="d-flex justify-content-end gap-2">
+            <button class="btn btn-outline-secondary" id="btnValidate" type="button">
+              <i class="bi bi-shield-exclamation"></i> Validate
+            </button>
+            <button class="btn btn-primary" id="btnSave" type="button">
+              <i class="bi bi-check2-circle"></i> Save Changes
+            </button>
+          </div>
+        </div>
+
+        <div class="text-center small text-muted-3 mt-4">
+          &copy; <span id="yr"></span> HR Compliance Portal
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile Sidebar -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel">
+  <div class="offcanvas-header">
+    <div class="d-flex align-items-center gap-2">
+      <div class="brand-mark"><i class="bi bi-shield-check fs-5"></i></div>
+      <div>
+        <div class="fw-semibold" id="mobileSidebarLabel">HR Seva</div>
+        <div class="small text-muted-3">Super Admin</div>
+      </div>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div class="nav-section-title">Main</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="super-admin-dashboard.html"><i class="bi bi-speedometer2"></i> Super Dashboard</a>
+        <a class="nav-link" href="index.html"><i class="bi bi-grid"></i> Client Dashboard</a>
+        <a class="nav-link" href="super-admin-shift-roster.html"><i class="bi bi-calendar-week"></i> Shift / Roster</a>
+        <a class="nav-link" href="super-admin-module.html"><i class="bi bi-building"></i> Client Module</a>
+        <a class="nav-link" href="super-admin-employee-master.html"><i class="bi bi-people"></i> Employee Master</a>
+
+      </nav>      <div class="nav-section-title">Statutory</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="super-admin-payroll-calc.html"><i class="bi bi-calculator"></i> Salary Sheet</a>
+        <a class="nav-link" href="super-admin-payslips.html"><i class="bi bi-receipt"></i> Payslip Generator</a>
+        <a class="nav-link" href="super-admin-compliance-calendar.html"><i class="bi bi-calendar3"></i> Compliance challan</a>
+      </nav>
+
+      <div class="nav-section-title mt-3">Returns & Sheets</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="super-admin-fnf.html"><i class="bi bi-clipboard-check"></i> FNF</a>
+        <a class="nav-link" href="super-admin-pf-sheet.html"><i class="bi bi-file-earmark-spreadsheet"></i> PF / ECR Sheet</a>
+        <a class="nav-link" href="super-admin-pf-return.html"><i class="bi bi-cloud-upload"></i> PF Return</a>
+        <a class="nav-link" href="super-admin-esic-sheet.html"><i class="bi bi-file-earmark-spreadsheet"></i> ESIC Sheet</a>
+        <a class="nav-link" href="super-admin-esic-return.html"><i class="bi bi-cloud-upload"></i> ESIC Return</a>
+      </nav>
+
+      <div class="nav-section-title mt-3">Settings</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="super-admin-control.html"><i class="bi bi-sliders"></i> Control Page</a>
+      </nav>
+
+      <div class="nav-section-title mt-3">Account</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link active" href="super-admin-profile.html"><i class="bi bi-building"></i> Company Profile</a>
+        <a class="nav-link" href="super-admin-subscriptions.html"><i class="bi bi-card-checklist"></i> Subscriptions</a>
+        <a class="nav-link" href="super-admin-billing.html"><i class="bi bi-receipt-cutoff"></i> Billing & Invoice</a>
+        <a class="nav-link" href="super-admin-logout.html"><i class="bi bi-box-arrow-right"></i> Logout</a>
+      </nav>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/app-common.js"></script>
+  <script src="../assets/js/client-profile.js"></script>
+</body>
+</html>
+
+
+
+
+
+

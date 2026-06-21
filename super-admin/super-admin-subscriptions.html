@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Subscriptions | Super Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="../assets/css/app-common.css" rel="stylesheet">
+  <link href="../assets/css/super-admin-dashboard.css" rel="stylesheet">
+</head>
+<body class="hr-header-loading">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark"><i class="bi bi-shield-lock fs-5"></i></div>
+        <div>
+          <div class="fw-semibold">HR Seva</div>
+          <div class="small text-muted-3">Super Admin Panel</div>
+        </div>
+      </div>
+      <div class="sidebar-scroll">
+        <div class="nav-section-title">Main</div>
+        <nav class="nav flex-column gap-1">
+          <a class="nav-link" href="super-admin-dashboard.html"><i class="bi bi-speedometer2"></i> Super Dashboard</a>
+          <a class="nav-link" href="index.html"><i class="bi bi-grid"></i> Client Dashboard</a>
+        <a class="nav-link" href="super-admin-shift-roster.html"><i class="bi bi-calendar-week"></i> Shift / Roster</a>
+          <a class="nav-link" href="super-admin-module.html"><i class="bi bi-building"></i> Client Module</a>
+          <a class="nav-link" href="super-admin-employee-master.html"><i class="bi bi-people"></i> Employee Master</a>
+        </nav>
+
+        <div class="nav-section-title">Statutory</div>
+        <nav class="nav flex-column gap-1">
+          <a class="nav-link" href="super-admin-payroll-calc.html"><i class="bi bi-calculator"></i> Salary Sheet</a>
+          <a class="nav-link" href="super-admin-payslips.html"><i class="bi bi-receipt"></i> Payslip Generator</a>
+          <a class="nav-link" href="super-admin-compliance-calendar.html"><i class="bi bi-calendar3"></i> Compliance challan</a>
+        </nav>
+
+        <div class="nav-section-title">Attendance and Leave</div>
+        <nav class="nav flex-column gap-1">
+          <a class="nav-link" href="super-admin-attendance.html"><i class="bi bi-calendar2-check"></i> Attendance Sheet</a>
+          <a class="nav-link" href="super-admin-leave.html"><i class="bi bi-calendar2-check"></i> Leave Management</a>
+        </nav>
+
+        <div class="nav-section-title">Returns & Sheets</div>
+        <nav class="nav flex-column gap-1">
+          <a class="nav-link" href="super-admin-fnf.html"><i class="bi bi-clipboard-check"></i> FNF</a>
+          <a class="nav-link" href="super-admin-pf-sheet.html"><i class="bi bi-file-earmark-spreadsheet"></i> PF / ECR Sheet</a>
+          <a class="nav-link" href="super-admin-pf-return.html"><i class="bi bi-cloud-upload"></i> PF Return</a>
+          <a class="nav-link" href="super-admin-esic-sheet.html"><i class="bi bi-file-earmark-spreadsheet"></i> ESIC Sheet</a>
+          <a class="nav-link" href="super-admin-esic-return.html"><i class="bi bi-cloud-upload"></i> ESIC Return</a>
+        </nav>
+
+        <div class="nav-section-title">Settings</div>
+        <nav class="nav flex-column gap-1">
+          <a class="nav-link" href="super-admin-control.html"><i class="bi bi-sliders"></i> Control Page</a>
+          <a class="nav-link" href="super-admin-access-control.html"><i class="bi bi-shield-lock"></i> Access Control</a>
+        </nav>
+
+        <div class="nav-section-title">Account</div>
+        <nav class="nav flex-column gap-1">
+          <a class="nav-link" href="super-admin-profile.html"><i class="bi bi-building"></i> Company Profile</a>
+          <a class="nav-link active" href="super-admin-subscriptions.html"><i class="bi bi-card-checklist"></i> Subscriptions</a>
+          <a class="nav-link" href="super-admin-billing.html"><i class="bi bi-receipt-cutoff"></i> Billing & Invoice</a>
+          <a class="nav-link" href="super-admin-logout.html"><i class="bi bi-box-arrow-right"></i> Logout</a>
+        </nav>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div class="topbar-inner d-flex align-items-center gap-2">
+          <button class="btn btn-outline-secondary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+            <i class="bi bi-list"></i>
+          </button>
+          <div class="me-auto">
+            <div class="fw-semibold">Subscriptions</div>
+            <div class="small text-muted-3">Track plans, validity, renewal and status</div>
+          </div>
+          <button class="btn theme-icon-btn" id="themeToggle" type="button" aria-label="Toggle theme">
+            <i class="bi bi-moon" id="themeIcon"></i>
+          </button>
+        </div>
+      </header>
+
+      <div class="container-fluid py-4 px-3 px-lg-4">
+        <div id="subMsg" class="alert d-none"></div>
+        <div class="glass p-3">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h6 class="mb-0">Subscription Plans</h6>
+            <button class="btn btn-primary btn-sm" id="btnAddSubscription" data-bs-toggle="modal" data-bs-target="#subscriptionModal"><i class="bi bi-plus-lg"></i> Add Plan</button>
+          </div>
+          <div class="table-responsive">
+            <table class="table align-middle mb-0" data-no-datetime="true">
+              <thead>
+                <tr>
+                  <th>Sr. No</th>
+                  <th>Plan</th>
+                  <th>Access Type</th>
+                  <th>Duration (Months)</th>
+                  <th class="text-end">Amount</th>
+                  <th>Status</th>
+                  <th>Features</th>
+                  <th class="text-end">Action</th>
+                </tr>
+              </thead>
+              <tbody id="subsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="glass p-3 mt-3">
+          <div class="d-flex align-items-center justify-content-between mb-3">
+            <h6 class="mb-0">Client Subscription Renewals</h6>
+            <span class="badge-soft" id="clientSubsCount">-</span>
+          </div>
+          <div class="table-responsive">
+            <table class="table align-middle mb-0" data-no-datetime="true">
+              <thead>
+                <tr>
+                  <th>Sr. No</th>
+                  <th>Client</th>
+                  <th>User ID</th>
+                  <th>Plan</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Renewal</th>
+                  <th>Status</th>
+                  <th class="text-end">Amount</th>
+                  <th class="text-end">Action</th>
+                </tr>
+              </thead>
+              <tbody id="clientSubsTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel">
+    <div class="offcanvas-header">
+      <div class="d-flex align-items-center gap-2">
+        <div class="brand-mark"><i class="bi bi-shield-check fs-5"></i></div>
+        <div>
+          <div class="fw-semibold" id="mobileSidebarLabel">HR Seva</div>
+          <div class="small text-muted-3">Super Admin</div>
+        </div>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div class="nav-section-title">Main</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="super-admin-dashboard.html"><i class="bi bi-speedometer2"></i> Super Dashboard</a>
+        <a class="nav-link" href="index.html"><i class="bi bi-grid"></i> Client Dashboard</a>
+        <a class="nav-link" href="super-admin-shift-roster.html"><i class="bi bi-calendar-week"></i> Shift / Roster</a>
+        <a class="nav-link" href="super-admin-module.html"><i class="bi bi-building"></i> Client Module</a>
+        <a class="nav-link" href="super-admin-employee-master.html"><i class="bi bi-people"></i> Employee Master</a>
+      </nav>
+
+      <div class="nav-section-title mt-3">Statutory</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="super-admin-payroll-calc.html"><i class="bi bi-calculator"></i> Salary Sheet</a>
+        <a class="nav-link" href="super-admin-payslips.html"><i class="bi bi-receipt"></i> Payslip Generator</a>
+        <a class="nav-link" href="super-admin-compliance-calendar.html"><i class="bi bi-calendar3"></i> Compliance challan</a>
+      </nav>
+
+      <div class="nav-section-title mt-3">Returns & Sheets</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="super-admin-fnf.html"><i class="bi bi-clipboard-check"></i> FNF</a>
+        <a class="nav-link" href="super-admin-pf-sheet.html"><i class="bi bi-file-earmark-spreadsheet"></i> PF / ECR Sheet</a>
+        <a class="nav-link" href="super-admin-pf-return.html"><i class="bi bi-cloud-upload"></i> PF Return</a>
+        <a class="nav-link" href="super-admin-esic-sheet.html"><i class="bi bi-file-earmark-spreadsheet"></i> ESIC Sheet</a>
+        <a class="nav-link" href="super-admin-esic-return.html"><i class="bi bi-cloud-upload"></i> ESIC Return</a>
+      </nav>
+
+      <div class="nav-section-title mt-3">Account</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="super-admin-profile.html"><i class="bi bi-building"></i> Company Profile</a>
+        <a class="nav-link active" href="super-admin-subscriptions.html"><i class="bi bi-card-checklist"></i> Subscriptions</a>
+        <a class="nav-link" href="super-admin-billing.html"><i class="bi bi-receipt-cutoff"></i> Billing & Invoice</a>
+        <a class="nav-link" href="super-admin-logout.html"><i class="bi bi-box-arrow-right"></i> Logout</a>
+      </nav>
+    </div>
+  </div>
+
+  <div class="modal fade" id="subscriptionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="subModalTitle">Add Plan</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="subForm" class="modal-body needs-validation" novalidate>
+          <div class="row g-3">
+            <div class="col-md-8">
+              <label class="form-label">Plan Name</label>
+              <input class="form-control" id="subPlanName" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Access Type</label>
+              <select class="form-select" id="subAccessTypeCode" required></select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Duration (Months)</label>
+              <input type="number" min="1" step="1" class="form-control" id="subDurationMonths" required value="12">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Status</label>
+              <select class="form-select" id="subStatus" required>
+                <option>Active</option>
+                <option>Inactive</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Amount</label>
+              <input type="number" min="0" step="1" class="form-control" id="subAmount" required>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label">Features</label>
+              <textarea class="form-control" id="subNotes" rows="2"></textarea>
+            </div>
+          </div>
+        </form>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-primary" form="subForm" type="submit">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="renewSubscriptionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Renew Client Subscription</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form id="renewSubForm" class="modal-body needs-validation" novalidate>
+          <input type="hidden" id="renewClientId">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Client</label>
+              <input class="form-control" id="renewClientName" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">User ID</label>
+              <input class="form-control" id="renewUserId" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Plan</label>
+              <select class="form-select" id="renewPlanId" required></select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Status</label>
+              <select class="form-select" id="renewStatus" required>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Start Date</label>
+              <input type="date" class="form-control" id="renewStartDate" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">End Date</label>
+              <input type="date" class="form-control" id="renewEndDate" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Renewal Date</label>
+              <input type="date" class="form-control" id="renewRenewalDate" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Amount</label>
+              <input type="number" min="0" step="1" class="form-control" id="renewAmount" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Notes</label>
+              <input class="form-control" id="renewNotes" placeholder="Renewed from Super Admin">
+            </div>
+          </div>
+        </form>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-primary" form="renewSubForm" type="submit">Renew Subscription</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/app-common.js"></script>
+  <script src="../assets/js/super-admin-subscriptions.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+

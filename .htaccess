@@ -1,0 +1,37 @@
+RewriteEngine On
+
+# 1) Serve real files/folders directly
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# 2) Route API calls to PHP backend
+RewriteRule ^api/(.*)$ backend/api.php?path=/api/$1 [QSA,L]
+
+# 3) Block direct web access to sensitive paths/files
+RewriteRule ^storage/ - [F,L,NC]
+RewriteRule ^backend/(?!api\.php$) - [F,L,NC]
+<FilesMatch "\.(db|sqlite|sqlite3|env|ini|log|sh|bat|ps1)$">
+  Require all denied
+</FilesMatch>
+
+# 4) No-cache for login pages
+<FilesMatch "^(index\.html|super-admin-login\.html|client-login\.html)$">
+  Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+  Header set Pragma "no-cache"
+  Header set Expires "0"
+</FilesMatch>
+
+# 5) Security headers
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), camera=(self), microphone=()"
+
+  # Enable HSTS only when HTTPS is active
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" env=HTTPS
+
+  # CSP tuned for current CDN usage
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://cdn.jsdelivr.net; object-src 'none'; base-uri 'self'; frame-ancestors 'self';"
+</IfModule>

@@ -1,0 +1,175 @@
+    body { background: #fff3e9; color: #45454c; }
+    .auth-wrap { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+    .auth-card {
+      border: 1px solid rgba(22,64,75,.12); border-radius: 18px; overflow: hidden;
+      box-shadow: 0 24px 56px rgba(22,64,75,.10);
+      background: #ffffff;
+      max-width: 980px; width: 100%;
+    }
+    .auth-left {
+      background: #16404b;
+      color: #fff3e9;
+      padding: 36px;
+      height: 100%;
+    }
+    .badge-soft {
+      background: rgba(255,243,233,.08);
+      border: 1px solid rgba(255,243,233,.20);
+      color: #fff3e9;
+      border-radius: 999px;
+      padding: .35rem .7rem;
+      font-size: .85rem;
+      display: inline-flex;
+      gap: .4rem;
+      align-items: center;
+    }
+    .auth-right { padding: 36px; background: #fffdf9; color: #45454c; }
+    .auth-right,
+    .auth-right p,
+    .auth-right div,
+    .auth-right label,
+    .auth-right span,
+    .auth-right a {
+      color: #45454c;
+    }
+    .auth-right h2,
+    .auth-right .fw-semibold,
+    .auth-right .form-label,
+    .auth-right .form-check-label,
+    .auth-right .form-text {
+      color: #16404b;
+    }
+    .auth-right h2 {
+      font-size: 2rem;
+      line-height: 1.1;
+    }
+    .auth-right .text-secondary {
+      color: rgba(22,64,75,.76) !important;
+    }
+    .auth-right .small {
+      color: rgba(22,64,75,.76);
+    }
+    .auth-right .alert-success {
+      color: #0f766e;
+    }
+    .auth-right .alert-danger {
+      color: #b42318;
+    }
+    .auth-home-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 1px solid rgba(22,64,75,.16);
+      background: #fff3e9;
+      color: #16404b;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s ease, color .2s ease, border-color .2s ease;
+    }
+    .auth-home-btn:hover,
+    .auth-home-btn:focus {
+      background: #16404b;
+      border-color: #16404b;
+      color: #fff3e9;
+      box-shadow: none;
+    }
+    .auth-right .form-control::placeholder {
+      color: rgba(22,64,75,.50);
+    }
+    .auth-right .form-control,
+    .auth-right .input-group-text,
+    .auth-right .form-check-input {
+      border-color: rgba(22,64,75,.16);
+    }
+    .auth-right .form-control {
+      border-radius: 14px;
+      background: #fff3e9;
+      color: #16404b;
+      min-height: 48px;
+    }
+    .auth-right .form-control:focus {
+      background: #ffffff;
+      border-color: rgba(22,64,75,.28);
+      box-shadow: 0 0 0 .2rem rgba(212,215,194,.38);
+    }
+    .auth-right .form-check-input {
+      background-color: #fff3e9;
+    }
+    .auth-right .form-check-input:checked {
+      background-color: #16404b;
+      border-color: #16404b;
+    }
+    .auth-right .form-check-label {
+      color: #16404b !important;
+    }
+    .btn { border-radius: 12px; }
+    .auth-right .input-group { align-items: stretch; }
+    .auth-right .input-group > .form-control {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      min-height: 48px;
+    }
+    .auth-right .input-group > .btn {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      min-width: 52px;
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .auth-right #togglePass {
+      border-color: rgba(22,64,75,.16);
+      background: #fff3e9;
+      color: #16404b;
+    }
+    .auth-right #togglePass:hover,
+    .auth-right #togglePass:focus {
+      background: #d4d7c2;
+      color: #16404b;
+      box-shadow: none;
+    }
+    .auth-right .btn-primary {
+      background: #16404b;
+      border-color: #16404b;
+      color: #fff3e9;
+      min-height: 48px;
+      box-shadow: none;
+    }
+    .auth-right .btn-primary:hover,
+    .auth-right .btn-primary:focus,
+    .auth-right .btn-primary:active {
+      background: #123742 !important;
+      border-color: #123742 !important;
+      color: #fff3e9 !important;
+      box-shadow: none !important;
+    }
+    .auth-right hr {
+      border-color: rgba(22,64,75,.12);
+    }
+    .brand-mark {
+      width: 128px; height: 34px;
+      border-radius: 0;
+      display: inline-grid;
+      place-items: center;
+      background: transparent;
+      border: 0;
+      color: #fff3e9;
+      background-image: url("../../assets-02/images/common/logo-new-light.svg");
+      background-repeat: no-repeat;
+      background-position: left center;
+      background-size: contain;
+    }
+    .brand-mark > i { display: none; }
+    .small-muted { color: rgba(255,243,233,.82); }
+    .auth-left,
+    .auth-left h1,
+    .auth-left .fw-semibold,
+    .auth-left .small-muted,
+    .auth-left span,
+    .auth-left p,
+    .auth-left div {
+      color: #fff3e9;
+    }
+    a { text-decoration: none; }
