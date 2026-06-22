@@ -222,10 +222,15 @@
   function getPathPage() {
     var path = (window.location.pathname || "").toLowerCase();
     var page = path.split("/").pop() || "";
+    var bodyKey = "";
+    try {
+      bodyKey = String(document.body && document.body.getAttribute("data-page-key") || "").toLowerCase();
+    } catch (_e) {}
+    if (bodyKey) page = bodyKey;
     return { path: path, page: page };
   }
   function isPublicPage(page) {
-    return page === "client-login.html" || page === "client-logout.html" || page === "super-admin-login.html";
+    return page === "client-login.html" || page === "client-logout.html" || page === "super-admin-login.html" || page === "super-admin-logout.html";
   }
   function installCustomAlert() {
     var page = getPathPage().page;

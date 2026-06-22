@@ -2,6 +2,23 @@
 
 Laravel migration of the HR Seva multi-tenant HR portal. The existing frontend (HTML/JS/CSS) is served unchanged from `public/`. All `/api/*` endpoints are handled by the legacy business logic in `legacy/backend/`, bridged through Laravel for routing, configuration, and future incremental refactoring.
 
+## Frontend (Blade)
+
+Portal pages are rendered from Blade templates in `resources/views/`:
+
+- **Layouts**: `layouts/portal.blade.php`, `layouts/auth.blade.php`, `layouts/landing.blade.php`
+- **Shared content**: `resources/views/pages/content/` — one partial per module (client + super-admin share the same content)
+- **Routes**: `routes/portal.php` — preserves legacy URLs (`/client/client-employee-master.html`, etc.)
+
+Static assets (CSS/JS/images) remain in `public/assets/` and `public/assets-02/`.
+
+To regenerate Blade views from HTML sources (if you update the original static files):
+
+```bash
+# Restore HTML sources to public/client and public/super-admin first, then:
+php scripts/convert-html-to-blade.php
+```
+
 ## Stack
 
 - **Laravel 13** (PHP 8.3+)
