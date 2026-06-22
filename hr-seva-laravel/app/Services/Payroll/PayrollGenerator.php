@@ -6,7 +6,10 @@ use App\Services\Storage\SheetStorageService;
 
 class PayrollGenerator
 {
-    public function __construct(private SheetStorageService $sheets) {}
+    public function __construct(
+        private SheetStorageService $sheets,
+        private StatutoryCalculator $statutory,
+    ) {}
 
     public function generate(int $month, int $year, string $absentMode = 'LOP'): array
     {
@@ -23,7 +26,7 @@ class PayrollGenerator
         $dim = (int) cal_days_in_month(CAL_GREGORIAN, $month, $year);
         $out = [];
         $payrollSheetId = 'PAY-'.period($month, $year).'-'.time();
-        $otherDedItems = control_other_deduction_breakup($ctrl);
+        $otherDedItems = $this->statutory->controlOtherDeductionBreakup($ctrl);
         $otherDedFixed = 0.0;
         foreach ($otherDedItems as $it) {
             $otherDedFixed += f($it['amount'] ?? 0);
@@ -52,7 +55,7 @@ class PayrollGenerator
             $ctc = (isset($o['ctc']) && $o['ctc'] !== null) ? f($o['ctc']) : 0;
             $masterCtc = f($emp['baseCtc'] ?? 0);
             $base = $gross > 0 ? $gross : ($ctc > 0 ? $ctc : ($masterCtc > 0 ? $masterCtc : 25000));
-            $parts = split_ctc($base, $ctrl);
+            $parts = $this->statutory->splitCtc($base, $ctrl);
             $gross = f($parts['gross']);
             $lopDed = $gross * ($lop / $working);
             $earned = max(0.0, $gross - $lopDed);
@@ -60,7 +63,7 @@ class PayrollGenerator
             $esiAp = ($o['esiAppl'] ?? true) === true;
             $ptAp = ($o['ptAppl'] ?? true) === true;
             $lwfAp = ($o['lwfAppl'] ?? true) === true;
-            $stat = payroll_statutory_calc($ctrl, $gross, $earned, $pfAp, $esiAp);
+            $stat = $this->statutory->payrollStatutoryCalc($ctrl, $gross, $earned, $pfAp, $esiAp);
             $pfW = f($stat['pfWages'] ?? 0);
             $pfEE = f($stat['pfEE'] ?? 0);
             $pfER = f($stat['pfER'] ?? 0);

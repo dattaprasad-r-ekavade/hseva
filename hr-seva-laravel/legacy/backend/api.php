@@ -101,6 +101,12 @@ function token_verify(string $token): ?array {
   return $p;
 }
 function auth_header_token(): string {
+  if (function_exists('request') && request()) {
+    $h = (string) request()->header('Authorization', '');
+    if (preg_match('/^\s*Bearer\s+(.+)\s*$/i', $h, $m)) {
+      return trim((string) $m[1]);
+    }
+  }
   $h = (string)($_SERVER['HTTP_AUTHORIZATION'] ?? '');
   if($h === '') $h = (string)($_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '');
   if(preg_match('/^\s*Bearer\s+(.+)\s*$/i', $h, $m)) return trim((string)$m[1]);
@@ -140,10 +146,19 @@ function client_subscription_access_state(int $clientId): array {
 function auth_ctx(bool $required = true): ?array {
   static $cache = null;
   static $loaded = false;
-  if(!$loaded){
+  static $requestKey = null;
+  $currentKey = (function_exists('request') && request()) ? spl_object_id(request()) : null;
+  if ($currentKey !== null && request()->attributes->has('hr_token')) {
+    if ($requestKey !== $currentKey) {
+      $cache = request()->attributes->get('hr_token');
+      $loaded = true;
+      $requestKey = $currentKey;
+    }
+  } elseif (!$loaded || ($currentKey !== null && $requestKey !== $currentKey)) {
     $tok = auth_header_token();
     $cache = $tok !== '' ? token_verify($tok) : null;
     $loaded = true;
+    $requestKey = $currentKey;
   }
   if($cache){
     $role = strtolower((string)($cache['role'] ?? ''));
@@ -307,6 +322,10 @@ function db(): PDO {
 }
 require_once __DIR__ . '/shift_module.php';
 function init_schema(PDO $d): void {
+  if (class_exists(\App\Services\Database\HrSchemaInstaller::class)) {
+    \App\Services\Database\HrSchemaInstaller::install($d);
+    return;
+  }
   $d->exec("CREATE TABLE IF NOT EXISTS app_kv (key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL)");
   $d->exec("CREATE TABLE IF NOT EXISTS clients (id INTEGER PRIMARY KEY AUTOINCREMENT,company_name TEXT NOT NULL,company_address TEXT NOT NULL,company_reg_no TEXT NOT NULL,company_pan TEXT NOT NULL,company_tan TEXT NOT NULL,company_gstin TEXT NOT NULL,company_contact_no TEXT NOT NULL,company_email TEXT NOT NULL DEFAULT '',user_id TEXT NOT NULL DEFAULT '',user_password TEXT NOT NULL DEFAULT '',user_password_hash TEXT NOT NULL DEFAULT '',subscription_plan_id INTEGER NOT NULL DEFAULT 0,created_at TEXT NOT NULL,updated_at TEXT NOT NULL)");
   try { $d->exec("ALTER TABLE clients ADD COLUMN company_email TEXT NOT NULL DEFAULT ''"); } catch (Throwable $e) {}
@@ -710,7 +729,7 @@ function face_attendance_settings_put(array $raw): array {
     'scanDistanceCm' => max(20, min(150, (int)($raw['scanDistanceCm'] ?? $cur['scanDistanceCm']))),
     '__updatedAt' => now_iso()
   ];
-  $st = db()->prepare("INSERT INTO attendance_settings (id, in_allowed_from, in_allowed_till, late_mark_after, out_allowed_from, out_allowed_till, grace_time, face_match_threshold, timezone, model_url, auto_capture_seconds, scan_distance_cm, updated_at) VALUES (1,?,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET in_allowed_from=excluded.in_allowed_from, in_allowed_till=excluded.in_allowed_till, late_mark_after=excluded.late_mark_after, out_allowed_from=excluded.out_allowed_from, out_allowed_till=excluded.out_allowed_till, grace_time=excluded.grace_time, face_match_threshold=excluded.face_match_threshold, timezone=excluded.timezone, model_url=excluded.model_url, auto_capture_seconds=excluded.auto_capture_seconds, scan_distance_cm=excluded.scan_distance_cm, updated_at=excluded.updated_at");
+  $st = db()->prepare("INSERT INTO attendance_settings (id, in_allowed_from, in_allowed_till, late_mark_after, out_allowed_from, out_allowed_till, grace_time, face_match_threshold, timezone, model_url, auto_capture_seconds, scan_distance_cm, updated_at) VALUES (1,?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(id) DO UPDATE SET in_allowed_from=excluded.in_allowed_from, in_allowed_till=excluded.in_allowed_till, late_mark_after=excluded.late_mark_after, out_allowed_from=excluded.out_allowed_from, out_allowed_till=excluded.out_allowed_till, grace_time=excluded.grace_time, face_match_threshold=excluded.face_match_threshold, timezone=excluded.timezone, model_url=excluded.model_url, auto_capture_seconds=excluded.auto_capture_seconds, scan_distance_cm=excluded.scan_distance_cm, updated_at=excluded.updated_at");
   $st->execute([
     $row['inAllowedFrom'], $row['inAllowedTill'], $row['lateMarkAfter'], $row['outAllowedFrom'], $row['outAllowedTill'],
     $row['graceTime'], $row['faceMatchThreshold'], $row['timezone'], $row['modelUrl'], $row['autoCaptureSeconds'], $row['scanDistanceCm'], $row['__updatedAt']
@@ -2561,7 +2580,13 @@ function kv_get(string $k,$d=null){
   $svc = app(\App\Services\Storage\SheetStorageService::class);
   if ($k === 'payroll_overrides') return $svc->payrollOverrides();
   if (preg_match('/^attendance_daily_(\d{4})-(\d{2})$/', $k, $m)) return $svc->attendanceDaily((int)$m[2], (int)$m[1]);
-  if (str_ends_with($k, '_index')) return $svc->index(str_replace('_index', '', $k));
+  if (str_ends_with($k, '_index')) {
+    $prefix = str_replace('_index', '', $k);
+    $sheetTypes = ['attendance_sheet','payroll_sheet','pf_sheet','pf_return_sheet','esic_sheet','esic_return_sheet','ecr_sheet','fnf_sheet','gratuity_sheet','bonus_sheet','payslip'];
+    if (in_array($prefix, $sheetTypes, true)) {
+      return $svc->index($prefix);
+    }
+  }
   if (preg_match('/^(attendance_sheet|payroll_sheet|pf_sheet|pf_return_sheet|esic_sheet|esic_return_sheet|ecr_sheet|fnf_sheet|gratuity_sheet|bonus_sheet|payslip)_(.+)$/', $k, $m)) {
     return $svc->get($m[1], $m[2]) ?? $d;
   }
@@ -3968,6 +3993,9 @@ function att_generate(int $m,int $y,bool $fill=true,bool $sunday=true): array {
 }
 
 function split_ctc(float $base,array $c): array {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\StatutoryCalculator::class)) {
+    return app(\App\Services\Payroll\StatutoryCalculator::class)->splitCtc($base, $c);
+  }
   $b=$base*f($c['ctcBasicPct']??50)/100; $h=$base*f($c['ctcHraPct']??10)/100; $v=$base*f($c['ctcConvPct']??0)/100; $d=$base*f($c['ctcDaPct']??30)/100; $e=$base*f($c['ctcEduPct']??0)/100; $s=$base*f($c['ctcSpecialPct']??0)/100;
   return ["basic"=>$b,"hra"=>$h,"convey"=>$v,"da"=>$d,"edu"=>$e,"special"=>$s,"gross"=>$b+$h+$v+$d+$e+$s];
 }
@@ -4061,6 +4089,9 @@ function lop_leave_days_map(int $m,int $y): array {
   return $out;
 }
 function control_other_deduction_breakup(array $ctrl): array {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\StatutoryCalculator::class)) {
+    return app(\App\Services\Payroll\StatutoryCalculator::class)->controlOtherDeductionBreakup($ctrl);
+  }
   $rows = $ctrl['otherDeductionRows'] ?? [];
   if(!is_array($rows)) return [];
   $items = [];
@@ -4080,15 +4111,27 @@ function control_other_deduction_breakup(array $ctrl): array {
   return $out;
 }
 function ctrl_num(array $ctrl, string $key): float {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\StatutoryCalculator::class)) {
+    return app(\App\Services\Payroll\StatutoryCalculator::class)->ctrlNum($ctrl, $key);
+  }
   return f($ctrl[$key] ?? (DEFAULT_CONTROL[$key] ?? 0));
 }
 function ctrl_bool(array $ctrl, string $key): bool {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\StatutoryCalculator::class)) {
+    return app(\App\Services\Payroll\StatutoryCalculator::class)->ctrlBool($ctrl, $key);
+  }
   return b($ctrl[$key] ?? (DEFAULT_CONTROL[$key] ?? false));
 }
 function esi_wage_limit(array $ctrl): float {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\StatutoryCalculator::class)) {
+    return app(\App\Services\Payroll\StatutoryCalculator::class)->esiWageLimit($ctrl);
+  }
   return max(0.0, ctrl_num($ctrl, 'esiWageLimit'));
 }
 function payroll_statutory_calc(array $ctrl, float $gross, float $earned, bool $pfAp, bool $esiAp): array {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\StatutoryCalculator::class)) {
+    return app(\App\Services\Payroll\StatutoryCalculator::class)->payrollStatutoryCalc($ctrl, $gross, $earned, $pfAp, $esiAp);
+  }
   $calcBase = max(0.0, $earned);
   $earnedParts = split_ctc($calcBase, $ctrl);
   $pfBase = f($earnedParts['basic'] ?? 0) + (f($earnedParts['basic'] ?? 0) * ctrl_num($ctrl, 'daPctBasic') / 100.0);

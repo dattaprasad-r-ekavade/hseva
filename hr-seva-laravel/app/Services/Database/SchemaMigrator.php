@@ -12,6 +12,7 @@ class SchemaMigrator
         1 => \Database\Migrations\Hr\CreateHrMigrationsTable::class,
         2 => \Database\Migrations\Hr\CreateHrCoreSchema::class,
         3 => \Database\Migrations\Hr\CreateHrNormalizedSchema::class,
+        4 => \Database\Migrations\Hr\CreateHrShiftSchema::class,
     ];
 
     public function __construct(private TenantManager $tenants) {}

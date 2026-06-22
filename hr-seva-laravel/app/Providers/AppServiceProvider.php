@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Services\Compliance\ComplianceService;
+use App\Services\FaceAttendance\FaceAttendanceService;
 use App\Services\Payroll\PayrollGenerator;
+use App\Services\Payroll\StatutoryCalculator;
 use App\Services\Storage\SheetStorageService;
 use App\Services\Storage\TenantSettingsService;
 use App\Services\Tenant\TenantManager;
@@ -16,6 +19,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(TenantSettingsService::class);
         $this->app->singleton(SheetStorageService::class);
         $this->app->singleton(PayrollGenerator::class);
+        $this->app->singleton(StatutoryCalculator::class);
+        $this->app->singleton(FaceAttendanceService::class);
+        $this->app->singleton(ComplianceService::class);
     }
 
     public function boot(): void

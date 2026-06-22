@@ -3,7 +3,9 @@
 use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClientController;
+use App\Http\Controllers\Api\ComplianceController;
 use App\Http\Controllers\Api\DashboardController;
+use App\Http\Controllers\Api\FaceAttendanceController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\HrSevaApiController;
@@ -77,6 +79,27 @@ Route::middleware(['hr.auth'])->group(function (): void {
     Route::get('/payroll/overrides', [PayrollController::class, 'overrides']);
     Route::put('/payroll/overrides/{empId}', [PayrollController::class, 'setOverride']);
     Route::delete('/payroll/overrides/{empId}', [PayrollController::class, 'deleteOverride']);
+
+    Route::match(['GET', 'PUT'], '/face-attendance/settings', [FaceAttendanceController::class, 'settings']);
+    Route::get('/face-attendance/registrations', [FaceAttendanceController::class, 'registrations']);
+    Route::post('/face-attendance/register', [FaceAttendanceController::class, 'register']);
+    Route::delete('/face-attendance/registrations/{employeeId}', [FaceAttendanceController::class, 'destroyRegistration']);
+    Route::post('/face-attendance/scan', [FaceAttendanceController::class, 'scan']);
+    Route::get('/face-attendance/sheet', [FaceAttendanceController::class, 'sheet']);
+    Route::get('/face-attendance/report', [FaceAttendanceController::class, 'report']);
+    Route::get('/face-attendance/my-attendance', [FaceAttendanceController::class, 'myAttendance']);
+    Route::get('/face-attendance/attendance/{id}', [FaceAttendanceController::class, 'showAttendance']);
+    Route::put('/face-attendance/attendance/{id}', [FaceAttendanceController::class, 'updateAttendance']);
+    Route::delete('/face-attendance/attendance/{id}', [FaceAttendanceController::class, 'destroyAttendance']);
+
+    Route::get('/compliance/tasks', [ComplianceController::class, 'tasks']);
+    Route::post('/compliance/tasks/upsert', [ComplianceController::class, 'upsertTasks']);
+    Route::post('/compliance/tasks/reset', [ComplianceController::class, 'resetTasks']);
+    Route::post('/compliance/tasks/clear', [ComplianceController::class, 'clearTasks']);
+    Route::get('/compliance/challans', [ComplianceController::class, 'challans']);
+    Route::post('/compliance/challans', [ComplianceController::class, 'storeChallan']);
+    Route::delete('/compliance/challans/{id}', [ComplianceController::class, 'destroyChallan']);
+    Route::post('/compliance/challans/clear', [ComplianceController::class, 'clearChallans']);
 
     Route::any('/{path?}', HrSevaApiController::class)->where('path', '.*');
 });

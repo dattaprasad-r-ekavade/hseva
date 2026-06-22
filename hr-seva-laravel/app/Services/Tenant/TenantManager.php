@@ -2,6 +2,7 @@
 
 namespace App\Services\Tenant;
 
+use App\Services\Database\SchemaMigrator;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 
@@ -73,24 +74,18 @@ class TenantManager
     {
         if ($this->tenantDriver() === 'mysql') {
             $this->ensureMysqlDatabase($this->tenantDatabaseName($clientId));
-            $this->setClientId($clientId);
-            init_schema($this->tenant()->getPdo());
-            face_attendance_settings_seed($this->tenant()->getPdo());
-
-            return;
+        } else {
+            $path = $this->tenantPath($clientId);
+            $dir = dirname($path);
+            if (! is_dir($dir)) {
+                mkdir($dir, 0777, true);
+            }
+            if (! file_exists($path)) {
+                touch($path);
+            }
         }
 
-        $path = $this->tenantPath($clientId);
-        $dir = dirname($path);
-        if (! is_dir($dir)) {
-            mkdir($dir, 0777, true);
-        }
-        if (! file_exists($path)) {
-            touch($path);
-        }
-        $this->setClientId($clientId);
-        init_schema($this->tenant()->getPdo());
-        face_attendance_settings_seed($this->tenant()->getPdo());
+        app(SchemaMigrator::class)->runTenant($clientId);
     }
 
     public function ensureCentralDatabase(): void
