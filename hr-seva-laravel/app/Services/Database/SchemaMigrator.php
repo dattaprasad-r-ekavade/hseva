@@ -18,12 +18,16 @@ class SchemaMigrator
 
     public function runCentral(): void
     {
-        $path = $this->tenants->centralPath();
-        if (! is_dir(dirname($path))) {
-            mkdir(dirname($path), 0777, true);
-        }
-        if (! file_exists($path)) {
-            touch($path);
+        if ($this->tenants->centralDriver() !== 'mysql') {
+            $path = $this->tenants->centralPath();
+            if (! is_dir(dirname($path))) {
+                mkdir(dirname($path), 0777, true);
+            }
+            if (! file_exists($path)) {
+                touch($path);
+            }
+        } else {
+            $this->tenants->ensureCentralDatabase();
         }
 
         $this->runOnConnection($this->tenants->central());
@@ -64,6 +68,16 @@ class SchemaMigrator
 
     private function tableExists($connection, string $table): bool
     {
+        $driver = $connection->getDriverName();
+        if ($driver === 'mysql') {
+            $rows = $connection->select(
+                'SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?',
+                [$table]
+            );
+
+            return count($rows) > 0;
+        }
+
         $rows = $connection->select("SELECT name FROM sqlite_master WHERE type='table' AND name=?", [$table]);
 
         return count($rows) > 0;

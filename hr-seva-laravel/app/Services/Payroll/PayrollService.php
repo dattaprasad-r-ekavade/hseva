@@ -4,9 +4,11 @@ namespace App\Services\Payroll;
 
 class PayrollService
 {
+    public function __construct(private PayrollGenerator $generator) {}
+
     public function generate(int $month, int $year, string $absentMode = 'LOP'): array
     {
-        return ['sheet' => payroll_generate($month, $year, $absentMode)];
+        return ['sheet' => $this->generator->generate($month, $year, $absentMode)];
     }
 
     public function sheets(): array

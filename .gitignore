@@ -35,5 +35,5 @@ desktop.ini
 # PHP
 vendor/
 
-# Local QA / Playwright (not pushed to remote)
-qa/
+# Local QA / Playwright at repo root (Laravel qa suite is committed under hr-seva-laravel/qa/)
+/qa/

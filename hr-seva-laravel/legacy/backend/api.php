@@ -283,12 +283,12 @@ function db_open(string $path): PDO {
   }
   if (function_exists('app') && app()->bound(\App\Services\Tenant\TenantManager::class)) {
     $mgr = app(\App\Services\Tenant\TenantManager::class);
-    if ($path === CENTRAL_DB_PATH && file_exists($path)) {
+    if ($path === CENTRAL_DB_PATH && ($mgr->centralDriver() === 'mysql' || file_exists($path))) {
       $pool[$path] = $mgr->central()->getPdo();
       return $pool[$path];
     }
     $clientId = (int) preg_replace('/.*tenant_(\d+)\/.*/', '$1', $path);
-    if ($clientId > 0 && file_exists($path)) {
+    if ($clientId > 0 && ($mgr->tenantDriver() === 'mysql' || file_exists($path))) {
       $mgr->setClientId($clientId);
       $pool[$path] = $mgr->tenant()->getPdo();
       return $pool[$path];
@@ -2897,7 +2897,15 @@ function leaves_summary(int $m,int $y): array {
 function control_get(): array {
   $x = kv_get('control_settings', null);
   if(!is_array($x)) return ["__lastSaved"=>null, "__configured"=>false];
-  $u = db()->query("SELECT updated_at FROM app_kv WHERE key='control_settings'")->fetchColumn() ?: null;
+  $u = null;
+  if (function_exists('app') && app()->bound(\App\Services\Storage\TenantSettingsService::class)) {
+    $u = app(\App\Services\Storage\TenantSettingsService::class)->updatedAt('control_settings');
+  }
+  if(!$u){
+    $st=db()->prepare("SELECT updated_at FROM tenant_settings WHERE key=?");
+    $st->execute(['control_settings']);
+    $u = $st->fetchColumn() ?: null;
+  }
   return array_merge($x, ["__lastSaved"=>$u, "__configured"=>true]);
 }
 function control_put(array $p): array { kv_set('control_settings',$p); return array_merge(DEFAULT_CONTROL,$p,["__lastSaved"=>now_iso()]); }
@@ -3098,7 +3106,7 @@ function client_upsert(array $raw, ?bool $mustExist=null): array {
     $td = db_open(db_path_for_client($clientId));
     init_schema($td);
     $existingProfile = null;
-    $pst = $td->prepare("SELECT value FROM app_kv WHERE key='company_profile'");
+    $pst = $td->prepare("SELECT value FROM tenant_settings WHERE key='company_profile'");
     $pst->execute();
     $pr = $pst->fetch();
     if($pr && isset($pr['value'])){
@@ -3106,7 +3114,7 @@ function client_upsert(array $raw, ?bool $mustExist=null): array {
       if(is_array($decoded)) $existingProfile = $decoded;
     }
     $existingControl = null;
-    $cst = $td->prepare("SELECT value FROM app_kv WHERE key='control_settings'");
+    $cst = $td->prepare("SELECT value FROM tenant_settings WHERE key='control_settings'");
     $cst->execute();
     $cr = $cst->fetch();
     if($cr && isset($cr['value'])){
@@ -3130,8 +3138,14 @@ function client_upsert(array $raw, ?bool $mustExist=null): array {
     $control['companyTAN'] = $n['companyTAN'];
     $control['companyGSTIN'] = $n['companyGSTIN'];
     $control['companyContact'] = $n['companyContactNo'];
-    kv_set_on($td, 'company_profile', $profile);
-    kv_set_on($td, 'control_settings', $control);
+    $writeSetting = function(string $key, array $value) use ($td): void {
+      $json = json_encode($value, JSON_UNESCAPED_UNICODE);
+      $now = now_iso();
+      $st = $td->prepare("INSERT INTO tenant_settings (key,value,updated_at) VALUES (?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=excluded.updated_at");
+      $st->execute([$key, $json, $now]);
+    };
+    $writeSetting('company_profile', $profile);
+    $writeSetting('control_settings', $control);
   };
   if($id && $id > 0){
     if($pwdHash !== ''){
@@ -4137,6 +4151,9 @@ function ecr_calc_from_pf_row(array $ctrl, array $pfRow): array {
 }
 
 function payroll_generate(int $m,int $y,string $mode='LOP'): array {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\PayrollGenerator::class)) {
+    return app(\App\Services\Payroll\PayrollGenerator::class)->generate($m, $y, $mode);
+  }
   $clientId = req_client_id();
   // Dependency rule:
   // Attendance sheet must be generated first, then salary sheet.

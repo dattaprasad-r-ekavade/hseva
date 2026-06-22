@@ -4,7 +4,6 @@ namespace App\Services\Storage;
 
 use App\Support\HrSevaDefaults;
 use App\Services\Tenant\TenantManager;
-use Illuminate\Support\Facades\DB;
 
 class TenantSettingsService
 {
@@ -17,15 +16,11 @@ class TenantSettingsService
             if ($row) {
                 return json_decode((string) $row->value, true) ?? $default;
             }
+
+            return $this->legacyRead($key, $default);
         }
 
-        $legacy = $this->tenants->tenant()->table('app_kv')->where('key', $key)->first();
-        if (! $legacy) {
-            return $default;
-        }
-        $decoded = json_decode((string) $legacy->value, true);
-
-        return ($decoded === null && $legacy->value !== 'null') ? $default : $decoded;
+        return $this->legacyRead($key, $default);
     }
 
     public function set(string $key, mixed $value): void
@@ -38,12 +33,21 @@ class TenantSettingsService
                 ['key' => $key],
                 ['value' => $json, 'updated_at' => $now]
             );
+
+            return;
         }
 
         $this->tenants->tenant()->table('app_kv')->updateOrInsert(
             ['key' => $key],
             ['value' => $json, 'updated_at' => $now]
         );
+    }
+
+    public function updatedAt(string $key): ?string
+    {
+        $row = $this->tenants->tenant()->table('tenant_settings')->where('key', $key)->first();
+
+        return $row ? (string) $row->updated_at : null;
     }
 
     public function control(): array
@@ -54,5 +58,16 @@ class TenantSettingsService
     public function profile(): array
     {
         return array_replace_recursive(HrSevaDefaults::PROFILE, (array) $this->get('company_profile', HrSevaDefaults::PROFILE));
+    }
+
+    private function legacyRead(string $key, mixed $default = null): mixed
+    {
+        $row = $this->tenants->tenant()->table('app_kv')->where('key', $key)->first();
+        if (! $row) {
+            return $default;
+        }
+        $decoded = json_decode((string) $row->value, true);
+
+        return ($decoded === null && $row->value !== 'null') ? $default : $decoded;
     }
 }

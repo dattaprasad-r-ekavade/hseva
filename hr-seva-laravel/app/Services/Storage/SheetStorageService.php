@@ -17,7 +17,7 @@ class SheetStorageService
             return is_array($entries) ? $entries : [];
         }
 
-        return $this->legacyIndex($sheetType.'_index');
+        return $this->legacyReadIndex($sheetType.'_index');
     }
 
     public function get(string $sheetType, string $sheetId): ?array
@@ -32,13 +32,13 @@ class SheetStorageService
             return is_array($data) ? $data : null;
         }
 
-        return $this->legacyGet($sheetType.'_'.$sheetId);
+        return $this->legacyRead($sheetType.'_'.$sheetId);
     }
 
     public function save(string $sheetType, int $month, int $year, array $rows, array $extra = []): array
     {
         $period = sprintf('%04d-%02d', $year, $month);
-        $id = $period.'-'.time();
+        $id = $extra['id'] ?? ($period.'-'.time());
         $sheet = [
             'id' => $id,
             'month' => $month,
@@ -76,9 +76,6 @@ class SheetStorageService
             ['entries' => json_encode($index, JSON_UNESCAPED_UNICODE)]
         );
 
-        $this->legacySet($sheetType.'_'.$id, $sheet);
-        $this->legacySet($sheetType.'_index', $index);
-
         return $sheet;
     }
 
@@ -96,46 +93,52 @@ class SheetStorageService
             ['sheet_type' => $sheetType],
             ['entries' => json_encode($index, JSON_UNESCAPED_UNICODE)]
         );
-        $this->legacyDelete($sheetType.'_'.$sheetId);
-        $this->legacySet($sheetType.'_index', $index);
     }
 
     public function clear(string $sheetType): void
     {
-        foreach ($this->index($sheetType) as $row) {
-            if (! empty($row['id'])) {
-                $this->legacyDelete($sheetType.'_'.$row['id']);
-            }
-        }
         $this->tenants->tenant()->table('sheets')->where('sheet_type', $sheetType)->delete();
         $this->tenants->tenant()->table('sheet_indexes')->where('sheet_type', $sheetType)->delete();
-        $this->legacyDelete($sheetType.'_index');
     }
 
     public function attendanceDaily(int $month, int $year): array
     {
-        $row = $this->tenants->tenant()->table('attendance_daily')
-            ->where('year', $year)->where('month', $month)->first();
-        if ($row) {
-            $map = json_decode((string) $row->records, true);
+        if ($this->tableExists('attendance_daily')) {
+            $row = $this->tenants->tenant()->table('attendance_daily')
+                ->where('year', $year)->where('month', $month)->first();
+            if ($row) {
+                $map = json_decode((string) $row->records, true);
 
-            return is_array($map) ? $map : [];
+                return is_array($map) ? $map : [];
+            }
         }
 
-        return (array) $this->legacyGet(sprintf('attendance_daily_%04d-%02d', $year, $month), []);
+        return (array) $this->legacyRead(sprintf('attendance_daily_%04d-%02d', $year, $month), []);
     }
 
     public function setAttendanceDaily(int $month, int $year, array $map): void
     {
+        if (! $this->tableExists('attendance_daily')) {
+            hr_init_normalized_schema($this->tenants->tenant()->getPdo());
+        }
+
         $this->tenants->tenant()->table('attendance_daily')->updateOrInsert(
             ['year' => $year, 'month' => $month],
             ['records' => json_encode($map, JSON_UNESCAPED_UNICODE)]
         );
-        $this->legacySet(sprintf('attendance_daily_%04d-%02d', $year, $month), $map);
+    }
+
+    public function clearAttendanceDaily(): void
+    {
+        $this->tenants->tenant()->table('attendance_daily')->delete();
     }
 
     public function payrollOverrides(): array
     {
+        if (! $this->tableExists('payroll_overrides')) {
+            return (array) $this->legacyRead('payroll_overrides', []);
+        }
+
         $rows = $this->tenants->tenant()->table('payroll_overrides')->get();
         if ($rows->isNotEmpty()) {
             $out = [];
@@ -146,7 +149,7 @@ class SheetStorageService
             return $out;
         }
 
-        return (array) $this->legacyGet('payroll_overrides', []);
+        return (array) $this->legacyRead('payroll_overrides', []);
     }
 
     public function setPayrollOverrides(array $overrides): void
@@ -159,10 +162,9 @@ class SheetStorageService
                 'data' => json_encode($data, JSON_UNESCAPED_UNICODE),
             ]);
         }
-        $this->legacySet('payroll_overrides', $overrides);
     }
 
-    private function legacyGet(string $key, mixed $default = null): mixed
+    private function legacyRead(string $key, mixed $default = null): mixed
     {
         $row = $this->tenants->tenant()->table('app_kv')->where('key', $key)->first();
         if (! $row) {
@@ -173,23 +175,28 @@ class SheetStorageService
         return ($decoded === null && $row->value !== 'null') ? $default : $decoded;
     }
 
-    private function legacySet(string $key, mixed $value): void
+    private function legacyReadIndex(string $key): array
     {
-        $this->tenants->tenant()->table('app_kv')->updateOrInsert(
-            ['key' => $key],
-            ['value' => json_encode($value, JSON_UNESCAPED_UNICODE), 'updated_at' => gmdate('Y-m-d\TH:i:s\Z')]
-        );
-    }
-
-    private function legacyDelete(string $key): void
-    {
-        $this->tenants->tenant()->table('app_kv')->where('key', $key)->delete();
-    }
-
-    private function legacyIndex(string $key): array
-    {
-        $x = $this->legacyGet($key, []);
+        $x = $this->legacyRead($key, []);
 
         return is_array($x) ? $x : [];
+    }
+
+    private function tableExists(string $table): bool
+    {
+        $connection = $this->tenants->tenant();
+        $driver = $connection->getDriverName();
+        if ($driver === 'mysql') {
+            $rows = $connection->select(
+                'SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?',
+                [$table]
+            );
+
+            return count($rows) > 0;
+        }
+
+        $rows = $connection->select("SELECT name FROM sqlite_master WHERE type='table' AND name=?", [$table]);
+
+        return count($rows) > 0;
     }
 }

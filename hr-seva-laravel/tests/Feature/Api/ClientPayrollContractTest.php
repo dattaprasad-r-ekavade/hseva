@@ -2,11 +2,13 @@
 
 namespace Tests\Feature\Api;
 
+use Tests\Concerns\InteractsWithHrApi;
 use Tests\Concerns\ResetsHrDatabases;
 use Tests\TestCase;
 
 class ClientPayrollContractTest extends TestCase
 {
+    use InteractsWithHrApi;
     use ResetsHrDatabases;
 
     protected function setUp(): void
@@ -51,8 +53,9 @@ class ClientPayrollContractTest extends TestCase
     public function test_payroll_overrides_endpoint(): void
     {
         $token = $this->superAdminToken();
-        $this->withHeader('Authorization', 'Bearer '.$token)
-            ->withHeader('X-Client-Id', '1')
+        $this->createTestClient($token);
+
+        $this->withHeaders($this->tenantHeaders($token))
             ->getJson('/api/payroll/overrides')
             ->assertOk()
             ->assertJsonStructure(['rows']);
@@ -61,8 +64,9 @@ class ClientPayrollContractTest extends TestCase
     public function test_employees_requires_tenant_context(): void
     {
         $token = $this->superAdminToken();
+        $this->createTestClient($token);
 
-        $this->withHeader('Authorization', 'Bearer '.$token)
+        $this->withHeaders($this->tenantHeaders($token))
             ->getJson('/api/employees')
             ->assertOk()
             ->assertJsonStructure(['rows']);
@@ -71,22 +75,9 @@ class ClientPayrollContractTest extends TestCase
     public function test_control_settings_contract(): void
     {
         $token = $this->superAdminToken();
+        $this->createTestClient($token);
 
-        $this->withHeader('Authorization', 'Bearer '.$token)
-            ->postJson('/api/clients', [
-                'companyName' => 'Control Test Co',
-                'companyAddress' => '1 Main St',
-                'companyRegNo' => 'REG',
-                'companyPan' => 'PAN',
-                'companyTan' => 'TAN',
-                'companyGstin' => 'GST',
-                'companyContactNo' => '9999999999',
-                'userId' => 'ctrladmin',
-                'userPassword' => 'secret123',
-            ]);
-
-        $this->withHeader('Authorization', 'Bearer '.$token)
-            ->withHeader('X-Client-Id', '1')
+        $this->withHeaders($this->tenantHeaders($token))
             ->getJson('/api/control')
             ->assertOk()
             ->assertJsonStructure(['__configured', '__lastSaved']);

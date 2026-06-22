@@ -1,12 +1,15 @@
 <?php
 
+use App\Http\Controllers\Api\AttendanceController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\EmployeeController;
 use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\HrSevaApiController;
+use App\Http\Controllers\Api\LeaveController;
 use App\Http\Controllers\Api\PayrollController;
+use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\TenantSettingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +36,33 @@ Route::middleware(['hr.auth'])->group(function (): void {
     Route::post('/employees/bulk-upsert', [EmployeeController::class, 'bulkUpsert']);
     Route::put('/employees/{id}', [EmployeeController::class, 'update']);
     Route::delete('/employees/{id}', [EmployeeController::class, 'destroy']);
+
+    Route::get('/leaves', [LeaveController::class, 'index']);
+    Route::post('/leaves', [LeaveController::class, 'store']);
+    Route::post('/leaves/clear', [LeaveController::class, 'clear']);
+    Route::post('/leaves/bulk-upsert', [LeaveController::class, 'bulkUpsert']);
+    Route::get('/leaves/summary', [LeaveController::class, 'summary']);
+    Route::put('/leaves/{id}', [LeaveController::class, 'update']);
+    Route::delete('/leaves/{id}', [LeaveController::class, 'destroy']);
+
+    Route::get('/attendance/daily', [AttendanceController::class, 'daily']);
+    Route::post('/attendance/daily/upsert', [AttendanceController::class, 'dailyUpsert']);
+    Route::post('/attendance/generate', [AttendanceController::class, 'generate']);
+    Route::get('/attendance/sheets', [AttendanceController::class, 'sheets']);
+    Route::get('/attendance/sheets/{id}', [AttendanceController::class, 'showSheet']);
+    Route::delete('/attendance/sheets/{id}', [AttendanceController::class, 'destroySheet']);
+    Route::post('/attendance/sheets/clear', [AttendanceController::class, 'clearSheets']);
+    Route::post('/attendance/clear', [AttendanceController::class, 'clear']);
+
+    Route::get('/subscriptions', [SubscriptionController::class, 'index'])->middleware('hr.super_admin');
+    Route::post('/subscriptions', [SubscriptionController::class, 'store'])->middleware('hr.super_admin');
+    Route::put('/subscriptions/{id}', [SubscriptionController::class, 'update'])->middleware('hr.super_admin');
+    Route::delete('/subscriptions/{id}', [SubscriptionController::class, 'destroy'])->middleware('hr.super_admin');
+    Route::get('/subscription-plans', [SubscriptionController::class, 'plans'])->middleware('hr.super_admin');
+    Route::post('/subscription-plans', [SubscriptionController::class, 'storePlan'])->middleware('hr.super_admin');
+    Route::put('/subscription-plans/{id}', [SubscriptionController::class, 'updatePlan'])->middleware('hr.super_admin');
+    Route::delete('/subscription-plans/{id}', [SubscriptionController::class, 'destroyPlan'])->middleware('hr.super_admin');
+    Route::get('/subscription-info', [SubscriptionController::class, 'info']);
 
     Route::match(['GET', 'PUT'], '/control', [TenantSettingsController::class, 'control']);
     Route::post('/control/reset', [TenantSettingsController::class, 'resetControl']);
