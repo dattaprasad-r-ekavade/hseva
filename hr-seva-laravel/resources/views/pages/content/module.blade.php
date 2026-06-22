@@ -80,14 +80,14 @@
             <input class="form-control" id="companyContactNo">
           </div>
           <div class="col-md-6">
-            <label class="form-label">userId</label>
+            <label class="form-label">User ID</label>
             <input class="form-control" id="userId" required>
-            <div class="invalid-feedback">userId is required.</div>
+            <div class="invalid-feedback">User ID is required.</div>
           </div>
           <div class="col-md-6">
-            <label class="form-label">userPassword</label>
+            <label class="form-label">Password</label>
             <input class="form-control" id="userPassword" type="password" required>
-            <div class="invalid-feedback">userPassword is required.</div>
+            <div class="invalid-feedback">Password is required.</div>
           </div>
           <div class="col-md-6">
             <label class="form-label">Subscription Type</label>

@@ -19,6 +19,14 @@
   let attendanceEditModal = null;
   let selectedScanMode = "IN";
 
+  function fmtDate(value) {
+    const raw = String(value || "").trim();
+    if (!raw) return "-";
+    const dt = new Date(raw);
+    if (Number.isNaN(dt.getTime())) return raw;
+    return dt.toLocaleString(undefined, { year: "numeric", month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+  }
+
   function setStatus(text, ok = true) {
     const el = $("pageStatus");
     if (!el) return;
@@ -191,12 +199,12 @@
           <tr>
             <td>${index + 1}</td>
             <td>${row.employeeId || "-"}</td>
-            <td>${row.__updatedAt || "-"}</td>
+            <td>${fmtDate(row.__updatedAt)}</td>
             <td>${row.employeeName || "-"}</td>
             <td>${row.department || "-"}</td>
             <td>${row.designation || "-"}</td>
             <td>${row.faceImage ? `<img class="face-thumb" src="${row.faceImage}" alt="Face">` : "-"}</td>
-            <td>${row.__updatedAt || "-"}</td>
+            <td>${fmtDate(row.__updatedAt)}</td>
             ${hasAction ? `<td><div class="d-flex gap-2 justify-content-center"><button class="btn btn-sm btn-outline-primary" data-face-reg-edit="${row.employeeId}"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline-danger" data-face-reg-delete="${row.employeeId}"><i class="bi bi-trash"></i></button></div></td>` : ""}
           </tr>
         `;
@@ -208,7 +216,7 @@
           <td>${row.department || "-"}</td>
           <td>${row.designation || "-"}</td>
           <td>${row.faceImage ? `<img class="face-thumb" src="${row.faceImage}" alt="Face">` : "-"}</td>
-          <td>${row.__updatedAt || "-"}</td>
+          <td>${fmtDate(row.__updatedAt)}</td>
           ${hasAction ? `<td><div class="d-flex gap-2 justify-content-center"><button class="btn btn-sm btn-outline-primary" data-face-reg-edit="${row.employeeId}"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline-danger" data-face-reg-delete="${row.employeeId}"><i class="bi bi-trash"></i></button></div></td>` : ""}
         </tr>
       `;

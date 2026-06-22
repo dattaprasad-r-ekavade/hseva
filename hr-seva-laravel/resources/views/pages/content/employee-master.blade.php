@@ -40,7 +40,7 @@
           </div>
           <div class="table-responsive">
             <table class="table align-middle mb-0" data-no-datetime="true">
-              <thead class="table-light"><tr><th>Sr. No</th><th>Emp_ID</th><th>Employee_Name</th><th class="nowrap">DOJ</th><th>Department</th><th>Designation</th><th class="nowrap">Emp type</th><th>Status</th><th class="text-end">Gross Monthly</th><th>Doc View</th><th class="text-center">Action</th></tr></thead>
+              <thead class="table-light"><tr><th>Sr. No</th><th>Employee ID</th><th>Employee Name</th><th class="nowrap">DOJ</th><th>Department</th><th>Designation</th><th class="nowrap">Emp type</th><th>Status</th><th class="text-end">Gross Monthly</th><th>Doc View</th><th class="text-center">Action</th></tr></thead>
               <tbody id="empTbody"></tbody>
             </table>
           </div>
@@ -70,7 +70,7 @@
       <div class="modal-header"><h5 class="modal-title">Add Employee</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
       <form class="modal-body needs-validation" novalidate id="empForm">
         <div class="row g-3">
-          <div class="col-md-3"><label class="form-label">Emp_ID</label><input class="form-control" id="empId" required placeholder="EMP001"><div class="invalid-feedback">Enter Emp_ID.</div></div>
+          <div class="col-md-3"><label class="form-label">Employee ID</label><input class="form-control" id="empId" required placeholder="EMP001"><div class="invalid-feedback">Enter employee ID.</div></div>
           <div class="col-md-5"><label class="form-label">Employee_Name</label><input class="form-control" id="empName" required placeholder="Full name"><div class="invalid-feedback">Enter employee name.</div></div>
           <div class="col-md-4"><label class="form-label">DOJ</label><input class="form-control" id="doj" type="date" required><div class="invalid-feedback">Select DOJ.</div></div>
           <div class="col-md-4"><label class="form-label">Department</label><input class="form-control" id="dept" required placeholder="Enter department"><div class="invalid-feedback">Enter department.</div></div>
@@ -98,10 +98,10 @@
           <div class="col-md-3"><label class="form-label">UAN</label><input class="form-control" id="uan" placeholder="UAN number"></div>
           <div class="col-md-3"><label class="form-label">Aadhar Card</label><input class="form-control" id="aadharNo" placeholder="Aadhar number"></div>
           <div class="col-md-3"><label class="form-label">PAN Card</label><input class="form-control" id="panCard" placeholder="PAN card"></div>
-          <div class="col-md-3"><label class="form-label">PF_No</label><input class="form-control" id="pfNo" placeholder="PF number"></div>
-          <div class="col-md-3"><label class="form-label">ESI_No</label><input class="form-control" id="esiNo" placeholder="ESI number"></div>
+          <div class="col-md-3"><label class="form-label">PF Number</label><input class="form-control" id="pfNo" placeholder="PF number"></div>
+          <div class="col-md-3"><label class="form-label">ESI Number</label><input class="form-control" id="esiNo" placeholder="ESI number"></div>
           <div class="col-md-3"><label class="form-label">Bank Name</label><input class="form-control" id="bankName" placeholder="Bank name"></div>
-          <div class="col-md-3"><label class="form-label">Bank_AC</label><input class="form-control" id="bankAc" placeholder="Bank account"></div>
+          <div class="col-md-3"><label class="form-label">Bank Account</label><input class="form-control" id="bankAc" placeholder="Bank account number"></div>
           <div class="col-md-3"><label class="form-label">IFSC</label><input class="form-control" id="ifsc" placeholder="IFSC code"></div>
           <div class="col-md-6">
             <label class="form-label">Individual Leave Allocation</label>

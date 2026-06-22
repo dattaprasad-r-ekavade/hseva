@@ -33,6 +33,22 @@
   function esc(value) {
     return String(value ?? "").replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[ch]));
   }
+  function formatStatusLabel(status) {
+    const key = String(status || "").trim().toLowerCase().replace(/[_-]+/g, " ");
+    if (!key) return "-";
+    const labels = {
+      active: "Active",
+      closed: "Closed",
+      pending: "Pending",
+      disbursed: "Disbursed",
+      scheduled: "Scheduled",
+      deducted: "Deducted",
+      inactive: "Inactive",
+      approved: "Approved",
+      rejected: "Rejected",
+    };
+    return labels[key] || key.replace(/\b\w/g, (ch) => ch.toUpperCase());
+  }
   function today() {
     return new Date().toISOString().slice(0, 10);
   }
@@ -117,7 +133,7 @@
         <td>${esc(String(row.presentDays))}</td>
         <td>${esc(inr(row.eligibleSalary))}</td>
         <td>${esc(inr(row.amount))}</td>
-        <td><span class="advance-chip">${esc(row.status)}</span></td>
+        <td><span class="advance-chip">${esc(formatStatusLabel(row.status))}</span></td>
         <td class="text-center">${renderAdvanceAction(row)}</td>
       </tr>`).join("") : `<tr><td colspan="8" class="text-center text-muted-3 py-4">No advances found.</td></tr>`;
   }
@@ -153,7 +169,7 @@
         <td>${esc(inr(row.scheduledAmount))}</td>
         <td>${esc(inr(row.deductedAmount))}</td>
         <td>${esc(inr(row.balanceAfter))}</td>
-        <td><span class="advance-chip">${esc(row.status)}</span></td>
+        <td><span class="advance-chip">${esc(formatStatusLabel(row.status))}</span></td>
       </tr>`).join("") : `<tr><td colspan="7" class="text-center text-muted-3 py-4">No deduction history.</td></tr>`;
   }
   function renderRoleMode() {

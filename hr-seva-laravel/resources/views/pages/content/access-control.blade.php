@@ -41,8 +41,7 @@
                 <thead class="table-light">
                   <tr>
                     <th>Sr. No</th>
-                    <th>Type Code</th>
-                    <th>Type Name</th>
+                    <th>Access Type</th>
                     <th>Enabled Modules</th>
                     <th>System</th>
                     <th class="text-end">Action</th>

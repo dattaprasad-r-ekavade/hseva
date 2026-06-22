@@ -109,7 +109,7 @@
             <thead>
               <tr>
                 <th>UAN</th>
-                <th>MEMBER_ NAME</th>
+                <th>Member Name</th>
                 <th class="text-end">GROSS_WAGES</th>
                 <th class="text-end">EPF_WAGES</th>
                 <th class="text-end">EPS_WAGES</th>

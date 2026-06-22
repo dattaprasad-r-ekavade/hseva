@@ -93,8 +93,8 @@
                   <tr>
                     <th>Sr. No</th>
                     <th>Month</th>
-                    <th>Emp_ID</th>
-                    <th>MEMBER_ NAME</th>
+                <th>Employee ID</th>
+                <th>Member Name</th>
                     <th>UAN</th>
                     <th class="text-end">GROSS_WAGES</th>
                     <th class="text-end">EPF_WAGES</th>

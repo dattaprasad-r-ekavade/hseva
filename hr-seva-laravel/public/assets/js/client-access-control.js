@@ -1,6 +1,7 @@
 const API_BASES = ["/api", "/backend/api.php?path=/api"];
 const KEY_AUTH = "hr_auth_session_v1";
 const KEY_SUPERADMIN_CLIENT_ID = "hr_superadmin_selected_client_id_v1";
+const KEY_SUPERADMIN_CLIENT_LABEL = "hr_superadmin_selected_client_label_v1";
 
 const PERM_FIELDS = [
   ["dashboard", "Dashboard"],
@@ -112,11 +113,11 @@ function renderAccessTypeTable(){
   accessTypeTbody.innerHTML = rows.map((r, idx) => {
     const enabled = Object.values(r.permissions || {}).filter(Boolean).length;
     const isSystem = !!r.isSystem;
+    const displayName = String(r.name || r.code || "").trim() || "Custom";
     return `
       <tr>
         <td>${idx + 1}</td>
-        <td class="fw-semibold">${escapeHtml(r.code)}</td>
-        <td>${escapeHtml(r.name)}</td>
+        <td class="fw-semibold">${escapeHtml(displayName)}</td>
         <td>${enabled}</td>
         <td>${isSystem ? '<span class="badge text-bg-secondary">Yes</span>' : '<span class="badge text-bg-light">No</span>'}</td>
         <td class="text-end">
@@ -172,7 +173,10 @@ async function loadClientAccess(){
   accessType = String(row.accessType || "custom");
   renderPermGrid();
   if(accessTargetInfo){
-    accessTargetInfo.textContent = `Editing client access for Client ID: ${currentClientId}`;
+    const label = String(localStorage.getItem(KEY_SUPERADMIN_CLIENT_LABEL) || "").trim();
+    accessTargetInfo.textContent = label
+      ? `Editing access permissions for ${label}.`
+      : "Editing access permissions for the selected client.";
   }
 }
 async function saveClientAccess(){

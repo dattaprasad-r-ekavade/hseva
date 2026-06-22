@@ -85,7 +85,7 @@
                 </table>
               </div>
               <div class="small text-muted-3 mt-2">
-                Import CSV format: Emp_ID,Date(YYYY-MM-DD),Status(P/A/WO/CL/SL/EL/LOP). Export creates same format.
+                Import CSV columns: Employee ID, Date (YYYY-MM-DD), Status (P/A/WO/CL/SL/EL/LOP). Export uses the same format.
               </div>
               <div class="small text-muted-3 mt-1">
                 Storage: <span id="storageMode" class="fw-semibold">Loading...</span>

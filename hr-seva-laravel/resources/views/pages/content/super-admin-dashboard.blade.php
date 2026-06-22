@@ -49,7 +49,7 @@
                     <tr>
                       <th>Sr No</th>
                       <th>Company</th>
-                      <th>userId</th>
+                      <th>User ID</th>
                       <th>Access Type</th>
                       <th>Contact</th>
                       <th>Updated</th>

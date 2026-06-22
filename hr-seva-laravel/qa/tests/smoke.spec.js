@@ -151,3 +151,58 @@ test.describe('Authenticated portal flows', () => {
     expect(settings.row.inAllowedFrom).toBe('08:00');
   });
 });
+
+test.describe('Catch-all module APIs', () => {
+  async function bootstrapTenant(request, session, prefix) {
+    const uid = `${prefix}_${Date.now()}`;
+    const clientRes = await request.post('/api/clients', {
+      headers: { Authorization: `Bearer ${session.token}` },
+      data: {
+        companyName: `${prefix} Co`,
+        companyAddress: '1 Test St',
+        companyRegNo: 'REG',
+        companyPan: 'PAN',
+        companyTan: 'TAN',
+        companyGstin: 'GST',
+        companyContactNo: '9999999999',
+        userId: uid,
+        userPassword: 'secret123',
+      },
+    });
+    expect(clientRes.status()).toBe(201);
+    return String((await clientRes.json()).row.id);
+  }
+
+  test('overtime, advances, loans, and PF return endpoints', async ({ request }) => {
+    const session = await loginSuperAdmin(request);
+    const clientId = await bootstrapTenant(request, session, 'catchall');
+
+    const headers = {
+      Authorization: `Bearer ${session.token}`,
+      'X-Client-Id': clientId,
+    };
+
+    const overtimeRes = await request.get('/api/overtime?month=6&year=2026', { headers });
+    expect(overtimeRes.ok()).toBeTruthy();
+    const overtime = await overtimeRes.json();
+    expect(Array.isArray(overtime.rows)).toBeTruthy();
+
+    const advancesRes = await request.get('/api/advances', { headers });
+    expect(advancesRes.ok()).toBeTruthy();
+    const advances = await advancesRes.json();
+    expect(Array.isArray(advances.rows)).toBeTruthy();
+
+    const loansRes = await request.get('/api/loans', { headers });
+    expect(loansRes.ok()).toBeTruthy();
+    const loans = await loansRes.json();
+    expect(Array.isArray(loans.rows)).toBeTruthy();
+
+    const pfSheetsRes = await request.get('/api/pf-return/sheets', { headers });
+    expect(pfSheetsRes.ok()).toBeTruthy();
+    const pfSheets = await pfSheetsRes.json();
+    expect(Array.isArray(pfSheets.rows)).toBeTruthy();
+
+    const legacyRes = await request.get('/api/this-route-should-not-exist', { headers });
+    expect(legacyRes.status()).toBe(404);
+  });
+});

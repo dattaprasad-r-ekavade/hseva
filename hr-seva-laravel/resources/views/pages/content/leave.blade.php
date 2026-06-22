@@ -273,8 +273,7 @@
           <input class="form-control" id="importFile" type="file" accept=".xlsx,.xls,.csv" />
           <div class="small text-muted-3 mt-2" id="importInfo">No file selected.</div>
           <div class="small text-muted-3 mt-2">
-            Columns supported:
-            <span class="mono">Emp_ID, Emp_Name, Department, Designation, From_Date, To_Date, Days, Leave_Type, Reason, Status, Marked_By</span>
+            Columns supported: Employee ID, Employee Name, Department, Designation, From Date, To Date, Days, Leave Type, Reason, Status, Marked By.
           </div>
         </div>
         <div class="modal-footer">

@@ -56,7 +56,7 @@
         <div class="row g-3 align-items-end">
           <div class="col-lg-4">
             <label class="form-label fw-semibold">Search</label>
-            <input class="form-control" id="searchInput" placeholder="Search by Emp_ID, employee name, month, file...">
+            <input class="form-control" id="searchInput" placeholder="Search by employee ID, name, month, or file...">
           </div>
           <div class="col-6 col-lg-2">
             <label class="form-label fw-semibold">Month</label>
@@ -114,7 +114,7 @@
                 <th>Sr. No</th>
                 <th>Payslip</th>
                 <th>Month</th>
-                <th>Emp_ID</th>
+                <th>Employee ID</th>
                 <th>Generated On</th>
                 <th>Status</th>
                 <th class="text-end">Action</th>

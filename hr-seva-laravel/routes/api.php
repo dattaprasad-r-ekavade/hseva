@@ -6,11 +6,11 @@ use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\ComplianceController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\FaceAttendanceController;
-use App\Http\Controllers\Api\EmployeeController;
-use App\Http\Controllers\Api\HealthController;
-use App\Http\Controllers\Api\HrSevaApiController;
 use App\Http\Controllers\Api\LeaveController;
 use App\Http\Controllers\Api\PayrollController;
+use App\Http\Controllers\Api\EmployeeController;
+use App\Http\Controllers\Api\HealthController;
+use App\Http\Controllers\Api\PublicEnquiryController;
 use App\Http\Controllers\Api\SubscriptionController;
 use App\Http\Controllers\Api\TenantSettingsController;
 use Illuminate\Support\Facades\Route;
@@ -21,7 +21,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/forgot', [AuthController::class, 'forgot']);
 Route::get('/auth/session', [AuthController::class, 'session']);
 
-Route::post('/public-enquiries', HrSevaApiController::class);
+Route::post('/public-enquiries', [PublicEnquiryController::class, 'store']);
 
 Route::middleware(['hr.auth'])->group(function (): void {
     Route::get('/dashboard/summary', [DashboardController::class, 'summary']);
@@ -101,5 +101,5 @@ Route::middleware(['hr.auth'])->group(function (): void {
     Route::delete('/compliance/challans/{id}', [ComplianceController::class, 'destroyChallan']);
     Route::post('/compliance/challans/clear', [ComplianceController::class, 'clearChallans']);
 
-    Route::any('/{path?}', HrSevaApiController::class)->where('path', '.*');
+    require __DIR__.'/api-modules.php';
 });
