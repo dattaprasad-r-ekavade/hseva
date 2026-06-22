@@ -1,0 +1,47 @@
+.plan-highlight{
+  background: color-mix(in srgb, var(--brand-quaternary) 68%, var(--card2));
+}
+
+.plans-table-wrap{
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.plans-table thead th{
+  background: color-mix(in srgb, var(--card) 96%, transparent);
+}
+
+.plan-status{
+  border-radius: 999px;
+  padding: .28rem .62rem;
+  font-size: .75rem;
+  font-weight: 700;
+  display: inline-block;
+  line-height: 1;
+  border: 1px solid transparent;
+}
+
+.plan-status.active{
+  color: #146c43;
+  background: rgba(25, 135, 84, .14);
+  border-color: rgba(25, 135, 84, .35);
+}
+
+.plan-status.inactive{
+  color: #a63d2e;
+  background: rgba(220, 53, 69, .12);
+  border-color: rgba(220, 53, 69, .34);
+}
+
+[data-bs-theme="dark"] .plan-status.active{
+  color: #79dfb8;
+  background: rgba(25, 135, 84, .25);
+  border-color: rgba(121, 223, 184, .45);
+}
+
+[data-bs-theme="dark"] .plan-status.inactive{
+  color: #ffb3be;
+  background: rgba(220, 53, 69, .20);
+  border-color: rgba(255, 179, 190, .40);
+}

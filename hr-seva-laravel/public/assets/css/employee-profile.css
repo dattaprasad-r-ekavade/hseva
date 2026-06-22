@@ -1,0 +1,37 @@
+:root{--app-bg:#f5f4fb;--panel:#ffffff;--panel-2:#e7e6f7;--border:rgba(69,69,76,.14);--muted:rgba(69,69,76,.76);--muted-2:rgba(69,69,76,.60);--card:#ffffff;--shadow:0 18px 40px rgba(69,69,76,.12);--radius:16px;--text:#45454c}
+    [data-bs-theme="dark"]{--app-bg:#2d2c33;--panel:#393840;--panel-2:#45454c;--border:rgba(226,255,94,.14);--muted:rgba(212,215,194,.76);--muted-2:rgba(231,230,247,.62);--card:rgba(231,230,247,.06);--shadow:0 20px 60px rgba(20,20,24,.34);--text:#e7e6f7}
+    body{background:var(--app-bg);color:var(--text)}
+    .app{display:flex;min-height:100vh}
+    .sidebar{width:280px;background:var(--panel);border-right:1px solid var(--border);padding:18px;display:none;position:sticky;top:0;height:100vh;overflow:hidden}
+    @media (min-width:992px){.sidebar{display:flex;flex-direction:column}}
+    .sidebar-scroll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding-right:6px;margin-right:-6px}
+    .content{flex:1}
+    .topbar{position:sticky;top:0;z-index:1020;background:color-mix(in srgb,var(--app-bg) 85%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+    .topbar-inner{padding:14px 16px}@media (min-width:992px){.topbar-inner{padding:14px 24px}}
+    .glass{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .brand{display:flex;align-items:center;gap:10px;padding:10px 10px 14px}
+    .brand-mark{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--text) 7%,transparent);border:1px solid var(--border)}
+    .nav-link{color:color-mix(in srgb,var(--text) 78%,transparent);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+    .nav-link:hover{background:color-mix(in srgb,var(--text) 6%,transparent);color:var(--text)}
+    .nav-link.active{background:color-mix(in srgb,var(--bs-primary) 16%,transparent);border:1px solid color-mix(in srgb,var(--bs-primary) 22%,transparent);color:var(--text)}
+    .nav-section-title{font-size:.75rem;color:var(--muted-2);text-transform:uppercase;letter-spacing:.08em;padding:14px 10px 8px}
+    .text-muted-3{color:var(--muted-2)!important}
+    .hero-card{background:var(--card)}
+    .profile-chip{width:62px;height:62px;border-radius:18px;display:grid;place-items:center;border:1px solid color-mix(in srgb,var(--brand-primary,#45454c) 16%,transparent);background:color-mix(in srgb,var(--brand-quaternary,#e7e6f7) 72%,white 28%);color:var(--brand-primary,#45454c);font-weight:800;font-size:1.05rem;box-shadow:0 10px 24px rgba(69,69,76,.08)}
+    .section-title{font-size:1rem;font-weight:700;letter-spacing:.01em}
+    .kv{display:flex;justify-content:space-between;gap:12px;padding:.6rem 0;border-bottom:1px dashed var(--border)}
+    .kv:last-child{border-bottom:0}
+    .metric-card{background:color-mix(in srgb,var(--text) 4%,transparent);border:1px solid var(--border);border-radius:14px;padding:.9rem}
+    .metric-label{font-size:.8rem;color:var(--muted-2);text-transform:uppercase;letter-spacing:.03em}
+    .metric-value{font-weight:700;font-size:1.25rem;line-height:1.1}
+    .table thead th{font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted-2);border-bottom:1px solid var(--border);background:color-mix(in srgb,var(--card) 92%,transparent);white-space:nowrap}
+    .table td{border-color:var(--border)}
+    .table tbody tr:hover{background:color-mix(in srgb,var(--text) 4%,transparent)}
+    .profile-icon-btn{border:0!important;background:transparent!important;color:color-mix(in srgb,var(--text) 90%,transparent)!important;padding:.2rem .35rem;line-height:1}
+    .profile-icon-btn:hover,.profile-icon-btn:focus,.profile-icon-btn:active{border:0!important;background:transparent!important;box-shadow:none!important;color:color-mix(in srgb,var(--text) 90%,transparent)!important}
+    .profile-icon-btn::after{display:none!important}
+    .profile-icon-btn i{font-size:1.25rem}
+    .theme-icon-btn{border:0!important;background:transparent!important;color:color-mix(in srgb,var(--text) 90%,transparent)!important;padding:.2rem .35rem;line-height:1}
+    .theme-icon-btn:hover,.theme-icon-btn:focus,.theme-icon-btn:active{border:0!important;background:transparent!important;box-shadow:none!important;color:color-mix(in srgb,var(--text) 90%,transparent)!important}
+    .theme-icon-btn i{font-size:1.25rem}
+    .offcanvas{background:var(--panel);color:var(--text)}

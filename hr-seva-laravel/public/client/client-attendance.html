@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Attendance | Client Portal</title>
+
+  <!-- Bootstrap 5.3.x -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<!-- Tom Select -->
+  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css" rel="stylesheet">
+  <link href="../assets/css/app-common.css" rel="stylesheet">
+  <link href="../assets/css/client-attendance.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark"><i class="bi bi-shield-check fs-5"></i></div>
+        <div>
+          <div class="fw-semibold">HR Seva</div>
+          <div class="small text-muted-3">Loading user...</div>
+        </div>
+      </div>
+
+            <div class="sidebar-scroll">
+<div class="nav-section-title">Main</div>
+      <nav class="nav flex-column gap-1">
+      <a class="nav-link" href="index.html"><i class="bi bi-grid"></i> Dashboard</a>
+      <a class="nav-link" href="client-module.html"><i class="bi bi-building"></i> Client Module</a>
+      <a class="nav-link" href="client-shift-roster.html"><i class="bi bi-calendar-week"></i> Shift / Roster</a>
+        <a class="nav-link" href="client-employee-master.html"><i class="bi bi-people"></i> Employee Master</a>
+
+      </nav>      <div class="nav-section-title">Statutory</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="client-payroll-calc.html"><i class="bi bi-calculator"></i> Salary Sheet</a>
+        <a class="nav-link" href="client-payslips.html"><i class="bi bi-receipt"></i> Payslip Generator</a>
+        <a class="nav-link" href="client-compliance-calendar.html"><i class="bi bi-calendar3"></i> Compliance challan</a>
+      </nav>
+
+      <div class="nav-section-title">Attendance and Leave</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link active" href="client-attendance.html"><i class="bi bi-calendar2-check"></i> Attendance Sheet</a>
+        <a class="nav-link" href="client-leave.html"><i class="bi bi-calendar2-check"></i> Leave Management</a>
+      </nav>
+
+      <div class="nav-section-title">Returns & Sheets</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="client-fnf.html"><i class="bi bi-clipboard-check"></i> FNF</a>
+        <a class="nav-link" href="client-pf-sheet.html"><i class="bi bi-file-earmark-spreadsheet"></i> PF / ECR Sheet</a>
+        <a class="nav-link" href="client-pf-return.html"><i class="bi bi-cloud-upload"></i> PF Return</a>
+        <a class="nav-link" href="client-esic-sheet.html"><i class="bi bi-file-earmark-spreadsheet"></i> ESIC Sheet</a>
+        <a class="nav-link" href="client-esic-return.html"><i class="bi bi-cloud-upload"></i> ESIC Return</a>
+      </nav>
+
+            <div class="nav-section-title">Settings</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="client-control.html"><i class="bi bi-sliders"></i> Control Page</a>
+      </nav>      <div class="nav-section-title">Account</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="client-profile.html"><i class="bi bi-building"></i> Company Profile</a>
+        <a class="nav-link" href="client-subscriptions.html"><i class="bi bi-card-checklist"></i> Subscriptions</a>
+        <a class="nav-link" href="client-billing.html"><i class="bi bi-receipt-cutoff"></i> Billing & Invoice</a>
+        <a class="nav-link" href="client-logout.html"><i class="bi bi-box-arrow-right"></i> Logout</a>
+      </nav>
+
+
+          </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="content">
+
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-inner d-flex align-items-center gap-2">
+          <button class="btn btn-outline-secondary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileSidebar">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <div class="me-auto">
+            <div class="fw-semibold">Attendance Sheet</div>
+            <div class="small text-muted-3">Daily records + monthly sheet generation + import/export</div>
+          </div>
+
+          <div class="d-flex align-items-center gap-1 flex-nowrap">
+            <button class="btn theme-icon-btn" id="themeToggle" type="button" aria-label="Toggle theme">
+              <i class="bi bi-moon" id="themeIcon"></i>
+            </button>          <button class="btn profile-icon-btn" type="button" aria-label="Notifications">
+            <i class="bi bi-bell"></i>
+          </button>
+            <div class="dropdown">
+              <button class="btn profile-icon-btn" data-bs-toggle="dropdown" aria-label="Account menu">
+                <i class="bi bi-person-circle"></i>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li><a class="dropdown-item" href="client-profile.html"><i class="bi bi-building me-2"></i>Profile</a></li>
+                <li><a class="dropdown-item" href="#"><i class="bi bi-headset me-2"></i>Support</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="client-logout.html"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        </header>
+
+      <div class="container-fluid py-4 px-3 px-lg-4">
+
+        <!-- Controls -->
+        <div class="row g-3">
+          <div class="col-12">
+            <div class="glass p-3">
+              <div class="row g-3 align-items-end">
+                <div class="col-12 col-md-3">
+                  <label class="form-label fw-semibold">Month</label>
+                  <select class="form-select" id="monthSel">
+                    <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
+                    <option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option>
+                    <option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option>
+                    <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+                  </select>
+                </div>
+
+                <div class="col-12 col-md-3">
+                  <label class="form-label fw-semibold">Year</label>
+                  <select class="form-select" id="yearSel">
+                    <option>2026</option><option>2025</option><option>2024</option>
+                  </select>
+                </div>
+
+                <div class="col-12 col-md-3">
+                  <label class="form-label fw-semibold">Generate</label>
+                  <div class="d-grid">
+                    <button class="btn btn-primary" id="btnGeneratePeriod" type="button">
+                      <i class="bi bi-magic"></i> Generate
+                    </button>
+                  </div>
+                </div>
+
+                <div class="col-12 col-md-3">
+                  <label class="form-label fw-semibold">Sync</label>
+                  <div class="d-grid">
+                    <button class="btn btn-outline-secondary" id="btnSyncLeaves" type="button">
+                      <i class="bi bi-arrow-repeat"></i> Sync from Leave Mgmt
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Legend + Summary -->
+        <div class="row g-3 mt-0">
+          <div class="col-12">
+            <div class="glass p-3">
+              <div class="fw-semibold mb-2">Summary (Selected Employee)</div>
+              <div class="row g-2" id="summaryCards"></div>
+              <div class="small text-muted-3 mt-2">Counts are based on current month grid.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendar grid -->
+        <div class="row g-3 mt-0">
+          <div class="col-12">
+            <div class="glass p-3">
+              <div class="d-flex flex-wrap align-items-start justify-content-between gap-2 mb-2">
+                <div>
+                  <div class="fw-semibold">Monthly Attendance Grid</div>
+                  <div class="small text-muted-3" id="attendanceStatusHint">Click any cell to change status.</div>
+                  <div class="d-flex flex-wrap gap-2 mt-2" id="attendanceLegend"></div>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                  <span class="badge-soft" id="gridMonthBadge">Month: -</span>
+                  <span class="badge-soft" id="gridYearBadge">Year: -</span>
+                  <button class="btn btn-outline-secondary" id="btnImport" type="button">
+                    <i class="bi bi-upload"></i> <span class="d-none d-md-inline">Import</span>
+                  </button>
+                  <button class="btn btn-outline-secondary" id="btnExport" type="button">
+                    <i class="bi bi-download"></i> <span class="d-none d-md-inline">Export</span>
+                  </button>
+                  <input type="file" id="fileInput" accept=".csv" class="d-none" />
+                </div>
+              </div>
+              <div class="cal-wrap">
+                <table class="table table-bordered cal-table mb-0" id="calTable">
+                  <thead id="calHead"></thead>
+                  <tbody id="calBody"></tbody>
+                </table>
+              </div>
+              <div class="small text-muted-3 mt-2">
+                Import CSV format: Emp_ID,Date(YYYY-MM-DD),Status(P/A/WO/CL/SL/EL/LOP). Export creates same format.
+              </div>
+              <div class="small text-muted-3 mt-1">
+                Storage: <span id="storageMode" class="fw-semibold">Loading...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3 mt-0">
+          <div class="col-12">
+            <div class="glass p-3">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                  <div class="fw-semibold">Generated Monthly Attendance Sheets</div>
+                  <div class="small text-muted-3">Generated files list with view and XLSX download.</div>
+                </div>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" data-no-datetime="true">
+                  <thead>
+                    <tr>
+                      <th>Sr. No</th>
+                      <th>Period</th>
+                      <th>Rows</th>
+                      <th>Generated At</th>
+                      <th class="text-end">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sheetListBody"></tbody>
+                </table>
+              </div>
+              <div class="mt-3 text-end">
+                <button class="btn btn-outline-danger btn-sm btn-clear-history" id="btnClearSheetHistory" type="button">
+                  <i class="bi bi-trash3"></i> Clear Attendance Sheet
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center small text-muted-3 mt-4">
+          &copy; <span id="yr"></span> HR Compliance Portal
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile Sidebar -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileSidebar" aria-labelledby="mobileSidebarLabel">
+    <div class="offcanvas-header">
+      <div class="d-flex align-items-center gap-2">
+        <div class="brand-mark"><i class="bi bi-shield-check fs-5"></i></div>
+        <div>
+          <div class="fw-semibold" id="mobileSidebarLabel">HR Seva</div>
+          <div class="small text-muted-3">Loading user...</div>
+        </div>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div class="nav-section-title">Main</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="index.html"><i class="bi bi-grid"></i> Dashboard</a>
+        <a class="nav-link" href="client-module.html"><i class="bi bi-building"></i> Client Module</a>
+        <a class="nav-link" href="client-shift-roster.html"><i class="bi bi-calendar-week"></i> Shift / Roster</a>
+        <a class="nav-link" href="client-employee-master.html"><i class="bi bi-people"></i> Employee Master</a>
+
+      </nav>      <div class="nav-section-title">Statutory</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="client-payroll-calc.html"><i class="bi bi-calculator"></i> Salary Sheet</a>
+        <a class="nav-link" href="client-payslips.html"><i class="bi bi-receipt"></i> Payslip Generator</a>
+        <a class="nav-link" href="client-compliance-calendar.html"><i class="bi bi-calendar3"></i> Compliance challan</a>
+      </nav>
+
+      <div class="nav-section-title mt-3">Attendance and Leave</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link active" href="client-attendance.html"><i class="bi bi-calendar2-check"></i> Attendance Sheet</a>
+        <a class="nav-link" href="client-leave.html"><i class="bi bi-calendar2-check"></i> Leave Management</a>
+      </nav>
+
+      <div class="nav-section-title mt-3">Settings</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="client-control.html"><i class="bi bi-sliders"></i> Control Page</a>
+        <a class="nav-link" href="client-profile.html"><i class="bi bi-building"></i> Company Profile</a>
+        <a class="nav-link" href="client-subscriptions.html"><i class="bi bi-card-checklist"></i> Subscriptions</a>
+        <a class="nav-link" href="client-billing.html"><i class="bi bi-receipt-cutoff"></i> Billing & Invoice</a>
+      </nav>
+
+      <div class="nav-section-title mt-3">Account</div>
+      <nav class="nav flex-column gap-1">
+        <a class="nav-link" href="client-logout.html"><i class="bi bi-box-arrow-right"></i> Logout</a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Status Picker Modal -->
+  <div class="modal fade" id="statusModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content u-modal-radius-16">
+        <div class="modal-header">
+          <h5 class="modal-title">Set Attendance Status</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-2" id="attendanceStatusButtons"></div>
+          <div class="mt-3">
+            <label class="form-label fw-semibold">Note (required only when selected status needs it)</label>
+            <textarea class="form-control" id="leaveNote" rows="2" placeholder="Enter reason/note for leave"></textarea>
+            <div class="small text-danger d-none" id="leaveNoteError">Note is mandatory for the selected attendance status.</div>
+          </div>
+          <div class="mt-2">
+            <label class="form-label fw-semibold">Half Day?</label>
+            <select class="form-select" id="leaveHalfDay">
+              <option value="No" selected>No</option>
+              <option value="Yes">Yes</option>
+            </select>
+          </div>
+          <div class="mt-2 d-grid">
+            <button class="btn btn-primary" id="btnSaveStatus" type="button">
+              <i class="bi bi-check2-circle"></i> Save
+            </button>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="small text-muted-3">
+              Tip: Leave Mgmt sync will auto-fill CL/SL/EL/LOP for leave dates.
+            </div>
+            <button class="btn btn-outline-secondary btn-sm" id="btnClearCell"><i class="bi bi-x-circle"></i> Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="sheetViewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content u-modal-radius-16">
+        <div class="modal-header">
+          <h5 class="modal-title" id="sheetViewTitle">Attendance Sheet</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered align-middle mb-0" data-no-srno="true" data-no-datetime="true">
+              <thead>
+                <tr>
+                  <th>Emp ID</th>
+                  <th>Employee Name</th>
+                  <th>P</th>
+                  <th>A</th>
+                  <th>WO Taken</th>
+                  <th>CL</th>
+                  <th>SL</th>
+                  <th>EL</th>
+                  <th>LOP</th>
+                  <th>Payable</th>
+                </tr>
+              </thead>
+              <tbody id="sheetViewBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+  <script src="../assets/js/app-common.js"></script>
+  <script src="../assets/js/client-attendance.js"></script>
+</body>
+</html>
+
+
+
