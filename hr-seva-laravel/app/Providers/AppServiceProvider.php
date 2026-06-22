@@ -40,6 +40,15 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\MasterData\MasterDataService::class);
         $this->app->singleton(\App\Services\Billing\BillingService::class);
         $this->app->singleton(\App\Services\PublicEnquiry\PublicEnquiryService::class);
+        $this->app->singleton(\App\Services\Shift\ShiftSupport::class);
+        $this->app->singleton(\App\Services\Shift\ShiftAccess::class);
+        $this->app->singleton(\App\Services\Shift\ShiftSchemaInstaller::class);
+        $this->app->singleton(\App\Services\Shift\ShiftMasterRepository::class);
+        $this->app->singleton(\App\Services\Shift\ShiftAssignmentRepository::class);
+        $this->app->singleton(\App\Services\Shift\ShiftRosterRepository::class);
+        $this->app->singleton(\App\Services\Shift\ShiftCalendarService::class);
+        $this->app->singleton(\App\Services\Shift\ShiftReportService::class);
+        $this->app->singleton(\App\Services\Shift\ShiftDashboardService::class);
         $this->app->singleton(\App\Services\Shift\ShiftService::class);
     }
 

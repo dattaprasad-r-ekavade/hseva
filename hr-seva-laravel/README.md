@@ -49,8 +49,8 @@ php artisan serve --host=127.0.0.1 --port=8012
 
 ```
 public/                  # Static frontend (UI unchanged)
-legacy/backend/          # Original api.php, shift_module.php, mail.php
-app/Services/              # Domain services (shift, payroll, compliance, …)
+legacy/backend/          # Thin wrappers delegating to app/Services/*
+app/Services/Shift/      # Native shift/roster domain classes
 storage/app/clients/     # SQLite databases (auto-created)
   app.db                 # Central DB (clients, subscriptions, auth)
   tenant_{id}/app.db     # Per-tenant HR data

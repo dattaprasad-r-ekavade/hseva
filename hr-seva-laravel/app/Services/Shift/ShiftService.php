@@ -4,29 +4,40 @@ namespace App\Services\Shift;
 
 class ShiftService
 {
+    public function __construct(
+        private ShiftAccess $access,
+        private ShiftSchemaInstaller $schema,
+        private ShiftMasterRepository $masters,
+        private ShiftAssignmentRepository $assignments,
+        private ShiftRosterRepository $rosters,
+        private ShiftCalendarService $calendar,
+        private ShiftReportService $reports,
+        private ShiftDashboardService $dashboard,
+        private ShiftSupport $support,
+    ) {}
+
     public function dashboard(): array
     {
-        $this->guard();
+        $this->access->requireAccess();
 
         return $this->withQuery([], function () {
-            $ids = shift_company_ids_scope(true);
+            $ids = $this->access->companyIdsScope(true);
 
-            return shift_dashboard_summary($ids);
+            return $this->dashboard->summary($ids);
         });
     }
 
     public function listShifts(array $query): array
     {
-        $this->guard();
+        $this->access->requireAccess();
 
         return $this->withQuery($query, function () use ($query) {
-            $ids = shift_company_ids_scope(isset($query['all']) && (string) $query['all'] === '1');
+            $ids = $this->access->companyIdsScope(isset($query['all']) && (string) $query['all'] === '1');
             $activeOnly = isset($query['active']) && (string) $query['active'] === '1';
             $all = [];
             foreach ($ids as $cid) {
-                $d = shift_db_for_company((int) $cid);
-                init_shift_schema($d);
-                $all = array_merge($all, shift_master_rows($d, (int) $cid, $activeOnly));
+                $d = $this->tenantDb((int) $cid);
+                $all = array_merge($all, $this->masters->rows($d, (int) $cid, $activeOnly));
             }
 
             return ['rows' => $all, 'count' => count($all)];
@@ -35,46 +46,42 @@ class ShiftService
 
     public function createShift(array $payload): array
     {
-        $this->guard();
-        $cid = shift_write_company_id($payload);
-        $d = shift_db_for_company($cid);
-        init_shift_schema($d);
+        $this->access->requireAccess();
+        $cid = $this->access->writeCompanyId($payload);
+        $d = $this->tenantDb($cid);
 
-        return ['row' => shift_master_upsert($d, $cid, $payload, false)];
+        return ['row' => $this->masters->upsert($d, $cid, $payload, false)];
     }
 
     public function updateShift(int $id, array $payload): array
     {
-        $this->guard();
-        $cid = shift_write_company_id($payload);
-        $d = shift_db_for_company($cid);
-        init_shift_schema($d);
+        $this->access->requireAccess();
+        $cid = $this->access->writeCompanyId($payload);
+        $d = $this->tenantDb($cid);
 
-        return ['row' => shift_master_upsert($d, $cid, $payload + ['id' => $id], true)];
+        return ['row' => $this->masters->upsert($d, $cid, $payload + ['id' => $id], true)];
     }
 
     public function deleteShift(int $id, array $payload): array
     {
-        $this->guard();
-        $cid = shift_write_company_id($payload);
-        $d = shift_db_for_company($cid);
-        init_shift_schema($d);
-        shift_master_delete($d, $id);
+        $this->access->requireAccess();
+        $cid = $this->access->writeCompanyId($payload);
+        $d = $this->tenantDb($cid);
+        $this->masters->delete($d, $id);
 
         return ['status' => 'deleted'];
     }
 
     public function listAssignments(array $query): array
     {
-        $this->guard();
+        $this->access->requireAccess();
 
         return $this->withQuery($query, function () use ($query) {
-            $ids = shift_company_ids_scope(isset($query['all']) && (string) $query['all'] === '1');
+            $ids = $this->access->companyIdsScope(isset($query['all']) && (string) $query['all'] === '1');
             $all = [];
             foreach ($ids as $cid) {
-                $d = shift_db_for_company((int) $cid);
-                init_shift_schema($d);
-                $all = array_merge($all, shift_assignment_rows($d, (int) $cid));
+                $d = $this->tenantDb((int) $cid);
+                $all = array_merge($all, $this->assignments->rows($d, (int) $cid));
             }
 
             return ['rows' => $all, 'count' => count($all)];
@@ -83,43 +90,40 @@ class ShiftService
 
     public function createAssignment(array $payload): array
     {
-        $this->guard();
-        $cid = shift_write_company_id($payload);
-        $d = shift_db_for_company($cid);
-        init_shift_schema($d);
+        $this->access->requireAccess();
+        $cid = $this->access->writeCompanyId($payload);
+        $d = $this->tenantDb($cid);
 
-        return ['row' => shift_assignment_upsert($d, $cid, $payload, false)];
+        return ['row' => $this->assignments->upsert($d, $cid, $payload, false)];
     }
 
     public function updateAssignment(int $id, array $payload): array
     {
-        $this->guard();
-        $cid = shift_write_company_id($payload);
-        $d = shift_db_for_company($cid);
-        init_shift_schema($d);
+        $this->access->requireAccess();
+        $cid = $this->access->writeCompanyId($payload);
+        $d = $this->tenantDb($cid);
 
-        return ['row' => shift_assignment_upsert($d, $cid, $payload + ['id' => $id], true)];
+        return ['row' => $this->assignments->upsert($d, $cid, $payload + ['id' => $id], true)];
     }
 
     public function deleteAssignment(int $id, array $payload): array
     {
-        $this->guard();
-        $cid = shift_write_company_id($payload);
-        $d = shift_db_for_company($cid);
-        init_shift_schema($d);
-        shift_assignment_delete($d, $id);
+        $this->access->requireAccess();
+        $cid = $this->access->writeCompanyId($payload);
+        $d = $this->tenantDb($cid);
+        $this->assignments->delete($d, $id);
 
         return ['status' => 'deleted'];
     }
 
     public function listRosters(array $query): array
     {
-        $this->guard();
+        $this->access->requireAccess();
 
         return $this->withQuery($query, function () use ($query) {
-            $from = shift_parse_date(s($query['from'] ?? date('Y-m-d')), 'from');
-            $to = shift_parse_date(s($query['to'] ?? $from), 'to');
-            $ids = shift_company_ids_scope(isset($query['all']) && (string) $query['all'] === '1');
+            $from = $this->support->parseDate(s($query['from'] ?? date('Y-m-d')), 'from');
+            $to = $this->support->parseDate(s($query['to'] ?? $from), 'to');
+            $ids = $this->access->companyIdsScope(isset($query['all']) && (string) $query['all'] === '1');
             $filters = [
                 'department' => $query['department'] ?? '',
                 'designation' => $query['designation'] ?? '',
@@ -128,9 +132,8 @@ class ShiftService
             ];
             $all = [];
             foreach ($ids as $cid) {
-                $d = shift_db_for_company((int) $cid);
-                init_shift_schema($d);
-                $all = array_merge($all, shift_roster_list($d, (int) $cid, $from, $to, $filters));
+                $d = $this->tenantDb((int) $cid);
+                $all = array_merge($all, $this->rosters->list($d, (int) $cid, $from, $to, $filters));
             }
 
             return ['rows' => $all, 'count' => count($all)];
@@ -139,96 +142,85 @@ class ShiftService
 
     public function deleteRosterCell(array $payload): array
     {
-        $this->guard();
-        $cid = shift_write_company_id($payload);
-        $d = shift_db_for_company($cid);
-        init_shift_schema($d);
-        $empId = up($payload['empId'] ?? '');
-        $rosterDate = s($payload['rosterDate'] ?? '');
+        $this->access->requireAccess();
+        $cid = $this->access->writeCompanyId($payload);
+        $d = $this->tenantDb($cid);
 
-        return ['status' => 'ok'] + shift_roster_delete_row($d, $empId, $rosterDate);
+        return ['status' => 'ok'] + $this->rosters->deleteRow($d, up($payload['empId'] ?? ''), s($payload['rosterDate'] ?? ''));
     }
 
     public function bulkDeleteRosters(array $payload): array
     {
-        $this->guard();
-        $cid = shift_write_company_id($payload);
-        $d = shift_db_for_company($cid);
-        init_shift_schema($d);
+        $this->access->requireAccess();
+        $cid = $this->access->writeCompanyId($payload);
+        $d = $this->tenantDb($cid);
         $rows = isset($payload['rows']) && is_array($payload['rows']) ? $payload['rows'] : [];
 
-        return ['status' => 'ok'] + shift_roster_bulk_delete($d, $rows);
+        return ['status' => 'ok'] + $this->rosters->bulkDelete($d, $rows);
     }
 
     public function bulkUpsertRosters(array $payload): array
     {
-        $this->guard();
-        $cid = shift_write_company_id($payload);
-        $d = shift_db_for_company($cid);
-        init_shift_schema($d);
-        $res = shift_roster_upsert_rows($d, (array) ($payload['rows'] ?? []), shift_actor_name());
+        $this->access->requireAccess();
+        $cid = $this->access->writeCompanyId($payload);
+        $d = $this->tenantDb($cid);
+        $res = $this->rosters->upsertRows($d, (array) ($payload['rows'] ?? []), $this->access->actorName());
 
         return ['status' => 'ok'] + $res;
     }
 
     public function autoFillWeek(array $payload): array
     {
-        $this->guard();
-        $cid = shift_write_company_id($payload);
-        $d = shift_db_for_company($cid);
-        init_shift_schema($d);
-        $start = shift_parse_date(s($payload['weekStartDate'] ?? ''), 'weekStartDate');
-        $end = shift_parse_date(s($payload['weekEndDate'] ?? gmdate('Y-m-d', strtotime($start.' +6 day UTC'))), 'weekEndDate');
+        $this->access->requireAccess();
+        $cid = $this->access->writeCompanyId($payload);
+        $d = $this->tenantDb($cid);
+        $start = $this->support->parseDate(s($payload['weekStartDate'] ?? ''), 'weekStartDate');
+        $end = $this->support->parseDate(s($payload['weekEndDate'] ?? gmdate('Y-m-d', strtotime($start.' +6 day UTC'))), 'weekEndDate');
 
-        return shift_roster_autofill_week($d, $start, $end, shift_actor_name(), $payload);
+        return $this->rosters->autofillWeek($d, $start, $end, $this->access->actorName(), $payload);
     }
 
     public function copyPreviousWeek(array $payload): array
     {
-        $this->guard();
-        $cid = shift_write_company_id($payload);
-        $d = shift_db_for_company($cid);
-        init_shift_schema($d);
-        $start = shift_parse_date(s($payload['weekStartDate'] ?? ''), 'weekStartDate');
-        $end = shift_parse_date(s($payload['weekEndDate'] ?? gmdate('Y-m-d', strtotime($start.' +6 day UTC'))), 'weekEndDate');
+        $this->access->requireAccess();
+        $cid = $this->access->writeCompanyId($payload);
+        $d = $this->tenantDb($cid);
+        $start = $this->support->parseDate(s($payload['weekStartDate'] ?? ''), 'weekStartDate');
+        $end = $this->support->parseDate(s($payload['weekEndDate'] ?? gmdate('Y-m-d', strtotime($start.' +6 day UTC'))), 'weekEndDate');
 
-        return shift_roster_copy_previous_week($d, $start, $end, shift_actor_name());
+        return $this->rosters->copyPreviousWeek($d, $start, $end, $this->access->actorName());
     }
 
     public function getWeekStatus(array $query): array
     {
-        $this->guard();
-        $cid = shift_write_company_id([]);
-        $d = shift_db_for_company($cid);
-        init_shift_schema($d);
-        $start = shift_parse_date(s($query['weekStartDate'] ?? ''), 'weekStartDate');
-        $end = shift_parse_date(s($query['weekEndDate'] ?? gmdate('Y-m-d', strtotime($start.' +6 day UTC'))), 'weekEndDate');
+        $this->access->requireAccess();
+        $cid = $this->access->writeCompanyId(['companyId' => (int) ($query['companyId'] ?? 0)]);
+        $d = $this->tenantDb($cid);
+        $start = $this->support->parseDate(s($query['weekStartDate'] ?? ''), 'weekStartDate');
+        $end = $this->support->parseDate(s($query['weekEndDate'] ?? gmdate('Y-m-d', strtotime($start.' +6 day UTC'))), 'weekEndDate');
 
-        return shift_week_status_get($d, $start, $end);
+        return $this->rosters->weekStatusGet($d, $start, $end);
     }
 
     public function setWeekStatus(array $payload): array
     {
-        $this->guard();
-        $cid = shift_write_company_id($payload);
-        $d = shift_db_for_company($cid);
-        init_shift_schema($d);
-        $start = shift_parse_date(s($payload['weekStartDate'] ?? ''), 'weekStartDate');
-        $end = shift_parse_date(s($payload['weekEndDate'] ?? gmdate('Y-m-d', strtotime($start.' +6 day UTC'))), 'weekEndDate');
-        $locked = b($payload['isLocked'] ?? false);
-        $pub = s($payload['publishStatus'] ?? 'Draft', 'Draft');
+        $this->access->requireAccess();
+        $cid = $this->access->writeCompanyId($payload);
+        $d = $this->tenantDb($cid);
+        $start = $this->support->parseDate(s($payload['weekStartDate'] ?? ''), 'weekStartDate');
+        $end = $this->support->parseDate(s($payload['weekEndDate'] ?? gmdate('Y-m-d', strtotime($start.' +6 day UTC'))), 'weekEndDate');
 
-        return shift_week_status_set($d, $start, $end, $locked, $pub, shift_actor_name());
+        return $this->rosters->weekStatusSet($d, $start, $end, b($payload['isLocked'] ?? false), s($payload['publishStatus'] ?? 'Draft', 'Draft'), $this->access->actorName());
     }
 
     public function calendarEvents(array $query): array
     {
-        $this->guard();
+        $this->access->requireAccess();
 
         return $this->withQuery($query, function () use ($query) {
-            $from = shift_parse_date(s($query['from'] ?? date('Y-m-01')), 'from');
-            $to = shift_parse_date(s($query['to'] ?? date('Y-m-t')), 'to');
-            $ids = shift_company_ids_scope(isset($query['all']) && (string) $query['all'] === '1');
+            $from = $this->support->parseDate(s($query['from'] ?? date('Y-m-01')), 'from');
+            $to = $this->support->parseDate(s($query['to'] ?? date('Y-m-t')), 'to');
+            $ids = $this->access->companyIdsScope(isset($query['all']) && (string) $query['all'] === '1');
             $filters = [
                 'department' => $query['department'] ?? '',
                 'empId' => $query['empId'] ?? '',
@@ -237,9 +229,8 @@ class ShiftService
             $events = [];
             $daySummaryMap = [];
             foreach ($ids as $cid) {
-                $d = shift_db_for_company((int) $cid);
-                init_shift_schema($d);
-                $r = shift_calendar_events($d, (int) $cid, $from, $to, $filters);
+                $d = $this->tenantDb((int) $cid);
+                $r = $this->calendar->events($d, (int) $cid, $from, $to, $filters);
                 $events = array_merge($events, $r['events']);
                 foreach ($r['daySummary'] as $dr) {
                     $date = (string) $dr['date'];
@@ -260,17 +251,16 @@ class ShiftService
 
     public function attendanceReport(array $query): array
     {
-        $this->guard();
+        $this->access->requireAccess();
 
         return $this->withQuery($query, function () use ($query) {
-            $from = shift_parse_date(s($query['from'] ?? date('Y-m-01')), 'from');
-            $to = shift_parse_date(s($query['to'] ?? date('Y-m-t')), 'to');
-            $ids = shift_company_ids_scope(isset($query['all']) && (string) $query['all'] === '1');
+            $from = $this->support->parseDate(s($query['from'] ?? date('Y-m-01')), 'from');
+            $to = $this->support->parseDate(s($query['to'] ?? date('Y-m-t')), 'to');
+            $ids = $this->access->companyIdsScope(isset($query['all']) && (string) $query['all'] === '1');
             $all = [];
             foreach ($ids as $cid) {
-                $d = shift_db_for_company((int) $cid);
-                init_shift_schema($d);
-                $all = array_merge($all, shift_roster_attendance_report($d, (int) $cid, $from, $to));
+                $d = $this->tenantDb((int) $cid);
+                $all = array_merge($all, $this->reports->attendanceReport($d, (int) $cid, $from, $to));
             }
 
             return ['rows' => $all, 'count' => count($all)];
@@ -280,24 +270,13 @@ class ShiftService
     public function attendanceReportCsv(array $query): string
     {
         $payload = $this->attendanceReport($query);
-        $lines = ['Date,Company,Emp ID,Employee Name,Shift Code,Shift Name,Scheduled In,Scheduled Out,Actual In,Actual Out,Work Hours,Status,Late Mark,Early Exit,Overtime,Shift Mismatch'];
-        foreach ($payload['rows'] as $r) {
-            $lines[] = implode(',', array_map(
-                static fn ($v) => '"'.str_replace('"', '""', (string) $v).'"',
-                [
-                    $r['date'], $r['company'], $r['empId'], $r['employeeName'], $r['shiftCode'], $r['shiftName'],
-                    $r['scheduledIn'], $r['scheduledOut'], $r['actualIn'], $r['actualOut'], $r['workHours'], $r['status'],
-                    $r['lateMark'] ? 'Yes' : 'No', $r['earlyExit'] ? 'Yes' : 'No', $r['overtime'], $r['shiftMismatch'] ? 'Yes' : 'No',
-                ]
-            ));
-        }
 
-        return implode("\n", $lines)."\n";
+        return $this->reports->attendanceReportCsv($payload['rows']);
     }
 
     public function myShifts(array $query): array
     {
-        $this->guard();
+        $this->access->requireAccess();
         $ctx = auth_ctx(true);
         $role = strtolower((string) ($ctx['role'] ?? ''));
         $cid = (int) ($ctx['clientId'] ?? 0);
@@ -317,17 +296,19 @@ class ShiftService
         if ($empId === '') {
             bad('empId is required');
         }
-        $from = shift_parse_date(s($query['from'] ?? date('Y-m-d')), 'from');
-        $to = shift_parse_date(s($query['to'] ?? gmdate('Y-m-d', strtotime($from.' +14 day UTC'))), 'to');
-        $d = shift_db_for_company($cid);
-        init_shift_schema($d);
+        $from = $this->support->parseDate(s($query['from'] ?? date('Y-m-d')), 'from');
+        $to = $this->support->parseDate(s($query['to'] ?? gmdate('Y-m-d', strtotime($from.' +14 day UTC'))), 'to');
+        $d = $this->tenantDb($cid);
 
-        return shift_my_roster($d, $cid, $empId, $from, $to);
+        return $this->rosters->myRoster($d, $cid, $empId, $from, $to);
     }
 
-    private function guard(): void
+    private function tenantDb(int $companyId): \PDO
     {
-        shift_require_access();
+        $d = $this->access->dbForCompany($companyId);
+        $this->schema->install($d);
+
+        return $d;
     }
 
     private function withQuery(array $query, callable $fn): mixed

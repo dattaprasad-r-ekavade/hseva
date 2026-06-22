@@ -47,16 +47,20 @@
   }
 
   async function api(path,opts={}){
-    let lastErr="API unavailable";
+    let lastErr="Unable to reach the server. Please try again.";
     for(const b of API_BASES){
       try{
         const r=await fetch(b+path,{cache:"no-store",...opts});
-        if(r.status===404||r.status===405){lastErr=`${r.status} ${path}`;continue;}
-        if(!r.ok){let m=`${r.status}`; try{const j=await r.json();m=j.detail||JSON.stringify(j);}catch(_e){} throw new Error(m);} 
+        if(r.status===404||r.status===405){lastErr="This action is not available right now.";continue;}
+        if(!r.ok){
+          let m="Request failed. Please try again.";
+          try{const j=await r.json();m=j.detail||m;}catch(_e){}
+          throw new Error(m);
+        }
         const ct=r.headers.get("content-type")||"";
         if(ct.includes("application/json")) return await r.json();
         return r;
-      }catch(e){lastErr=e.message||String(e);}
+      }catch(e){lastErr=e.message||lastErr;}
     }
     throw new Error(lastErr);
   }
