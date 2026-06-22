@@ -257,8 +257,22 @@ function db_path_for_client(int $clientId): string {
   }
   return CENTRAL_DB_PATH;
 }
-function db_open(string $path): PDO {
+function &hr_db_connection_pool(): array {
   static $pool = [];
+  return $pool;
+}
+function db_reset_pool(): void {
+  $pool = &hr_db_connection_pool();
+  $pool = [];
+  if (function_exists('app') && app()->bound(\App\Services\Tenant\TenantManager::class)) {
+    try {
+      \Illuminate\Support\Facades\DB::purge('central');
+      \Illuminate\Support\Facades\DB::purge('tenant');
+    } catch (Throwable $e) {}
+  }
+}
+function db_open(string $path): PDO {
+  $pool = &hr_db_connection_pool();
   if(isset($pool[$path])) return $pool[$path];
   $dir = dirname($path);
   if(!is_dir($dir)){
@@ -266,6 +280,19 @@ function db_open(string $path): PDO {
   }
   if($path === CENTRAL_DB_PATH && !file_exists($path) && file_exists(LEGACY_DB_PATH)){
     @copy(LEGACY_DB_PATH, $path);
+  }
+  if (function_exists('app') && app()->bound(\App\Services\Tenant\TenantManager::class)) {
+    $mgr = app(\App\Services\Tenant\TenantManager::class);
+    if ($path === CENTRAL_DB_PATH && file_exists($path)) {
+      $pool[$path] = $mgr->central()->getPdo();
+      return $pool[$path];
+    }
+    $clientId = (int) preg_replace('/.*tenant_(\d+)\/.*/', '$1', $path);
+    if ($clientId > 0 && file_exists($path)) {
+      $mgr->setClientId($clientId);
+      $pool[$path] = $mgr->tenant()->getPdo();
+      return $pool[$path];
+    }
   }
   $pdo = new PDO('sqlite:'.$path);
   $pdo->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION);
@@ -376,6 +403,15 @@ function init_schema(PDO $d): void {
   access_enable_roles_visibility($d);
   attendance_status_seed($d);
   employee_type_seed($d);
+  hr_init_normalized_schema($d);
+}
+function hr_init_normalized_schema(PDO $d): void {
+  $d->exec("CREATE TABLE IF NOT EXISTS tenant_settings (key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL)");
+  $d->exec("CREATE TABLE IF NOT EXISTS attendance_daily (year INTEGER NOT NULL, month INTEGER NOT NULL, records TEXT NOT NULL, PRIMARY KEY (year, month))");
+  $d->exec("CREATE TABLE IF NOT EXISTS payroll_overrides (emp_id TEXT PRIMARY KEY, data TEXT NOT NULL)");
+  $d->exec("CREATE TABLE IF NOT EXISTS sheet_indexes (sheet_type TEXT PRIMARY KEY, entries TEXT NOT NULL)");
+  $d->exec("CREATE TABLE IF NOT EXISTS sheets (sheet_type TEXT NOT NULL, sheet_id TEXT NOT NULL, month INTEGER NOT NULL, year INTEGER NOT NULL, period TEXT NOT NULL, data TEXT NOT NULL, meta TEXT NOT NULL, PRIMARY KEY (sheet_type, sheet_id))");
+  $d->exec("CREATE TABLE IF NOT EXISTS challans (challan_type TEXT NOT NULL, challan_id TEXT NOT NULL, data TEXT NOT NULL, PRIMARY KEY (challan_type, challan_id))");
 }
 function access_type_builtin_rows(): array {
   return [
@@ -2520,8 +2556,31 @@ function body(): array {
   if(!is_array($j)) bad('Invalid JSON');
   return $j;
 }
-function kv_get(string $k,$d=null){ $st=db()->prepare("SELECT value FROM app_kv WHERE key=?"); $st->execute([$k]); $r=$st->fetch(); if(!$r) return $d; $v=json_decode($r['value'],true); return ($v===null && $r['value']!=='null')?$d:$v; }
-function kv_set(string $k,$v): void { $st=db()->prepare("INSERT INTO app_kv (key,value,updated_at) VALUES (?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=excluded.updated_at"); $st->execute([$k,json_encode($v,JSON_UNESCAPED_UNICODE),now_iso()]); }
+function kv_get(string $k,$d=null){
+  if (function_exists('app') && app()->bound(\App\Services\Storage\SheetStorageService::class)) {
+  $svc = app(\App\Services\Storage\SheetStorageService::class);
+  if ($k === 'payroll_overrides') return $svc->payrollOverrides();
+  if (preg_match('/^attendance_daily_(\d{4})-(\d{2})$/', $k, $m)) return $svc->attendanceDaily((int)$m[2], (int)$m[1]);
+  if (str_ends_with($k, '_index')) return $svc->index(str_replace('_index', '', $k));
+  if (preg_match('/^(attendance_sheet|payroll_sheet|pf_sheet|pf_return_sheet|esic_sheet|esic_return_sheet|ecr_sheet|fnf_sheet|gratuity_sheet|bonus_sheet|payslip)_(.+)$/', $k, $m)) {
+    return $svc->get($m[1], $m[2]) ?? $d;
+  }
+  if (in_array($k, ['control_settings','company_profile'], true) && app()->bound(\App\Services\Storage\TenantSettingsService::class)) {
+    return app(\App\Services\Storage\TenantSettingsService::class)->get($k, $d);
+  }
+  }
+  $st=db()->prepare("SELECT value FROM app_kv WHERE key=?"); $st->execute([$k]); $r=$st->fetch(); if(!$r) return $d; $v=json_decode($r['value'],true); return ($v===null && $r['value']!=='null')?$d:$v;
+}
+function kv_set(string $k,$v): void {
+  if (function_exists('app') && app()->bound(\App\Services\Storage\SheetStorageService::class)) {
+  if ($k === 'payroll_overrides') { app(\App\Services\Storage\SheetStorageService::class)->setPayrollOverrides(is_array($v)?$v:[]); return; }
+  if (preg_match('/^attendance_daily_(\d{4})-(\d{2})$/', $k, $m)) { app(\App\Services\Storage\SheetStorageService::class)->setAttendanceDaily((int)$m[2], (int)$m[1], is_array($v)?$v:[]); return; }
+  if (in_array($k, ['control_settings','company_profile'], true) && app()->bound(\App\Services\Storage\TenantSettingsService::class)) {
+    app(\App\Services\Storage\TenantSettingsService::class)->set($k, $v); return;
+  }
+  }
+  $st=db()->prepare("INSERT INTO app_kv (key,value,updated_at) VALUES (?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=excluded.updated_at"); $st->execute([$k,json_encode($v,JSON_UNESCAPED_UNICODE),now_iso()]);
+}
 function kv_set_on(PDO $d, string $k, $v): void {
   $st=$d->prepare("INSERT INTO app_kv (key,value,updated_at) VALUES (?,?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=excluded.updated_at");
   $st->execute([$k,json_encode($v,JSON_UNESCAPED_UNICODE),now_iso()]);
@@ -2530,13 +2589,32 @@ function idx(string $k): array { $x=kv_get($k,[]); return is_array($x)?$x:[]; }
 function period(int $m,int $y): string { return sprintf('%04d-%02d',$y,$m); }
 function idkey(string $p,string $id): string { return $p.'_'.$id; }
 function find_period(array $rows,int $m,int $y): ?array { $p=period($m,$y); foreach($rows as $r){ if(($r['period']??'')===$p) return $r; } return null; }
-function get_sheet(string $k,string $msg): array { $x=kv_get($k,null); if(!is_array($x)) nf($msg); return $x; }
+function get_sheet(string $k,string $msg): array {
+  if (preg_match('/^(attendance_sheet|payroll_sheet|pf_sheet|pf_return_sheet|esic_sheet|esic_return_sheet|ecr_sheet|fnf_sheet|gratuity_sheet|bonus_sheet|payslip)_(.+)$/', $k, $m) && function_exists('app') && app()->bound(\App\Services\Storage\SheetStorageService::class)) {
+    $x = app(\App\Services\Storage\SheetStorageService::class)->get($m[1], $m[2]);
+    if(is_array($x)) return $x;
+  }
+  $x=kv_get($k,null); if(!is_array($x)) nf($msg); return $x;
+}
 function save_sheet(string $prefix,int $m,int $y,array $rows,array $extra=[]): array {
+  if (function_exists('app') && app()->bound(\App\Services\Storage\SheetStorageService::class)) {
+    return app(\App\Services\Storage\SheetStorageService::class)->save($prefix, $m, $y, $rows, $extra);
+  }
   $id=period($m,$y).'-'.time(); $s=["id"=>$id,"month"=>$m,"year"=>$y,"period"=>period($m,$y),"generatedAt"=>now_iso(),"rowCount"=>count($rows),"rows"=>$rows]+$extra;
   kv_set(idkey($prefix,$id),$s); $ik=$prefix.'_index'; $ix=idx($ik); array_unshift($ix,["id"=>$id,"month"=>$m,"year"=>$y,"period"=>$s['period'],"generatedAt"=>$s['generatedAt'],"rowCount"=>count($rows)]+$extra); kv_set($ik,array_slice($ix,0,300)); return $s;
 }
-function del_sheet(string $prefix,string $id): void { db()->prepare("DELETE FROM app_kv WHERE key=?")->execute([idkey($prefix,$id)]); $ik=$prefix.'_index'; $x=array_values(array_filter(idx($ik),fn($r)=>((string)($r['id']??''))!==$id)); kv_set($ik,$x); }
-function clr_sheet(string $prefix): void { $ik=$prefix.'_index'; foreach(idx($ik) as $r){ if(!empty($r['id'])) db()->prepare("DELETE FROM app_kv WHERE key=?")->execute([idkey($prefix,(string)$r['id'])]); } db()->prepare("DELETE FROM app_kv WHERE key=?")->execute([$ik]); }
+function del_sheet(string $prefix,string $id): void {
+  if (function_exists('app') && app()->bound(\App\Services\Storage\SheetStorageService::class)) {
+    app(\App\Services\Storage\SheetStorageService::class)->delete($prefix, $id); return;
+  }
+  db()->prepare("DELETE FROM app_kv WHERE key=?")->execute([idkey($prefix,$id)]); $ik=$prefix.'_index'; $x=array_values(array_filter(idx($ik),fn($r)=>((string)($r['id']??''))!==$id)); kv_set($ik,$x);
+}
+function clr_sheet(string $prefix): void {
+  if (function_exists('app') && app()->bound(\App\Services\Storage\SheetStorageService::class)) {
+    app(\App\Services\Storage\SheetStorageService::class)->clear($prefix); return;
+  }
+  $ik=$prefix.'_index'; foreach(idx($ik) as $r){ if(!empty($r['id'])) db()->prepare("DELETE FROM app_kv WHERE key=?")->execute([idkey($prefix,(string)$r['id'])]); } db()->prepare("DELETE FROM app_kv WHERE key=?")->execute([$ik]);
+}
 function esic_challan_idx_key(): string { return 'esic_return_challan_index'; }
 function esic_challan_list(): array { return idx(esic_challan_idx_key()); }
 function esic_challan_save_all(array $rows): void { kv_set(esic_challan_idx_key(), array_slice(array_values($rows), 0, 500)); }

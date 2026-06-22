@@ -23,6 +23,7 @@ class PortalPageController extends Controller
 
         $config['portal'] = $portal;
         $config['pageKey'] = $page;
+        $config['navigation'] = \App\Support\NavigationBuilder::sections($portal === 'super-admin' ? 'super-admin' : 'client');
 
         return match ($config['layout'] ?? 'portal') {
             'auth' => view('layouts.auth', $config),

@@ -44,6 +44,20 @@ return [
             'transaction_mode' => 'DEFERRED',
         ],
 
+        'central' => [
+            'driver' => 'sqlite',
+            'database' => env('HR_CENTRAL_DB', storage_path('app/clients/app.db')),
+            'prefix' => '',
+            'foreign_key_constraints' => true,
+        ],
+
+        'tenant' => [
+            'driver' => 'sqlite',
+            'database' => storage_path('app/clients/tenant_0/app.db'),
+            'prefix' => '',
+            'foreign_key_constraints' => true,
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),

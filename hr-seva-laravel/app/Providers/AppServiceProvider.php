@@ -2,23 +2,20 @@
 
 namespace App\Providers;
 
+use App\Services\Auth\AuthService;
+use App\Services\Tenant\TenantManager;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
-        //
+        $this->app->singleton(TenantManager::class);
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        //
+        require_once base_path('legacy/backend/mail.php');
+        require_once base_path('legacy/backend/api.php');
     }
 }

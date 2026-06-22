@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Exceptions\LegacyApiResponseException;
+use App\Http\Controllers\Controller;
 use App\Legacy\LegacyApiKernel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class LegacyApiController extends Controller
+class HrSevaApiController extends Controller
 {
     public function __invoke(Request $request): JsonResponse
     {

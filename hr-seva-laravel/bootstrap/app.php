@@ -14,10 +14,19 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'hr.auth' => \App\Http\Middleware\HrAuthenticate::class,
+            'hr.super_admin' => \App\Http\Middleware\HrSuperAdmin::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),
         );
+
+        $exceptions->render(function (\App\Exceptions\LegacyApiResponseException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return response()->json($e->payload, $e->status, [], JSON_UNESCAPED_UNICODE);
+            }
+        });
     })->create();
