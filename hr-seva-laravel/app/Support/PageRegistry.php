@@ -903,7 +903,7 @@ class PageRegistry
     'contentView' => 'pages.content.control',
     'title' => 'Control Page | Client Portal',
     'pageTitle' => 'Control Page',
-    'pageSubtitle' => 'PF/ESI/LWF/PT + CTC breakup + Company details',
+    'pageSubtitle' => 'Statutory rates, CTC breakup, and company master details',
     'styles' => 
     array (
       0 => 'client-control.css',
@@ -922,7 +922,7 @@ class PageRegistry
     'contentView' => 'pages.content.control',
     'title' => 'Control Page | Client Portal',
     'pageTitle' => 'Control Page',
-    'pageSubtitle' => 'PF/ESI/LWF/PT + CTC breakup + Company details',
+    'pageSubtitle' => 'Statutory rates, CTC breakup, and company master details',
     'styles' => 
     array (
       0 => 'client-control.css',

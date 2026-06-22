@@ -161,3 +161,9 @@
       padding:1rem;
       background:color-mix(in srgb, var(--panel, #fff) 92%, transparent);
     }
+
+    .abbr-tip{
+      border-bottom:1px dotted currentColor;
+      cursor:help;
+      text-decoration:none;
+    }

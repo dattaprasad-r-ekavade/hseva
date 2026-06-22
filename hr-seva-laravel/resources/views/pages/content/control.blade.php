@@ -7,7 +7,7 @@
               <div class="d-flex flex-column flex-lg-row gap-2 align-items-lg-center justify-content-between">
                 <div>
                   <div class="section-title">Company Controls</div>
-                  <div class="small-hint">These values will be used in Payroll, PF/ESI sheets, ECR, ESIC return, FNF and Gratuity calculations.</div>
+                  <div class="small-hint">These values will be used in Payroll, <x-abbr-tip tip="Provident Fund">PF</x-abbr-tip>/<x-abbr-tip tip="Employees' State Insurance">ESI</x-abbr-tip> sheets, <x-abbr-tip tip="Electronic Challan cum Return">ECR</x-abbr-tip>, <x-abbr-tip tip="Employees' State Insurance Corporation">ESIC</x-abbr-tip> return, <x-abbr-tip tip="Full and Final Settlement">FNF</x-abbr-tip> and Gratuity calculations.</div>
                   <div class="mt-2 d-flex flex-wrap gap-2">
                     <span class="pill"><i class="bi bi-shield-check"></i> Client-scoped</span>
                     <span class="pill"><i class="bi bi-calculator"></i> Used in auto-calculation</span>
@@ -35,14 +35,14 @@
             <div class="glass p-3 h-100">
               <div class="d-flex align-items-center justify-content-between mb-2">
                 <div class="fw-semibold">Statutory Settings</div>
-                <span class="pill"><i class="bi bi-gear"></i> PF / ESI / PT / LWF</span>
+                <span class="pill"><i class="bi bi-gear"></i> <x-abbr-tip tip="Provident Fund">PF</x-abbr-tip> / <x-abbr-tip tip="Employees' State Insurance">ESI</x-abbr-tip> / <x-abbr-tip tip="Professional Tax">PT</x-abbr-tip> / <x-abbr-tip tip="Labour Welfare Fund">LWF</x-abbr-tip></span>
               </div>
 
               <div class="table-responsive">
                 <table class="table align-middle mb-0">
                   <tbody>
                     <tr>
-                      <td class="fw-semibold">PF Employee %</td>
+                      <td class="fw-semibold"><x-abbr-tip tip="Provident Fund">PF</x-abbr-tip> Employee %</td>
                       <td class="u-w-180">
                         <div class="input-group">
                           <input class="form-control text-end" id="pfEmpPct" type="number" step="0.01">
@@ -51,7 +51,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <td class="fw-semibold">ESI Employee %</td>
+                      <td class="fw-semibold"><x-abbr-tip tip="Employees' State Insurance">ESI</x-abbr-tip> Employee %</td>
                       <td>
                         <div class="input-group">
                           <input class="form-control text-end" id="esiEmpPct" type="number" step="0.01">
@@ -61,7 +61,7 @@
                     </tr>
 
                     <tr>
-                      <td class="fw-semibold">ESI Wage Limit (Monthly)</td>
+                      <td class="fw-semibold"><x-abbr-tip tip="Employees' State Insurance">ESI</x-abbr-tip> Wage Limit (Monthly)</td>
                       <td>
                         <div class="input-group">
                           <span class="input-group-text">Rs </span>
@@ -71,7 +71,7 @@
                     </tr>
 
                     <tr id="ptEnabledRow">
-                      <td class="fw-semibold">PT (Monthly) Enabled (Yes/No)</td>
+                      <td class="fw-semibold"><x-abbr-tip tip="Professional Tax">PT</x-abbr-tip> (Monthly) Enabled (Yes/No)</td>
                       <td>
                         <select class="form-select" id="ptEnabled">
                           <option>Yes</option>
@@ -80,7 +80,7 @@
                       </td>
                     </tr>
                     <tr id="ptMonthlyRow">
-                      <td class="fw-semibold">PT (Monthly)</td>
+                      <td class="fw-semibold"><x-abbr-tip tip="Professional Tax">PT</x-abbr-tip> (Monthly)</td>
                       <td>
                         <div class="input-group">
                           <span class="input-group-text">Rs </span>
@@ -90,7 +90,7 @@
                     </tr>
 
                     <tr>
-                      <td class="fw-semibold">PF Wage Cap Enabled (Yes/No)</td>
+                      <td class="fw-semibold"><x-abbr-tip tip="Provident Fund">PF</x-abbr-tip> Wage Cap Enabled (Yes/No)</td>
                       <td>
                         <select class="form-select" id="pfWageCapEnabled">
                           <option>Yes</option>
@@ -100,7 +100,7 @@
                     </tr>
 
                     <tr>
-                      <td class="fw-semibold">PF Wage Cap Amount</td>
+                      <td class="fw-semibold"><x-abbr-tip tip="Provident Fund">PF</x-abbr-tip> Wage Cap Amount</td>
                       <td>
                         <div class="input-group">
                           <span class="input-group-text">Rs </span>
@@ -109,7 +109,7 @@
                       </td>
                     </tr>
                     <tr>
-                      <td class="fw-semibold">PF Wage % When ESI Applicable</td>
+                      <td class="fw-semibold"><x-abbr-tip tip="Provident Fund">PF</x-abbr-tip> Wage % When <x-abbr-tip tip="Employees' State Insurance">ESI</x-abbr-tip> Applicable</td>
                       <td>
                         <div class="input-group">
                           <input class="form-control text-end" id="pfOnEsiPct" type="number" step="0.01">
@@ -119,7 +119,7 @@
                     </tr>
 
                     <tr id="lwfEnabledRow">
-                      <td class="fw-semibold">LWF Enabled (Yes/No)</td>
+                      <td class="fw-semibold"><x-abbr-tip tip="Labour Welfare Fund">LWF</x-abbr-tip> Enabled (Yes/No)</td>
                       <td>
                         <select class="form-select" id="lwfEnabled">
                           <option>Yes</option>
@@ -129,7 +129,7 @@
                     </tr>
 
                     <tr id="lwfEmpRow">
-                      <td class="fw-semibold">LWF Employee (Amount)</td>
+                      <td class="fw-semibold"><x-abbr-tip tip="Labour Welfare Fund">LWF</x-abbr-tip> Employee (Amount)</td>
                       <td>
                         <div class="input-group">
                           <span class="input-group-text">Rs </span>
@@ -139,7 +139,7 @@
                     </tr>
 
                     <tr id="lwfErRow">
-                      <td class="fw-semibold">LWF Employer (Amount)</td>
+                      <td class="fw-semibold"><x-abbr-tip tip="Labour Welfare Fund">LWF</x-abbr-tip> Employer (Amount)</td>
                       <td>
                         <div class="input-group">
                           <span class="input-group-text">Rs </span>
@@ -149,7 +149,7 @@
                     </tr>
 
                     <tr id="lwfMonthRow">
-                      <td class="fw-semibold">LWF Applicable Month (1-12; 0=monthly)</td>
+                      <td class="fw-semibold"><x-abbr-tip tip="Labour Welfare Fund">LWF</x-abbr-tip> Applicable Month (1-12; 0=monthly)</td>
                       <td>
                         <input class="form-control text-end" id="lwfMonth" type="number" min="0" max="12" step="1">
                       </td>
@@ -159,7 +159,7 @@
               </div>
 
               <div class="small-hint mt-2">
-                Tip: If PF Wage Cap Enabled = Yes, PF wages will be capped at the amount (example: 15000).
+                Tip: If <x-abbr-tip tip="Provident Fund">PF</x-abbr-tip> Wage Cap Enabled = Yes, PF wages will be capped at the amount (example: 15000).
               </div>
             </div>
           </div>
@@ -168,7 +168,7 @@
           <div class="col-12 col-xl-6">
             <div class="glass p-3 h-100">
               <div class="d-flex align-items-center justify-content-between mb-2">
-                <div class="fw-semibold">CTC Add-on</div>
+                <div class="fw-semibold"><x-abbr-tip tip="Cost to Company">CTC</x-abbr-tip> Add-on</div>
                 <span class="pill"><i class="bi bi-plus-circle"></i> Employer Cost</span>
               </div>
 
@@ -213,7 +213,7 @@
                   <div class="small-hint">Configured add-ons</div>
                   <div class="fw-semibold" id="deductionTotalAmt">0 % rows | Rs 0.00 fixed</div>
                 </div>
-                <div class="small-hint mt-1">Use this for employer-side CTC items like PF Employer %, ESI Employer %, insurance, bonus provision, or other company-paid costs.</div>
+                <div class="small-hint mt-1">Use this for employer-side <x-abbr-tip tip="Cost to Company">CTC</x-abbr-tip> items like <x-abbr-tip tip="Provident Fund">PF</x-abbr-tip> Employer %, <x-abbr-tip tip="Employees' State Insurance">ESI</x-abbr-tip> Employer %, insurance, bonus provision, or other company-paid costs.</div>
               </div>
             </div>
           </div>
@@ -242,19 +242,19 @@
                       </td>
                     </tr>
                     <tr>
-                      <td class="fw-semibold">Company CIN / LLPIN / Reg. No</td>
+                      <td class="fw-semibold">Company <x-abbr-tip tip="Corporate Identification Number">CIN</x-abbr-tip> / <x-abbr-tip tip="Limited Liability Partnership Identification Number">LLPIN</x-abbr-tip> / Reg. No</td>
                       <td><input class="form-control" id="companyRegNo" /></td>
                     </tr>
                     <tr>
-                      <td class="fw-semibold">Company PAN ID</td>
+                      <td class="fw-semibold">Company <x-abbr-tip tip="Permanent Account Number">PAN</x-abbr-tip> ID</td>
                       <td><input class="form-control" id="companyPAN" /></td>
                     </tr>
                     <tr>
-                      <td class="fw-semibold">Company TAN ID</td>
+                      <td class="fw-semibold">Company <x-abbr-tip tip="Tax Deduction and Collection Account Number">TAN</x-abbr-tip> ID</td>
                       <td><input class="form-control" id="companyTAN" /></td>
                     </tr>
                     <tr>
-                      <td class="fw-semibold">Company GSTIN</td>
+                      <td class="fw-semibold">Company <x-abbr-tip tip="Goods and Services Tax Identification Number">GSTIN</x-abbr-tip></td>
                       <td><input class="form-control" id="companyGSTIN" /></td>
                     </tr>
                     <tr>
@@ -266,7 +266,7 @@
               </div>
 
               <div class="small-hint mt-2">
-                These details will appear in Payslip, PF/ESI sheets and reports.
+                These details will appear in Payslip, <x-abbr-tip tip="Provident Fund">PF</x-abbr-tip>/<x-abbr-tip tip="Employees' State Insurance">ESI</x-abbr-tip> sheets and reports.
               </div>
             </div>
           </div>
@@ -366,7 +366,7 @@
                     <input class="form-check-input" type="radio" name="gratuityMode" id="gratuityModeAfter5" checked>
                     <span>
                       <span class="fw-semibold d-block">After completion of 5yr</span>
-                      <span class="small text-muted-3">Final gratuity = ((Basic + DA) x 15 x Years) / 26</span>
+                      <span class="small text-muted-3">Final gratuity = ((Basic + <x-abbr-tip tip="Dearness Allowance">DA</x-abbr-tip>) x 15 x Years) / 26</span>
                     </span>
                   </label>
                 </div>
@@ -375,7 +375,7 @@
                     <input class="form-check-input" type="radio" name="gratuityMode" id="gratuityModeMonthly">
                     <span>
                       <span class="fw-semibold d-block">Monthly</span>
-                      <span class="small text-muted-3">Monthly estimate = Basic x 4.81% for CTC calculation</span>
+                      <span class="small text-muted-3">Monthly estimate = Basic x 4.81% for <x-abbr-tip tip="Cost to Company">CTC</x-abbr-tip> calculation</span>
                     </span>
                   </label>
                 </div>

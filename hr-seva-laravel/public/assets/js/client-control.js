@@ -838,3 +838,7 @@
     });
 
     load();
+
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el) => {
+      bootstrap.Tooltip.getOrCreateInstance(el);
+    });

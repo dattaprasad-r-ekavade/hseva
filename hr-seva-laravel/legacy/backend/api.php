@@ -320,7 +320,15 @@ function central_db(): PDO { return db_open(CENTRAL_DB_PATH); }
 function db(): PDO {
   return db_open(db_path_for_client(req_client_id()));
 }
-require_once __DIR__ . '/shift_module.php';
+function install_shift_schema(PDO $d): void {
+  if (class_exists(\App\Services\Shift\ShiftSchemaInstaller::class)) {
+    if (function_exists('app') && app()->bound(\App\Services\Shift\ShiftSchemaInstaller::class)) {
+      app(\App\Services\Shift\ShiftSchemaInstaller::class)->install($d);
+    } else {
+      (new \App\Services\Shift\ShiftSchemaInstaller())->install($d);
+    }
+  }
+}
 function init_schema(PDO $d): void {
   if (class_exists(\App\Services\Database\HrSchemaInstaller::class)) {
     \App\Services\Database\HrSchemaInstaller::install($d);
@@ -417,7 +425,7 @@ function init_schema(PDO $d): void {
   if(!in_array('is_active', $employeeTypeColNames, true)){ $d->exec("ALTER TABLE employee_type_master ADD COLUMN is_active INTEGER NOT NULL DEFAULT 1"); }
   if(!in_array('created_at', $employeeTypeColNames, true)){ $d->exec("ALTER TABLE employee_type_master ADD COLUMN created_at TEXT NOT NULL DEFAULT ''"); }
   if(!in_array('updated_at', $employeeTypeColNames, true)){ $d->exec("ALTER TABLE employee_type_master ADD COLUMN updated_at TEXT NOT NULL DEFAULT ''"); }
-  init_shift_schema($d);
+  install_shift_schema($d);
   access_types_seed($d);
   access_enable_roles_visibility($d);
   attendance_status_seed($d);

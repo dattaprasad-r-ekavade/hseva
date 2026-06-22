@@ -82,7 +82,6 @@ All API endpoints are registered as explicit Laravel routes (`routes/api.php`, `
 ```bash
 # PHP syntax check on legacy backend
 php -l legacy/backend/api.php
-php -l legacy/backend/shift_module.php
 
 # Run Laravel dev server
 php artisan serve --host=127.0.0.1 --port=8012
