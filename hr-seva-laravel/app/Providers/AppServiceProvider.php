@@ -40,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\MasterData\MasterDataService::class);
         $this->app->singleton(\App\Services\Billing\BillingService::class);
         $this->app->singleton(\App\Services\PublicEnquiry\PublicEnquiryService::class);
+        $this->app->singleton(\App\Services\Shift\ShiftService::class);
     }
 
     public function boot(): void

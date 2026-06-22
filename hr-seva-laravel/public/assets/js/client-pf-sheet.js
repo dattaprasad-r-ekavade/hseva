@@ -153,7 +153,7 @@ const $ = (id) => document.getElementById(id);
       <tr>
         <td class='fw-semibold'>${idx + 1}</td>
         <td>${r.Month}</td>
-        <td class='fw-semibold mono'>${r.Emp_ID}</td>
+        <td class='fw-semibold mono'>${r.Emp_ID || r.empId || '-'}</td>
         <td>${r["MEMBER_ NAME"]}</td>
         <td class='mono'>${r.UAN || "-"}</td>
         <td class='text-end'>${money(r.GROSS_WAGES)}</td>
@@ -238,7 +238,7 @@ const $ = (id) => document.getElementById(id);
       header: [
         "Sr. No",
         "Month",
-        "Emp_ID",
+        "Employee ID",
         "MEMBER_ NAME",
         "UAN",
         "GROSS_WAGES",

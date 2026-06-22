@@ -23,7 +23,7 @@
               </div>
               <div class="col-12 col-lg-2">
                 <label class="form-label fw-semibold">Name / EMP ID</label>
-                <select id="genEmpId" placeholder="Search by Emp ID or Name..."></select>
+                <select id="genEmpId" placeholder="Search by employee ID or name..."></select>
               </div>
               <div class="col-12 col-lg-2">
                 <label class="form-label fw-semibold">Format</label>

@@ -192,7 +192,7 @@
             <table class="table table-sm table-bordered align-middle mb-0" data-no-srno="true" data-no-datetime="true">
               <thead>
                 <tr>
-                  <th>Emp ID</th>
+                  <th>Employee ID</th>
                   <th>Employee Name</th>
                   <th>P</th>
                   <th>A</th>

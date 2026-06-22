@@ -27,7 +27,7 @@
             <div class="glass-soft p-3">
               <div class="d-flex justify-content-between align-items-center">
                 <div class="small text-muted-3">From ECR Sheet API</div>
-                <span class="badge-soft">/api/ecr-sheet/sheets</span>
+                <span class="badge-soft">ECR sheet data</span>
               </div>
               <div class="small text-muted-3 mt-2">If PF sheet not found -> Dummy PF Sheet.</div>
             </div>
@@ -110,15 +110,15 @@
               <tr>
                 <th>UAN</th>
                 <th>Member Name</th>
-                <th class="text-end">GROSS_WAGES</th>
-                <th class="text-end">EPF_WAGES</th>
-                <th class="text-end">EPS_WAGES</th>
-                <th class="text-end">EDLI_WAGES</th>
-                <th class="text-end">EPF_CONTRI_REMITTED</th>
-                <th class="text-end">EPS_CONTRI_REMITTED</th>
-                <th class="text-end">EPF_EPS_DIFF_REMITTED</th>
-                <th class="text-end">NCP_DAYS</th>
-                <th class="text-end">REFUND_OF_ADVANCES</th>
+                <th class="text-end">Gross Wages</th>
+                <th class="text-end">EPF Wages</th>
+                <th class="text-end">EPS Wages</th>
+                <th class="text-end">EDLI Wages</th>
+                <th class="text-end">EPF Contribution</th>
+                <th class="text-end">EPS Contribution</th>
+                <th class="text-end">EPF-EPS Difference</th>
+                <th class="text-end">NCP Days</th>
+                <th class="text-end">Refund of Advances</th>
               </tr>
             </thead>
             <tbody id="previewBody"></tbody>

@@ -50,7 +50,7 @@ php artisan serve --host=127.0.0.1 --port=8012
 ```
 public/                  # Static frontend (UI unchanged)
 legacy/backend/          # Original api.php, shift_module.php, mail.php
-app/Legacy/              # Laravel bridge (LegacyApiKernel)
+app/Services/              # Domain services (shift, payroll, compliance, …)
 storage/app/clients/     # SQLite databases (auto-created)
   app.db                 # Central DB (clients, subscriptions, auth)
   tenant_{id}/app.db     # Per-tenant HR data
@@ -75,7 +75,7 @@ SQLite is the default for now to preserve 1-to-1 behaviour with the existing dep
 
 ## API parity
 
-All ~130 API endpoints from the original `backend/api.php` and `shift_module.php` are available at the same paths (`/api/...`). Request/response JSON shapes are identical.
+All API endpoints are registered as explicit Laravel routes (`routes/api.php`, `routes/api-modules.php`). Business logic still lives in `legacy/backend/` functions, wrapped by `app/Services/*` classes. Request/response JSON shapes match the original app.
 
 ## Development
 

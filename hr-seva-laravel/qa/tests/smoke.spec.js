@@ -192,6 +192,11 @@ test.describe('Catch-all module APIs', () => {
     const advances = await advancesRes.json();
     expect(Array.isArray(advances.rows)).toBeTruthy();
 
+    const shiftsRes = await request.get('/api/shifts?active=1', { headers });
+    expect(shiftsRes.ok()).toBeTruthy();
+    const shifts = await shiftsRes.json();
+    expect(Array.isArray(shifts.rows)).toBeTruthy();
+
     const loansRes = await request.get('/api/loans', { headers });
     expect(loansRes.ok()).toBeTruthy();
     const loans = await loansRes.json();

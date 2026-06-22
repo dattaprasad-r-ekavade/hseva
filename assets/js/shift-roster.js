@@ -197,7 +197,7 @@
     if(!dates.length){ showMsg('No roster dates in selected range.', false); return; }
     const emps=visibleRosterEmployees();
     const weeks=weekBuckets(dates);
-    const lines=['Week Start,Week End,Emp_ID,Employee,Date,Day,ShiftCode'];
+    const lines=['Week Start,Week End,Employee ID,Employee,Date,Day,Shift Code'];
     weeks.forEach(([ws,wdates])=>{
       const we=wdates[wdates.length-1]||ws;
       emps.forEach((e)=>{
@@ -335,7 +335,7 @@
     $("btnRosterPublish")?.addEventListener('click',()=>saveRoster(true).catch(e=>showMsg(e.message)));
     $("btnRosterLock")?.addEventListener('click',()=>toggleLock().catch(e=>showMsg(e.message)));
     $("btnRosterExport")?.addEventListener('click',()=>{
-      const lines=['Emp_ID,Date,ShiftCode'];
+      const lines=['Employee ID,Date,Shift Code'];
       Object.keys(state.rosterMap).sort().forEach(k=>{const [empId,date]=k.split('|'); const code=state.rosterMap[k]||''; if(code) lines.push(`${empId},${date},${code}`);});
       exportCsv(lines,'shift-roster.csv');
     });

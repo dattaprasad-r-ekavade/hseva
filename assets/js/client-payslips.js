@@ -406,7 +406,7 @@
         <td class="fw-semibold">${idx + 1}</td>
         <td>
           <div class="fw-semibold">Payslip_${esc(x.empId)}_${esc(x.monthKey)}.${esc(x.format || "html")}</div>
-          <div class="small text-muted">Name: ${esc(x.employeeName || "")} | Key: <span class="mono">${esc(x.key || "-")}</span></div>
+          <div class="small text-muted">Name: ${esc(x.employeeName || "")} | Month: <span class="mono">${esc(x.monthKey || "-")}</span></div>
         </td>
         <td>${monthNames[String(x.month).padStart(2, "0")] || String(x.month)} ${x.year}</td>
         <td class="fw-semibold mono">${esc(x.empId || "")}</td>
@@ -516,12 +516,12 @@
 
         <table class="ps-grid ps-meta w-100">
           <tr>
-            <th style="width:25%">Month (YYYY-MM)</th><td style="width:25%">${esc(p.monthKey)}</td>
-            <th style="width:25%">Key</th><td style="width:25%" class="mono">${esc(d.key)}</td>
+            <th style="width:25%">Pay Period</th><td style="width:25%">${esc(p.monthKey)}</td>
+            <th style="width:25%">Employee ID</th><td style="width:25%">${esc(p.empId)}</td>
           </tr>
           <tr>
-            <th style="width:25%">Emp_ID</th><td style="width:25%">${esc(p.empId)}</td>
             <th style="width:25%">LOP Days</th><td style="width:25%">${emp.lopDays || 0}</td>
+            <th style="width:25%"></th><td style="width:25%"></td>
           </tr>
         </table>
 
@@ -698,7 +698,7 @@
   };
 
   async function buildPayslipsExportCsv(){
-    const header = ["Payslip","MonthKey","Emp_ID","Employee_Name","GeneratedOn","Status","Format","Key","Gross_Salary","LOP_Deduction","Adjusted_Gross_Salary","Total_Deductions","NetPay"];
+    const header = ["Payslip File","Month","Employee ID","Employee Name","Generated On","Status","Format","Gross Salary","LOP Deduction","Adjusted Gross","Total Deductions","Net Pay"];
     const rows = [];
     for(const p of payslips){
       let detail = null;
@@ -718,7 +718,6 @@
         p.generatedOn,
         p.status,
         p.format,
-        p.key || d?.key || "",
         grossSalary,
         lopDeduction,
         adjustedGross,

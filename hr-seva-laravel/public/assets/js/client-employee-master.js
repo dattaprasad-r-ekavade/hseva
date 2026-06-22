@@ -317,7 +317,7 @@ async function createEmployee(r){
   } catch(_e){
     const local = loadEmployeesLocal();
     const id = String(r.empId || "").toUpperCase();
-    if(local.some(x => String(x.empId || "").toUpperCase() === id)) throw new Error("Emp_ID already exists");
+    if(local.some(x => String(x.empId || "").toUpperCase() === id)) throw new Error("Employee ID already exists");
     local.push({ ...r, empId: id });
     saveEmployeesLocal(local);
   }
@@ -698,7 +698,7 @@ async function exportXlsx(){
   const note = [
     ["Employee Master Export"],
     ["This sheet contains the current employee master data. You can review or edit it and import it back if needed."],
-    ["Emp_ID must stay unique. Required fields for re-import: Emp_ID, Employee_Name, DOJ, Department, Designation, Emp_Type, Status, Gross_Monthly."],
+    ["Employee ID must stay unique. Required fields for re-import: Employee ID, Employee Name, DOJ, Department, Designation, Employment Type, Status, Gross Monthly."],
     ["Emp_Type values should match Employee Type master. Status values: Active | Inactive."],
     ["Attachment PDFs and per-employee leave allocation are maintained separately in the app."],
     []
@@ -727,17 +727,17 @@ async function exportXlsx(){
   const wb = XLSX.utils.book_new();
   const instructionsRows = [
     ["Column", "Description", "Required", "Valid Values / Format"],
-    ["Emp_ID", "Unique employee code", "Yes", "EMP001 format"],
-    ["Employee_Name", "Employee full name", "Yes", "Text"],
+    ["Employee ID", "Unique employee code", "Yes", "EMP001 format"],
+    ["Employee Name", "Employee full name", "Yes", "Text"],
     ["DOJ", "Date of joining", "Yes", "YYYY-MM-DD"],
     ["Department", "Department", "Yes", "HR/Sales/Accounts/Operations/Tech/Testing"],
     ["Designation", "Designation", "Yes", "Text"],
-    ["Emp_Type", "Employment category", "Yes", "Full-time/Part-time/Contract/Intern"],
+    ["Employment Type", "Employment category", "Yes", "Full-time/Part-time/Contract/Intern"],
     ["Status", "Current status", "Yes", "Active/Inactive"],
-    ["Gross_Monthly", "Gross monthly salary", "Yes", "Number"],
-    ["UAN/PF_No/ESI_No", "Statutory IDs", "No", "Text"],
-    ["Bank_Name/Bank_AC/IFSC", "Bank details", "No", "Text"],
-    ["Aadhar_Card/PAN_Card", "KYC details", "No", "Text"],
+    ["Gross Monthly", "Gross monthly salary", "Yes", "Number"],
+    ["UAN/PF/ESI", "Statutory IDs", "No", "Text"],
+    ["Bank Name/Account/IFSC", "Bank details", "No", "Text"],
+    ["Aadhar/PAN", "KYC details", "No", "Text"],
     ["Address", "Employee address", "No", "Text"],
     ["Mobile/Email", "Contact details", "No", "Text"]
   ];

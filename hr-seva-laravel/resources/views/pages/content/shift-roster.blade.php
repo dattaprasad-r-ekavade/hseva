@@ -16,7 +16,7 @@
 
         <div class="tab-pane fade" id="tabAssign">
           <div class="glass p-3 mb-3"><div class="row g-2"><input type="hidden" id="assignId"><div class="col-md-3"><select id="assignEmp" class="form-select"></select></div><div class="col-md-2"><select id="assignDefaultShift" class="form-select"></select></div><div class="col-md-2"><select id="assignWeeklyOff" class="form-select"><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option><option selected>Sunday</option></select></div><div class="col-md-2"><input id="assignEffective" type="date" class="form-control"></div><div class="col-md-1"><select id="assignStatus" class="form-select"><option>Active</option><option>Inactive</option></select></div><div class="col-md-2"><button id="btnSaveAssignment" class="btn btn-primary w-100">Save</button></div></div></div>
-          <div class="table-responsive glass p-3"><table class="table table-striped" data-no-datetime="true"><thead><tr><th>Emp ID</th><th>Name</th><th>Default Shift</th><th>Weekly Off</th><th>Effective</th><th>Status</th><th>Action</th></tr></thead><tbody id="assignmentBody"></tbody></table></div>
+          <div class="table-responsive glass p-3"><table class="table table-striped" data-no-datetime="true"><thead><tr><th>Employee ID</th><th>Name</th><th>Default Shift</th><th>Weekly Off</th><th>Effective</th><th>Status</th><th>Action</th></tr></thead><tbody id="assignmentBody"></tbody></table></div>
         </div>
 
         <div class="tab-pane fade show active" id="tabRoster">
@@ -77,13 +77,13 @@
         </div>
 
         <div class="tab-pane fade" id="tabCalendar">
-          <div class="glass p-3 mb-2"><div class="row g-2"><div class="col-md-3"><input id="calDepartment" class="form-control" placeholder="Department"></div><div class="col-md-3"><input id="calEmployee" class="form-control" placeholder="Emp ID"></div><div class="col-md-3"><input id="calShift" class="form-control" placeholder="Shift Code"></div><div class="col-md-3"><button id="btnCalRefresh" class="btn btn-primary w-100">Refresh Calendar</button></div></div></div>
+          <div class="glass p-3 mb-2"><div class="row g-2"><div class="col-md-3"><input id="calDepartment" class="form-control" placeholder="Department"></div><div class="col-md-3"><input id="calEmployee" class="form-control" placeholder="Employee ID"></div><div class="col-md-3"><input id="calShift" class="form-control" placeholder="Shift code"></div><div class="col-md-3"><button id="btnCalRefresh" class="btn btn-primary w-100">Refresh Calendar</button></div></div></div>
           <div class="row g-3"><div class="col-lg-9"><div class="glass p-3"><div id="shiftCalendar"></div></div></div><div class="col-lg-3"><div class="glass p-3"><div class="fw-semibold mb-2">Day Summary</div><div id="calendarSummary"></div></div></div></div>
         </div>
 
         <div class="tab-pane fade" id="tabReport">
           <div class="glass p-3 mb-2"><div class="row g-2 align-items-end"><div class="col-md-3"><label class="form-label">From</label><input id="reportFrom" type="date" class="form-control"></div><div class="col-md-3"><label class="form-label">To</label><input id="reportTo" type="date" class="form-control"></div><div class="col-md-2"><button id="btnReportLoad" class="btn btn-primary w-100">Load Report</button></div><div class="col-md-2"><button id="btnReportCsv" class="btn btn-outline-success w-100">Export CSV</button></div><div class="col-md-1"><button id="btnReportClear" class="btn btn-outline-secondary w-100" type="button">Clear</button></div><div class="col-md-1"><button id="btnReportDeleteAll" class="btn btn-outline-danger w-100" type="button">Delete All</button></div></div></div>
-          <div class="table-responsive glass p-3"><table class="table table-sm table-striped" data-no-datetime="true"><thead><tr><th>Date</th><th>Company</th><th>Emp ID</th><th>Name</th><th>Shift</th><th>Sch In</th><th>Sch Out</th><th>Status</th><th>Mismatch</th></tr></thead><tbody id="reportBody"></tbody></table></div>
+          <div class="table-responsive glass p-3"><table class="table table-sm table-striped" data-no-datetime="true"><thead><tr><th>Date</th><th>Company</th><th>Employee ID</th><th>Name</th><th>Shift</th><th>Scheduled In</th><th>Scheduled Out</th><th>Status</th><th>Mismatch</th></tr></thead><tbody id="reportBody"></tbody></table></div>
         </div>
       </div>
     </div>

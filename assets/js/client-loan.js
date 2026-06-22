@@ -70,6 +70,22 @@ function esc(value){
     {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]
   ));
 }
+function formatStatusLabel(status){
+  const key = String(status || "").trim().toLowerCase().replace(/[_-]+/g, " ");
+  if(!key) return "-";
+  const labels = {
+    active: "Active",
+    closed: "Closed",
+    pending: "Pending",
+    disbursed: "Disbursed",
+    scheduled: "Scheduled",
+    deducted: "Deducted",
+    inactive: "Inactive",
+    approved: "Approved",
+    rejected: "Rejected",
+  };
+  return labels[key] || key.replace(/\b\w/g, (ch) => ch.toUpperCase());
+}
 function fmtDateTime(value){
   const d = new Date(value || "");
   return Number.isNaN(d.getTime()) ? "-" : d.toLocaleString();
@@ -240,7 +256,7 @@ function renderRows(){
         <td class="text-end">Rs ${money(row.paidAmount || 0)}</td>
         <td class="text-end text-warning-emphasis">Rs ${money(row.balanceAmount || 0)}</td>
         <td class="text-end">Rs ${money(row.emiAmount || 0)}</td>
-        <td><span class="badge text-bg-light border">${esc(row.status || "-")}</span></td>
+        <td><span class="badge text-bg-light border">${esc(formatStatusLabel(row.status))}</span></td>
         <td class="text-end">
           <div class="d-inline-flex flex-wrap justify-content-end gap-2">
             <button class="btn btn-sm btn-outline-primary" type="button" data-action="view" data-id="${esc(row.id || "")}">View</button>

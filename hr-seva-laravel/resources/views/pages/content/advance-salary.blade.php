@@ -75,7 +75,7 @@
               <table class="table align-middle mb-0" data-no-srno="true" data-no-datetime="true">
                 <thead>
                   <tr>
-                    <th>Emp ID</th>
+                    <th>Employee ID</th>
                     <th>Employee</th>
                     <th>Period</th>
                     <th>Present Days</th>

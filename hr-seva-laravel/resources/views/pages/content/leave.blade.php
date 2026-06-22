@@ -8,7 +8,7 @@
                 <div>
                   <div class="fw-semibold fs-5 mb-1">Apply Leave for Employees</div>
                   <div class="small text-muted-3">
-                    Search employee by Name or Emp ID. Selecting employee auto-fills details.
+                    Search employee by name or employee ID. Selecting an employee auto-fills details.
                   </div>
                 </div>
                 <div class="d-flex flex-wrap gap-2">
@@ -34,14 +34,14 @@
 
                 <div class="mb-3">
                   <label class="form-label fw-semibold">Select Employee *</label>
-                  <select id="employeeSelect" placeholder="Search by Emp ID or Name..." required></select>
+                  <select id="employeeSelect" placeholder="Search by employee ID or name..." required></select>
                   <div class="invalid-feedback d-block u-hidden" id="empSelectError">Please select employee.</div>
                 </div>
 
                 <!-- Auto fields -->
                 <div class="row g-2">
                   <div class="col-6">
-                    <label class="form-label small text-muted-3 mb-1">Emp ID</label>
+                    <label class="form-label small text-muted-3 mb-1">Employee ID</label>
                     <input class="form-control mono" id="empId" readonly>
                   </div>
                   <div class="col-6">

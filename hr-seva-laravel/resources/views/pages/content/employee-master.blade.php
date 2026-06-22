@@ -18,7 +18,7 @@
       <div class="card shadow-sm border-0">
         <div class="card-body">
           <div class="row g-3 align-items-end">
-            <div class="col-md-5"><label class="form-label">Search</label><input class="form-control" id="searchInput" placeholder="Search by Emp ID, Name, Dept, Designation..."></div>
+            <div class="col-md-5"><label class="form-label">Search</label><input class="form-control" id="searchInput" placeholder="Search by employee ID, name, department, or designation..."></div>
             <div class="col-md-3"><label class="form-label">Department</label><select class="form-select" id="filterDept"><option value="">All</option></select></div>
             <div class="col-md-2"><label class="form-label">Status</label><select class="form-select" id="filterStatus"><option value="">All</option><option value="Active">Active</option><option value="Inactive">Inactive</option></select></div>
             <div class="col-md-2 d-grid"><button class="btn btn-outline-secondary" id="clearFilters" type="button">Clear</button></div>
@@ -40,7 +40,7 @@
           </div>
           <div class="table-responsive">
             <table class="table align-middle mb-0" data-no-datetime="true">
-              <thead class="table-light"><tr><th>Sr. No</th><th>Employee ID</th><th>Employee Name</th><th class="nowrap">DOJ</th><th>Department</th><th>Designation</th><th class="nowrap">Emp type</th><th>Status</th><th class="text-end">Gross Monthly</th><th>Doc View</th><th class="text-center">Action</th></tr></thead>
+              <thead class="table-light"><tr><th>Sr. No</th><th>Employee ID</th><th>Employee Name</th><th class="nowrap">DOJ</th><th>Department</th><th>Designation</th><th class="nowrap">Employment Type</th><th>Status</th><th class="text-end">Gross Monthly</th><th>Doc View</th><th class="text-center">Action</th></tr></thead>
               <tbody id="empTbody"></tbody>
             </table>
           </div>
@@ -71,11 +71,11 @@
       <form class="modal-body needs-validation" novalidate id="empForm">
         <div class="row g-3">
           <div class="col-md-3"><label class="form-label">Employee ID</label><input class="form-control" id="empId" required placeholder="EMP001"><div class="invalid-feedback">Enter employee ID.</div></div>
-          <div class="col-md-5"><label class="form-label">Employee_Name</label><input class="form-control" id="empName" required placeholder="Full name"><div class="invalid-feedback">Enter employee name.</div></div>
-          <div class="col-md-4"><label class="form-label">DOJ</label><input class="form-control" id="doj" type="date" required><div class="invalid-feedback">Select DOJ.</div></div>
+          <div class="col-md-5"><label class="form-label">Employee Name</label><input class="form-control" id="empName" required placeholder="Full name"><div class="invalid-feedback">Enter employee name.</div></div>
+          <div class="col-md-4"><label class="form-label">Date of Joining</label><input class="form-control" id="doj" type="date" required><div class="invalid-feedback">Select date of joining.</div></div>
           <div class="col-md-4"><label class="form-label">Department</label><input class="form-control" id="dept" required placeholder="Enter department"><div class="invalid-feedback">Enter department.</div></div>
           <div class="col-md-4"><label class="form-label">Designation</label><input class="form-control" id="designation" required placeholder="e.g., Executive"><div class="invalid-feedback">Enter designation.</div></div>
-          <div class="col-md-4"><label class="form-label">Emp type</label><select class="form-select" id="employmentType" required><option value="">Select employee type</option></select><div class="invalid-feedback">Select employment type.</div><div class="form-text">Managed from Employee Type master.</div></div>
+          <div class="col-md-4"><label class="form-label">Employment Type</label><select class="form-select" id="employmentType" required><option value="">Select employee type</option></select><div class="invalid-feedback">Select employment type.</div><div class="form-text">Managed from Employee Type master.</div></div>
           <div class="col-md-3"><label class="form-label">Status</label><select class="form-select" id="status" required><option value="Active" selected>Active</option><option value="Inactive">Inactive</option></select><div class="invalid-feedback">Select status.</div></div>
           <div class="col-md-3"><label class="form-label">Gross Monthly</label><input class="form-control" id="baseCtc" type="number" min="0" step="1" required placeholder="e.g., 30000"><div class="invalid-feedback">Enter gross monthly amount.</div></div>
           <div class="col-md-3"><label class="form-label">CTC Monthly</label><input class="form-control" id="ctcMonthly" type="text" readonly placeholder="Auto calculated"></div>

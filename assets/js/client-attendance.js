@@ -796,7 +796,7 @@ const $ = (id) => document.getElementById(id);
       let ok = 0;
       const records = parseAttendanceImport(text, y, m);
       if (!records.length) {
-        alert("Import file format not recognized. Use either Emp_ID,Date,Status format or the exported attendance sheet CSV.");
+        alert("Import file format not recognized. Use either Employee ID, Date, Status format or the exported attendance sheet CSV.");
         return;
       }
       records.forEach((r) => {
