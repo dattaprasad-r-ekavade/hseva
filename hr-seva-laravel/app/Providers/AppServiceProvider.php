@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\Compliance\ComplianceRepository;
 use App\Services\Compliance\ComplianceService;
 use App\Services\FaceAttendance\FaceAttendanceService;
 use App\Services\Payroll\PayrollGenerator;
@@ -32,6 +33,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\Gratuity\GratuityGenerator::class);
         $this->app->singleton(\App\Services\Bonus\BonusGenerator::class);
         $this->app->singleton(\App\Services\Payslips\PayslipGenerator::class);
+        $this->app->singleton(\App\Services\MasterData\MasterDataRepository::class);
+        $this->app->singleton(\App\Services\Incentives\IncentiveRepository::class);
+        $this->app->singleton(\App\Services\Overtime\OvertimeRepository::class);
+        $this->app->singleton(ComplianceRepository::class);
         $this->app->singleton(FaceAttendanceService::class);
         $this->app->singleton(ComplianceService::class);
         $this->app->singleton(\App\Services\Overtime\OvertimeService::class);

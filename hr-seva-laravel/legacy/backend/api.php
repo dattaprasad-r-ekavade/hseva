@@ -575,6 +575,9 @@ function employee_type_row_payload(array $r): array {
   ];
 }
 function employee_type_rows(bool $activeOnly = false): array {
+  if (function_exists('app') && app()->bound(\App\Services\MasterData\MasterDataRepository::class)) {
+    return app(\App\Services\MasterData\MasterDataRepository::class)->employeeTypes($activeOnly);
+  }
   $sql = "SELECT code,label,sort_order,is_active,updated_at FROM employee_type_master";
   $args = [];
   if($activeOnly){
@@ -586,6 +589,9 @@ function employee_type_rows(bool $activeOnly = false): array {
   return array_map('employee_type_row_payload', $st->fetchAll());
 }
 function employee_type_upsert(array $payload, bool $isUpdate): array {
+  if (function_exists('app') && app()->bound(\App\Services\MasterData\MasterDataRepository::class)) {
+    return app(\App\Services\MasterData\MasterDataRepository::class)->upsertEmployeeType($payload, $isUpdate);
+  }
   $n = employee_type_norm($payload);
   $d = db();
   $ts = now_iso();
@@ -608,6 +614,10 @@ function employee_type_upsert(array $payload, bool $isUpdate): array {
   return $row ? employee_type_row_payload($row) : ["code"=>$n['code'],"label"=>$n['label'],"sortOrder"=>$n['sortOrder'],"isActive"=>$n['isActive'],"__updatedAt"=>$ts];
 }
 function employee_type_delete(string $code): void {
+  if (function_exists('app') && app()->bound(\App\Services\MasterData\MasterDataRepository::class)) {
+    app(\App\Services\MasterData\MasterDataRepository::class)->deleteEmployeeType($code);
+    return;
+  }
   $code = up($code);
   if($code === '') bad('Employee type code is required');
   $inUse = db()->prepare("SELECT COUNT(*) FROM employees WHERE type = (SELECT label FROM employee_type_master WHERE code=? LIMIT 1)");
@@ -631,12 +641,18 @@ function attendance_status_row_payload(array $r): array {
   ];
 }
 function attendance_status_rows(bool $activeOnly=false): array {
+  if (function_exists('app') && app()->bound(\App\Services\MasterData\MasterDataRepository::class)) {
+    return app(\App\Services\MasterData\MasterDataRepository::class)->attendanceStatuses($activeOnly);
+  }
   $q = central_db()->query("SELECT code, short_label, full_label, button_class, sort_order, is_active, note_required, is_paid FROM attendance_status_master ORDER BY sort_order ASC, code ASC");
   $rows = array_map('attendance_status_row_payload', $q ? $q->fetchAll() : []);
   if($activeOnly) $rows = array_values(array_filter($rows, fn($r)=>!empty($r['isActive'])));
   return $rows;
 }
 function attendance_status_upsert(array $raw, bool $isUpdate=false): array {
+  if (function_exists('app') && app()->bound(\App\Services\MasterData\MasterDataRepository::class)) {
+    return app(\App\Services\MasterData\MasterDataRepository::class)->upsertAttendanceStatus($raw, $isUpdate);
+  }
   $n = attendance_status_norm($raw);
   $ts = now_iso();
   $d = central_db();
@@ -652,6 +668,10 @@ function attendance_status_upsert(array $raw, bool $isUpdate=false): array {
   return attendance_status_row_payload($s->fetch() ?: []);
 }
 function attendance_status_delete(string $code): void {
+  if (function_exists('app') && app()->bound(\App\Services\MasterData\MasterDataRepository::class)) {
+    app(\App\Services\MasterData\MasterDataRepository::class)->deleteAttendanceStatus($code);
+    return;
+  }
   $code = up($code);
   if($code === '') bad('Code is required');
   $q = central_db()->prepare("DELETE FROM attendance_status_master WHERE code=?");
@@ -1291,6 +1311,9 @@ function overtime_row_payload(array $r): array {
   ];
 }
 function overtime_rows(array $ctx): array {
+  if (function_exists('app') && app()->bound(\App\Services\Overtime\OvertimeRepository::class)) {
+    return app(\App\Services\Overtime\OvertimeRepository::class)->rows($ctx);
+  }
   $d = db();
   $empScope = overtime_emp_scope($ctx);
   $sql = "SELECT * FROM overtime_entries";
@@ -1324,6 +1347,9 @@ function overtime_monthly_map(int $month, int $year): array {
   return $out;
 }
 function overtime_stats(array $rows): array {
+  if (function_exists('app') && app()->bound(\App\Services\Overtime\OvertimeRepository::class)) {
+    return app(\App\Services\Overtime\OvertimeRepository::class)->stats($rows);
+  }
   $month = gmdate('Y-m');
   $monthRows = array_values(array_filter($rows, fn($r) => str_starts_with((string)($r['otDate'] ?? ''), $month)));
   $sum = fn($items, $key) => round(array_reduce($items, fn($c, $r) => $c + f($r[$key] ?? 0), 0.0), 2);
@@ -1336,6 +1362,9 @@ function overtime_stats(array $rows): array {
   ];
 }
 function overtime_create(array $payload): array {
+  if (function_exists('app') && app()->bound(\App\Services\Overtime\OvertimeRepository::class)) {
+    return app(\App\Services\Overtime\OvertimeRepository::class)->create($payload);
+  }
   overtime_manage_ctx();
   $d = db();
   $empId = up($payload['empId'] ?? '');
@@ -1363,6 +1392,10 @@ function overtime_create(array $payload): array {
   return overtime_row_payload($q->fetch() ?: ['id'=>$id]);
 }
 function overtime_delete(string $id): void {
+  if (function_exists('app') && app()->bound(\App\Services\Overtime\OvertimeRepository::class)) {
+    app(\App\Services\Overtime\OvertimeRepository::class)->delete($id);
+    return;
+  }
   overtime_manage_ctx();
   $id = s($id);
   if($id === '') bad('Invalid overtime id');
@@ -2184,12 +2217,18 @@ function incentive_norm_row(array $r): array {
   ];
 }
 function incentive_fetch_one(PDO $d, string $id): ?array {
+  if (function_exists('app') && app()->bound(\App\Services\Incentives\IncentiveRepository::class)) {
+    return app(\App\Services\Incentives\IncentiveRepository::class)->find($id);
+  }
   $q = $d->prepare("SELECT * FROM incentives WHERE id=? LIMIT 1");
   $q->execute([$id]);
   $row = $q->fetch();
   return $row ? incentive_norm_row($row) : null;
 }
 function incentive_rows(array $query = []): array {
+  if (function_exists('app') && app()->bound(\App\Services\Incentives\IncentiveRepository::class)) {
+    return app(\App\Services\Incentives\IncentiveRepository::class)->all($query);
+  }
   $rows = db()->query("SELECT * FROM incentives ORDER BY incentive_date DESC, created_at DESC, id DESC")->fetchAll();
   $empId = up($query['empId'] ?? '');
   $month = (int)($query['month'] ?? 0);
@@ -2213,6 +2252,9 @@ function incentive_rows(array $query = []): array {
   return $out;
 }
 function incentive_create(array $payload): array {
+  if (function_exists('app') && app()->bound(\App\Services\Incentives\IncentiveRepository::class)) {
+    return app(\App\Services\Incentives\IncentiveRepository::class)->create($payload);
+  }
   $empId = up($payload['empId'] ?? '');
   if($empId === '') bad('empId is required');
   $dateRaw = s($payload['incentiveDate'] ?? ($payload['date'] ?? gmdate('Y-m-d')), gmdate('Y-m-d'));
@@ -2230,6 +2272,10 @@ function incentive_create(array $payload): array {
   return incentive_fetch_one(db(), $id) ?? ['id'=>$id,'empId'=>$empId,'employeeName'=>$name,'incentiveDate'=>$date,'amount'=>$amount,'remarks'=>$remarks,'createdAt'=>$now,'updatedAt'=>$now];
 }
 function incentive_delete(string $id): void {
+  if (function_exists('app') && app()->bound(\App\Services\Incentives\IncentiveRepository::class)) {
+    app(\App\Services\Incentives\IncentiveRepository::class)->delete($id);
+    return;
+  }
   $id = s($id);
   if($id === '') bad('Invalid incentive id');
   $q = db()->prepare("DELETE FROM incentives WHERE id=?");
@@ -2237,6 +2283,10 @@ function incentive_delete(string $id): void {
   if($q->rowCount() === 0) nf('Incentive not found');
 }
 function incentive_clear(): void {
+  if (function_exists('app') && app()->bound(\App\Services\Incentives\IncentiveRepository::class)) {
+    app(\App\Services\Incentives\IncentiveRepository::class)->clear();
+    return;
+  }
   db()->exec("DELETE FROM incentives");
 }
 function incentive_total_for_period(PDO $d, string $empId, int $month, int $year): float {
@@ -2738,7 +2788,12 @@ function pf_challan_delete(string $id): void {
 }
 function pf_challan_clear(): void { kv_set(pf_challan_idx_key(), []); }
 function compliance_challan_idx_key(): string { return 'compliance_challan_index'; }
-function compliance_challan_list(): array { return idx(compliance_challan_idx_key()); }
+function compliance_challan_list(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Compliance\ComplianceRepository::class)) {
+    return app(\App\Services\Compliance\ComplianceRepository::class)->challans();
+  }
+  return idx(compliance_challan_idx_key());
+}
 function compliance_challan_save_all(array $rows): void { kv_set(compliance_challan_idx_key(), array_slice(array_values($rows), 0, 800)); }
 function compliance_challan_norm(array $raw): array {
   $month=(int)($raw['month']??0);
@@ -2777,6 +2832,9 @@ function compliance_challan_norm(array $raw): array {
   ];
 }
 function compliance_challan_upsert(array $raw): array {
+  if (function_exists('app') && app()->bound(\App\Services\Compliance\ComplianceRepository::class)) {
+    return app(\App\Services\Compliance\ComplianceRepository::class)->upsertChallan($raw);
+  }
   $n=compliance_challan_norm($raw);
   $rows=compliance_challan_list();
   $id=s($n['id']??'');
@@ -2817,12 +2875,22 @@ function compliance_challan_upsert(array $raw): array {
   return $row;
 }
 function compliance_challan_delete(string $id): void {
+  if (function_exists('app') && app()->bound(\App\Services\Compliance\ComplianceRepository::class)) {
+    app(\App\Services\Compliance\ComplianceRepository::class)->deleteChallan($id);
+    return;
+  }
   $rows = compliance_challan_list();
   $next = array_values(array_filter($rows, fn($r)=>((string)($r['id']??''))!==$id));
   if(count($next)===count($rows)) nf('Compliance challan not found');
   compliance_challan_save_all($next);
 }
-function compliance_challan_clear(): void { kv_set(compliance_challan_idx_key(), []); }
+function compliance_challan_clear(): void {
+  if (function_exists('app') && app()->bound(\App\Services\Compliance\ComplianceRepository::class)) {
+    app(\App\Services\Compliance\ComplianceRepository::class)->clearChallans();
+    return;
+  }
+  kv_set(compliance_challan_idx_key(), []);
+}
 function invalidate_salary_dependent_sheets(): void {
   // Generated outputs that depend on employee salary/employee master data.
   foreach (['payroll_sheet','pf_sheet','esic_sheet','ecr_sheet','payslip'] as $prefix) {
@@ -4795,9 +4863,24 @@ function compliance_defaults(int $m,int $y): array {
   $ld=(int)cal_days_in_month(CAL_GREGORIAN,$m,$y); $pf=find_period(idx('pf_return_sheet_index'),$m,$y)!==null; $es=find_period(idx('esic_return_sheet_index'),$m,$y)!==null; $py=find_period(idx('payroll_sheet_index'),$m,$y)!==null;
   return [["dueDate"=>sprintf('%04d-%02d-%02d',$y,$m,min(15,$ld)),"task"=>'ESI Return / Payment (Monthly)',"status"=>$es?'Completed':'Pending',"action"=>'View',"notes"=>''],["dueDate"=>sprintf('%04d-%02d-%02d',$y,$m,min(15,$ld)),"task"=>'PF ECR Preparation (Monthly)',"status"=>$pf?'Completed':($py?'In Progress':'Pending'),"action"=>'View',"notes"=>''],["dueDate"=>sprintf('%04d-%02d-%02d',$y,$m,min(20,$ld)),"task"=>'Professional Tax (if applicable)',"status"=>$py?'In Progress':'Pending',"action"=>'View',"notes"=>''],["dueDate"=>sprintf('%04d-%02d-%02d',$y,$m,$ld),"task"=>'LWF Deduction Review (if applicable)',"status"=>$py?'Completed':'Pending',"action"=>'View',"notes"=>'']];
 }
-function compliance_list(int $m,int $y): array { $x=kv_get('compliance_'.period($m,$y),null); return is_array($x)?$x:compliance_defaults($m,$y); }
-function compliance_save(int $m,int $y,array $rows): array { $o=[]; foreach($rows as $r){ $o[]=["dueDate"=>s($r['dueDate']??''),"task"=>s($r['task']??''),"status"=>s($r['status']??'Pending','Pending'),"action"=>s($r['action']??'View','View'),"notes"=>s($r['notes']??'')]; } kv_set('compliance_'.period($m,$y),$o); return $o; }
-function compliance_reset(int $m,int $y): array { $x=compliance_defaults($m,$y); kv_set('compliance_'.period($m,$y),$x); return $x; }
+function compliance_list(int $m,int $y): array {
+  if (function_exists('app') && app()->bound(\App\Services\Compliance\ComplianceRepository::class)) {
+    return app(\App\Services\Compliance\ComplianceRepository::class)->tasks($m, $y);
+  }
+  $x=kv_get('compliance_'.period($m,$y),null); return is_array($x)?$x:compliance_defaults($m,$y);
+}
+function compliance_save(int $m,int $y,array $rows): array {
+  if (function_exists('app') && app()->bound(\App\Services\Compliance\ComplianceRepository::class)) {
+    return app(\App\Services\Compliance\ComplianceRepository::class)->saveTasks($m, $y, $rows);
+  }
+  $o=[]; foreach($rows as $r){ $o[]=["dueDate"=>s($r['dueDate']??''),"task"=>s($r['task']??''),"status"=>s($r['status']??'Pending','Pending'),"action"=>s($r['action']??'View','View'),"notes"=>s($r['notes']??'')]; } kv_set('compliance_'.period($m,$y),$o); return $o;
+}
+function compliance_reset(int $m,int $y): array {
+  if (function_exists('app') && app()->bound(\App\Services\Compliance\ComplianceRepository::class)) {
+    return app(\App\Services\Compliance\ComplianceRepository::class)->resetTasks($m, $y);
+  }
+  $x=compliance_defaults($m,$y); kv_set('compliance_'.period($m,$y),$x); return $x;
+}
 
 function dashboard_summary(int $m,int $y): array {
   $emps=employees_all(); $active=array_values(array_filter($emps,fn($e)=>strtolower((string)$e['status'])!=='inactive')); $pfc=count(array_filter($active,fn($e)=>strtolower((string)$e['pf'])==='yes')); $esic=count(array_filter($active,fn($e)=>strtolower((string)$e['esi'])==='yes'));
