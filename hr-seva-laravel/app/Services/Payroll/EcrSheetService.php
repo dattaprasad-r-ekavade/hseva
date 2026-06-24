@@ -2,34 +2,37 @@
 
 namespace App\Services\Payroll;
 
+use App\Services\Sheets\SheetCrudService;
+
 class EcrSheetService
 {
+    public function __construct(
+        private EcrSheetGenerator $generator,
+        private SheetCrudService $sheets,
+    ) {}
+
     public function generate(int $month, int $year): array
     {
-        return ['sheet' => ecr_generate($month, $year)];
+        return ['sheet' => $this->generator->generate($month, $year)];
     }
 
     public function sheets(): array
     {
-        return ['rows' => idx('ecr_sheet_index')];
+        return $this->sheets->index('ecr_sheet');
     }
 
     public function show(string $id): array
     {
-        return ['sheet' => get_sheet(idkey('ecr_sheet', $id), 'ECR sheet not found')];
+        return $this->sheets->show('ecr_sheet', $id, 'ECR sheet not found');
     }
 
     public function destroy(string $id): array
     {
-        del_sheet('ecr_sheet', $id);
-
-        return ['status' => 'deleted'];
+        return $this->sheets->destroy('ecr_sheet', $id);
     }
 
     public function clear(): array
     {
-        clr_sheet('ecr_sheet');
-
-        return ['status' => 'cleared'];
+        return $this->sheets->clear('ecr_sheet');
     }
 }

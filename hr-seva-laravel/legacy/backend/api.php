@@ -3992,6 +3992,9 @@ function att_month_key(int $m,int $y): string { return sprintf('attendance_daily
 function att_daily_list(int $m,int $y): array { $map=kv_get(att_month_key($m,$y),[]); if(!is_array($map)) $map=[]; $out=[]; foreach($map as $k=>$st){ $p=explode('|',(string)$k,2); if(count($p)===2) $out[]=["empId"=>$p[0],"date"=>$p[1],"status"=>strtoupper((string)$st)]; } usort($out,fn($a,$b)=>strcmp($a['empId'].$a['date'],$b['empId'].$b['date'])); return $out; }
 function att_daily_upsert(int $m,int $y,array $records): array { $map=kv_get(att_month_key($m,$y),[]); if(!is_array($map)) $map=[]; $n=0; foreach($records as $r){ $e=up($r['empId']??''); $d=s($r['date']??''); if($e===''||$d==='') continue; $map[$e.'|'.$d]=strtoupper(s($r['status']??'P','P')); $n++; } kv_set(att_month_key($m,$y),$map); return ["upserted"=>$n]; }
 function att_generate(int $m,int $y,bool $fill=true,bool $sunday=true): array {
+  if (function_exists('app') && app()->bound(\App\Services\Attendance\AttendanceGenerator::class)) {
+    return app(\App\Services\Attendance\AttendanceGenerator::class)->generate($m, $y, $fill, $sunday);
+  }
   $clientId = req_client_id();
   $daily=kv_get(att_month_key($m,$y),[]); if(!is_array($daily)) $daily=[]; $emps=employees_active_all(); $dim=(int)cal_days_in_month(CAL_GREGORIAN,$m,$y); $rows=[];
   foreach($emps as $e){ $c=["P"=>0.0,"A"=>0.0,"WO"=>0.0,"CL"=>0.0,"SL"=>0.0,"EL"=>0.0,"LOP"=>0.0];
@@ -4052,10 +4055,18 @@ function ovr_all(): array { $x=kv_get('payroll_overrides',[]); return is_array($
 function ovr_set(array $x): void { kv_set('payroll_overrides',$x); }
 
 function payroll_resolve(int $m,int $y): array {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\PayrollSheetResolver::class)) {
+    return app(\App\Services\Payroll\PayrollSheetResolver::class)->payroll($m, $y);
+  }
   $it=find_period(idx('payroll_sheet_index'),$m,$y); if($it) return get_sheet(idkey('payroll_sheet',(string)$it['id']),'Payroll sheet not found');
   return payroll_generate($m,$y,'LOP');
 }
-function attendance_resolve(int $m,int $y): array { $it=find_period(idx('attendance_sheet_index'),$m,$y); if($it) return get_sheet(idkey('attendance_sheet',(string)$it['id']),'Attendance sheet not found'); return att_generate($m,$y,true,true); }
+function attendance_resolve(int $m,int $y): array {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\PayrollSheetResolver::class)) {
+    return app(\App\Services\Payroll\PayrollSheetResolver::class)->attendance($m, $y);
+  }
+  $it=find_period(idx('attendance_sheet_index'),$m,$y); if($it) return get_sheet(idkey('attendance_sheet',(string)$it['id']),'Attendance sheet not found'); return att_generate($m,$y,true,true);
+}
 function fnf_paid_lop_till_exit(string $empId,string $exitDate): ?array {
   $eid = up($empId);
   $exit = trim($exitDate);
@@ -4280,6 +4291,9 @@ function payroll_generate(int $m,int $y,string $mode='LOP'): array {
 }
 
 function pf_generate(int $m,int $y): array {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\PfSheetGenerator::class)) {
+    return app(\App\Services\Payroll\PfSheetGenerator::class)->generate($m, $y);
+  }
   $clientId = req_client_id();
   $p=payroll_resolve($m,$y); $a=attendance_resolve($m,$y); $c=control_get(); $rows=[]; $ov=ovr_all();
   $attMap = [];
@@ -4323,6 +4337,9 @@ function pf_generate(int $m,int $y): array {
   return $sheet;
 }
 function pf_return_generate(int $m,int $y): array {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\PfReturnGenerator::class)) {
+    return app(\App\Services\Payroll\PfReturnGenerator::class)->generate($m, $y);
+  }
   $clientId = req_client_id();
   $it=find_period(idx('pf_sheet_index'),$m,$y); $pf=$it?get_sheet(idkey('pf_sheet',(string)$it['id']),'PF sheet not found'):pf_generate($m,$y); $rows=[];
   $emap=[]; foreach(employees_active_all() as $e){ $emap[up($e['id'] ?? '')] = $e; }
@@ -4347,6 +4364,9 @@ function pf_return_generate(int $m,int $y): array {
   return $sheet;
 }
 function esic_generate(int $m,int $y): array {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\EsicSheetGenerator::class)) {
+    return app(\App\Services\Payroll\EsicSheetGenerator::class)->generate($m, $y);
+  }
   $clientId = req_client_id();
   $p=payroll_resolve($m,$y); $c=control_get(); $rows=[];
   $emap=[]; foreach(employees_active_all() as $e){ $emap[up($e['id'] ?? '')] = $e; }
@@ -4430,6 +4450,9 @@ function esic_generate(int $m,int $y): array {
   return $sheet;
 }
 function ecr_generate(int $m,int $y): array {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\EcrSheetGenerator::class)) {
+    return app(\App\Services\Payroll\EcrSheetGenerator::class)->generate($m, $y);
+  }
   $clientId = req_client_id();
   $it=find_period(idx('pf_sheet_index'),$m,$y); $pf=$it?get_sheet(idkey('pf_sheet',(string)$it['id']),'PF sheet not found'):pf_generate($m,$y); $rows=[]; $ctrl = control_get();
   foreach(($pf['rows']??[]) as $r){
@@ -4454,6 +4477,9 @@ function ecr_generate(int $m,int $y): array {
   return $sheet;
 }
 function esic_return_generate(int $m,int $y): array {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\EsicReturnGenerator::class)) {
+    return app(\App\Services\Payroll\EsicReturnGenerator::class)->generate($m, $y);
+  }
   $clientId = req_client_id();
   $it=find_period(idx('esic_sheet_index'),$m,$y); $es=$it?get_sheet(idkey('esic_sheet',(string)$it['id']),'ESIC sheet not found'):esic_generate($m,$y); $rows=$es['rows']??[];
   $sheet = save_sheet('esic_return_sheet',$m,$y,$rows,["totalWage"=>round(array_sum(array_column($rows,'ESI_Wages')),2),"totalEE"=>round(array_sum(array_column($rows,'ESI_EE')),2),"totalER"=>round(array_sum(array_column($rows,'ESI_ER')),2),"totalESI"=>round(array_sum(array_column($rows,'Total_ESI')),2)]);

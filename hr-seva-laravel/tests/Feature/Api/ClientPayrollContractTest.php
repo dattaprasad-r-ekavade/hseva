@@ -17,14 +17,6 @@ class ClientPayrollContractTest extends TestCase
         $this->resetHrDatabases();
     }
 
-    private function superAdminToken(): string
-    {
-        return (string) $this->postJson('/api/auth/login', [
-            'username' => 'admin@hrseva.com',
-            'password' => '123456',
-        ])->json('token');
-    }
-
     public function test_create_client_and_list(): void
     {
         $token = $this->superAdminToken();

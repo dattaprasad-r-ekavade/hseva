@@ -2,34 +2,37 @@
 
 namespace App\Services\Payroll;
 
+use App\Services\Sheets\SheetCrudService;
+
 class PfSheetService
 {
+    public function __construct(
+        private PfSheetGenerator $generator,
+        private SheetCrudService $sheets,
+    ) {}
+
     public function generate(int $month, int $year): array
     {
-        return ['sheet' => pf_generate($month, $year)];
+        return ['sheet' => $this->generator->generate($month, $year)];
     }
 
     public function sheets(): array
     {
-        return ['rows' => idx('pf_sheet_index')];
+        return $this->sheets->index('pf_sheet');
     }
 
     public function show(string $id): array
     {
-        return ['sheet' => get_sheet(idkey('pf_sheet', $id), 'PF sheet not found')];
+        return $this->sheets->show('pf_sheet', $id, 'PF sheet not found');
     }
 
     public function destroy(string $id): array
     {
-        del_sheet('pf_sheet', $id);
-
-        return ['status' => 'deleted'];
+        return $this->sheets->destroy('pf_sheet', $id);
     }
 
     public function clear(): array
     {
-        clr_sheet('pf_sheet');
-
-        return ['status' => 'cleared'];
+        return $this->sheets->clear('pf_sheet');
     }
 }
