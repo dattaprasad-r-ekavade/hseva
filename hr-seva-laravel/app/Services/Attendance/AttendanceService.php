@@ -11,16 +11,17 @@ class AttendanceService
         private AttendanceGenerator $generator,
         private SheetCrudService $sheets,
         private SheetStorageService $storage,
+        private AttendanceDailyRepository $daily,
     ) {}
 
     public function dailyList(int $month, int $year): array
     {
-        return att_daily_list($month, $year);
+        return $this->daily->list($month, $year);
     }
 
     public function dailyUpsert(int $month, int $year, array $records): array
     {
-        return att_daily_upsert($month, $year, $records);
+        return $this->daily->upsert($month, $year, $records);
     }
 
     public function generate(int $month, int $year, bool $fillDefault = true, bool $sundayWeeklyOff = true): array

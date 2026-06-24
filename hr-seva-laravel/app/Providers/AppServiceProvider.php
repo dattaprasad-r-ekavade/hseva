@@ -3,12 +3,17 @@
 namespace App\Providers;
 
 use App\Services\Auth\AuthLoginRepository;
+use App\Services\Auth\AuthUsersRepository;
+use App\Services\Admin\SmtpSettingsRepository;
+use App\Services\Attendance\AttendanceDailyRepository;
 use App\Services\Compliance\ComplianceRepository;
+use App\Services\Dashboard\DashboardRepository;
 use App\Services\Compliance\ComplianceService;
 use App\Services\FaceAttendance\FaceAttendanceRepository;
 use App\Services\FaceAttendance\FaceAttendanceService;
 use App\Services\Payroll\PayrollGenerator;
 use App\Services\Payroll\StatutoryCalculator;
+use App\Services\Payroll\StatutoryChallanRepository;
 use App\Services\Storage\SheetStorageService;
 use App\Services\Storage\TenantSettingsService;
 use App\Services\Tenant\TenantManager;
@@ -48,7 +53,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\Advances\AdvanceRepository::class);
         $this->app->singleton(\App\Services\Loans\LoanRepository::class);
         $this->app->singleton(ComplianceRepository::class);
+        $this->app->singleton(AuthUsersRepository::class);
         $this->app->singleton(AuthLoginRepository::class);
+        $this->app->singleton(SmtpSettingsRepository::class);
+        $this->app->singleton(AttendanceDailyRepository::class);
+        $this->app->singleton(StatutoryChallanRepository::class);
+        $this->app->singleton(DashboardRepository::class);
         $this->app->singleton(FaceAttendanceRepository::class);
         $this->app->singleton(FaceAttendanceService::class);
         $this->app->singleton(ComplianceService::class);

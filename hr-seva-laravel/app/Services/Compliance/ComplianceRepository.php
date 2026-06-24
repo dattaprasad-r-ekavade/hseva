@@ -123,7 +123,7 @@ class ComplianceRepository
         $this->settings->set(self::CHALLAN_INDEX_KEY, []);
     }
 
-    private function defaultTasks(int $month, int $year): array
+    public function defaultTasks(int $month, int $year): array
     {
         $ld = (int) cal_days_in_month(CAL_GREGORIAN, $month, $year);
         $pf = $this->sheets->findPeriod('pf_return_sheet', $month, $year) !== null;

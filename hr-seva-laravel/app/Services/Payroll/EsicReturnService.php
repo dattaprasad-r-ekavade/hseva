@@ -9,6 +9,7 @@ class EsicReturnService
     public function __construct(
         private EsicReturnGenerator $generator,
         private SheetCrudService $sheets,
+        private StatutoryChallanRepository $challans,
     ) {}
 
     public function generate(int $month, int $year): array
@@ -38,24 +39,24 @@ class EsicReturnService
 
     public function challans(): array
     {
-        return ['rows' => esic_challan_list()];
+        return ['rows' => $this->challans->esicList()];
     }
 
     public function storeChallan(array $body): array
     {
-        return ['row' => esic_challan_create($body)];
+        return ['row' => $this->challans->esicCreate($body)];
     }
 
     public function destroyChallan(string $id): array
     {
-        esic_challan_delete($id);
+        $this->challans->esicDelete($id);
 
         return ['status' => 'deleted'];
     }
 
     public function clearChallans(): array
     {
-        esic_challan_clear();
+        $this->challans->esicClear();
 
         return ['status' => 'cleared'];
     }

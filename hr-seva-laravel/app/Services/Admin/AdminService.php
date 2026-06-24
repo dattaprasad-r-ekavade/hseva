@@ -6,7 +6,10 @@ use App\Services\Enquiries\EnquiryRepository;
 
 class AdminService
 {
-    public function __construct(private EnquiryRepository $enquiries) {}
+    public function __construct(
+        private EnquiryRepository $enquiries,
+        private SmtpSettingsRepository $smtp,
+    ) {}
 
     public function enquiries(): array
     {
@@ -32,16 +35,16 @@ class AdminService
 
     public function smtpSettings(): array
     {
-        return ['row' => smtp_settings_get()];
+        return ['row' => $this->smtp->get()];
     }
 
     public function updateSmtpSettings(array $payload): array
     {
-        return ['row' => smtp_settings_put($payload)];
+        return ['row' => $this->smtp->put($payload)];
     }
 
     public function testSmtp(array $payload): array
     {
-        return smtp_test_send($payload);
+        return $this->smtp->testSend($payload);
     }
 }

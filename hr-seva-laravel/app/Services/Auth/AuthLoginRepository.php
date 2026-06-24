@@ -4,7 +4,10 @@ namespace App\Services\Auth;
 
 class AuthLoginRepository
 {
-    public function __construct(private JwtService $jwt) {}
+    public function __construct(
+        private JwtService $jwt,
+        private AuthUsersRepository $users,
+    ) {}
 
     public function login(string $username, string $password): array
     {
@@ -14,7 +17,7 @@ class AuthLoginRepository
             bad('username and password are required');
         }
         login_rate_limit_check($u);
-        $users = auth_users();
+        $users = $this->users->all();
         $usersChanged = false;
         foreach ($users as $idx => $x) {
             if (strtolower((string) ($x['username'] ?? '')) === $u && auth_user_verify($x, $p)) {
@@ -24,7 +27,7 @@ class AuthLoginRepository
                     $usersChanged = true;
                 }
                 if ($usersChanged) {
-                    auth_users_save($users);
+                    $this->users->save($users);
                 }
                 login_rate_limit_success($u);
                 $now = time();
@@ -136,5 +139,43 @@ class AuthLoginRepository
         }
         login_rate_limit_fail($u);
         j(['detail' => 'Invalid credentials'], 401);
+    }
+
+    public function forgot(array $raw): array
+    {
+        $email = mail_valid_email_or_blank((string) ($raw['email'] ?? ''));
+        if ($email === '') {
+            bad('email is required');
+        }
+
+        $subject = 'HR Seva password assistance request';
+        $matched = false;
+        $clientCtx = null;
+        $q = central_db()->prepare('SELECT id, company_name, user_id FROM clients WHERE lower(user_id)=lower(?) LIMIT 1');
+        $q->execute([$email]);
+        $client = $q->fetch();
+
+        if ($client) {
+            $matched = true;
+            $clientCtx = client_contact_context((int) $client['id']);
+            $facts = ['Company' => (string) ($client['company_name'] ?? ''), 'Username' => (string) ($client['user_id'] ?? '')];
+            mail_send_logged('forgot_password_customer', 'client_'.(int) $client['id'], (int) $client['id'], [$email], $subject, mail_shell_html('Password Assistance Request', 'We received a password assistance request for your HR Seva client account.', $facts, 'For security, our team will help you with the next step.'));
+        } else {
+            $staff = staff_user_get_by_username($email);
+            if ($staff) {
+                $matched = true;
+                $clientCtx = client_contact_context((int) ($staff['clientId'] ?? 0));
+                $facts = ['Username' => (string) ($staff['username'] ?? ''), 'Employee ID' => (string) ($staff['empId'] ?? ''), 'Company' => $clientCtx['companyName']];
+                mail_send_logged('forgot_password_customer', 'staff_'.(int) ($staff['id'] ?? 0), (int) ($staff['clientId'] ?? 0), [$email], $subject, mail_shell_html('Password Assistance Request', 'We received a password assistance request for your HR Seva staff account.', $facts, 'For security, our team will help you with the next step.'));
+            }
+        }
+
+        $facts = ['Requested Email' => $email, 'Matched Account' => $matched ? 'Yes' : 'No'];
+        if ($clientCtx) {
+            $facts['Company'] = (string) ($clientCtx['companyName'] ?? '');
+        }
+        mail_send_admins('forgot_password_admin', $email, (int) ($clientCtx['clientId'] ?? 0), 'Password assistance request | HR Seva', 'Password assistance requested', 'A password assistance request was submitted.', $facts);
+
+        return ['ok' => true, 'message' => 'If this email is registered, reset instructions will be sent.'];
     }
 }

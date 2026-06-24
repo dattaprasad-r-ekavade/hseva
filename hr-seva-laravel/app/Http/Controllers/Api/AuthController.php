@@ -44,7 +44,7 @@ class AuthController extends Controller
         try {
             $GLOBALS['__hr_legacy_request_body'] = $request->getContent();
 
-            return response()->json(auth_forgot($request->json()->all()), 200, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($this->auth->forgot($request->json()->all()), 200, [], JSON_UNESCAPED_UNICODE);
         } catch (LegacyApiResponseException $e) {
             return response()->json($e->payload, $e->status, [], JSON_UNESCAPED_UNICODE);
         }

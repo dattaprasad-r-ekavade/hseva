@@ -9,6 +9,7 @@ class PfReturnService
     public function __construct(
         private PfReturnGenerator $generator,
         private SheetCrudService $sheets,
+        private StatutoryChallanRepository $challans,
     ) {}
 
     public function generate(int $month, int $year): array
@@ -38,24 +39,24 @@ class PfReturnService
 
     public function challans(): array
     {
-        return ['rows' => pf_challan_list()];
+        return ['rows' => $this->challans->pfList()];
     }
 
     public function storeChallan(array $body): array
     {
-        return ['row' => pf_challan_create($body)];
+        return ['row' => $this->challans->pfCreate($body)];
     }
 
     public function destroyChallan(string $id): array
     {
-        pf_challan_delete($id);
+        $this->challans->pfDelete($id);
 
         return ['status' => 'deleted'];
     }
 
     public function clearChallans(): array
     {
-        pf_challan_clear();
+        $this->challans->pfClear();
 
         return ['status' => 'cleared'];
     }

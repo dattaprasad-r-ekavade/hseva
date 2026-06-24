@@ -2,12 +2,11 @@
 
 namespace App\Services\Auth;
 
-use App\Support\HrSevaDefaults;
-
 class AuthService
 {
     public function __construct(
         private AuthLoginRepository $loginRepository,
+        private AuthUsersRepository $users,
     ) {}
 
     public function login(string $username, string $password): array
@@ -35,14 +34,11 @@ class AuthService
 
     public function seedSuperAdmins(): void
     {
-        $users = array_map(fn ($u) => [
-            'username' => $u['username'],
-            'password' => $u['password'],
-            'passwordHash' => password_hash($u['password'], PASSWORD_DEFAULT),
-            'name' => $u['name'],
-            'role' => $u['role'],
-        ], HrSevaDefaults::AUTH_USERS);
+        $this->users->seedSuperAdmins();
+    }
 
-        kv_set_on(central_db(), 'auth_users', $users);
+    public function forgot(array $data): array
+    {
+        return $this->loginRepository->forgot($data);
     }
 }

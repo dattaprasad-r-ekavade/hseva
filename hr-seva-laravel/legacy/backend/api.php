@@ -1951,6 +1951,10 @@ function mail_sheet_event(string $moduleBase, int $clientId, array $sheet, strin
   mail_send_admins($moduleBase . '_admin', (string)($sheet['id'] ?? $sheet['period'] ?? $label), $clientId, $subject, $label . ' generated', 'A generated sheet is ready in the system.', $facts);
 }
 function auth_forgot(array $raw): array {
+  if (function_exists('app') && app()->bound(\App\Services\Auth\AuthLoginRepository::class)) {
+    return app(\App\Services\Auth\AuthLoginRepository::class)->forgot($raw);
+  }
+
   $email = mail_valid_email_or_blank((string)($raw['email'] ?? ''));
   if ($email === '') bad('email is required');
   $subject = 'HR Seva password assistance request';
@@ -2839,7 +2843,13 @@ function clr_sheet(string $prefix): void {
   $ik=$prefix.'_index'; foreach(idx($ik) as $r){ if(!empty($r['id'])) db()->prepare("DELETE FROM app_kv WHERE key=?")->execute([idkey($prefix,(string)$r['id'])]); } db()->prepare("DELETE FROM app_kv WHERE key=?")->execute([$ik]);
 }
 function esic_challan_idx_key(): string { return 'esic_return_challan_index'; }
-function esic_challan_list(): array { return idx(esic_challan_idx_key()); }
+function esic_challan_list(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\StatutoryChallanRepository::class)) {
+    return app(\App\Services\Payroll\StatutoryChallanRepository::class)->esicList();
+  }
+
+  return idx(esic_challan_idx_key());
+}
 function esic_challan_save_all(array $rows): void { kv_set(esic_challan_idx_key(), array_slice(array_values($rows), 0, 500)); }
 function esic_challan_norm(array $raw): array {
   $month=(int)($raw['month']??0);
@@ -2864,6 +2874,10 @@ function esic_challan_norm(array $raw): array {
   ];
 }
 function esic_challan_create(array $raw): array {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\StatutoryChallanRepository::class)) {
+    return app(\App\Services\Payroll\StatutoryChallanRepository::class)->esicCreate($raw);
+  }
+
   $n=esic_challan_norm($raw);
   $id = period($n['month'],$n['year']).'-'.time().'-'.substr(bin2hex(random_bytes(3)),0,6);
   $row = $n;
@@ -2875,14 +2889,32 @@ function esic_challan_create(array $raw): array {
   return $row;
 }
 function esic_challan_delete(string $id): void {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\StatutoryChallanRepository::class)) {
+    app(\App\Services\Payroll\StatutoryChallanRepository::class)->esicDelete($id);
+    return;
+  }
+
   $rows = esic_challan_list();
   $next = array_values(array_filter($rows, fn($r)=>((string)($r['id']??''))!==$id));
   if(count($next)===count($rows)) nf('ESIC challan not found');
   esic_challan_save_all($next);
 }
-function esic_challan_clear(): void { kv_set(esic_challan_idx_key(), []); }
+function esic_challan_clear(): void {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\StatutoryChallanRepository::class)) {
+    app(\App\Services\Payroll\StatutoryChallanRepository::class)->esicClear();
+    return;
+  }
+
+  kv_set(esic_challan_idx_key(), []);
+}
 function pf_challan_idx_key(): string { return 'pf_return_challan_index'; }
-function pf_challan_list(): array { return idx(pf_challan_idx_key()); }
+function pf_challan_list(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\StatutoryChallanRepository::class)) {
+    return app(\App\Services\Payroll\StatutoryChallanRepository::class)->pfList();
+  }
+
+  return idx(pf_challan_idx_key());
+}
 function pf_challan_save_all(array $rows): void { kv_set(pf_challan_idx_key(), array_slice(array_values($rows), 0, 500)); }
 function pf_challan_norm(array $raw): array {
   $month=(int)($raw['month']??0);
@@ -2907,6 +2939,10 @@ function pf_challan_norm(array $raw): array {
   ];
 }
 function pf_challan_create(array $raw): array {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\StatutoryChallanRepository::class)) {
+    return app(\App\Services\Payroll\StatutoryChallanRepository::class)->pfCreate($raw);
+  }
+
   $n=pf_challan_norm($raw);
   $id = period($n['month'],$n['year']).'-'.time().'-'.substr(bin2hex(random_bytes(3)),0,6);
   $row = $n;
@@ -2918,12 +2954,24 @@ function pf_challan_create(array $raw): array {
   return $row;
 }
 function pf_challan_delete(string $id): void {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\StatutoryChallanRepository::class)) {
+    app(\App\Services\Payroll\StatutoryChallanRepository::class)->pfDelete($id);
+    return;
+  }
+
   $rows = pf_challan_list();
   $next = array_values(array_filter($rows, fn($r)=>((string)($r['id']??''))!==$id));
   if(count($next)===count($rows)) nf('PF challan not found');
   pf_challan_save_all($next);
 }
-function pf_challan_clear(): void { kv_set(pf_challan_idx_key(), []); }
+function pf_challan_clear(): void {
+  if (function_exists('app') && app()->bound(\App\Services\Payroll\StatutoryChallanRepository::class)) {
+    app(\App\Services\Payroll\StatutoryChallanRepository::class)->pfClear();
+    return;
+  }
+
+  kv_set(pf_challan_idx_key(), []);
+}
 function compliance_challan_idx_key(): string { return 'compliance_challan_index'; }
 function compliance_challan_list(): array {
   if (function_exists('app') && app()->bound(\App\Services\Compliance\ComplianceRepository::class)) {
@@ -3170,6 +3218,10 @@ function leaves_summary(int $m,int $y): array {
 }
 
 function control_get(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Storage\TenantSettingsService::class)) {
+    return app(\App\Services\Storage\TenantSettingsService::class)->getControlSettings();
+  }
+
   $x = kv_get('control_settings', null);
   if(!is_array($x)) return ["__lastSaved"=>null, "__configured"=>false];
   $u = null;
@@ -3183,8 +3235,18 @@ function control_get(): array {
   }
   return array_merge($x, ["__lastSaved"=>$u, "__configured"=>true]);
 }
-function control_put(array $p): array { kv_set('control_settings',$p); return array_merge(DEFAULT_CONTROL,$p,["__lastSaved"=>now_iso()]); }
+function control_put(array $p): array {
+  if (function_exists('app') && app()->bound(\App\Services\Storage\TenantSettingsService::class)) {
+    return app(\App\Services\Storage\TenantSettingsService::class)->putControlSettings($p);
+  }
+
+  kv_set('control_settings',$p); return array_merge(DEFAULT_CONTROL,$p,["__lastSaved"=>now_iso()]);
+}
 function profile_get(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Storage\TenantSettingsService::class)) {
+    return app(\App\Services\Storage\TenantSettingsService::class)->getCompanyProfile();
+  }
+
   $x=kv_get('company_profile',null);
   if(!is_array($x)){
     $cid = req_client_id();
@@ -3209,7 +3271,13 @@ function profile_get(): array {
   $u=db()->query("SELECT updated_at FROM app_kv WHERE key='company_profile'")->fetchColumn() ?: null;
   return array_merge(DEFAULT_PROFILE,$x,["__lastSaved"=>$u]);
 }
-function profile_put(array $p): array { kv_set('company_profile',$p); return array_merge(DEFAULT_PROFILE,$p,["__lastSaved"=>now_iso()]); }
+function profile_put(array $p): array {
+  if (function_exists('app') && app()->bound(\App\Services\Storage\TenantSettingsService::class)) {
+    return app(\App\Services\Storage\TenantSettingsService::class)->putCompanyProfile($p);
+  }
+
+  kv_set('company_profile',$p); return array_merge(DEFAULT_PROFILE,$p,["__lastSaved"=>now_iso()]);
+}
 function smtp_settings_default(): array {
   $cfg = hr_mail_config();
   return [
@@ -3229,6 +3297,10 @@ function smtp_settings_default(): array {
   ];
 }
 function smtp_settings_get(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Admin\SmtpSettingsRepository::class)) {
+    return app(\App\Services\Admin\SmtpSettingsRepository::class)->get();
+  }
+
   require_super_admin();
   $base = smtp_settings_default();
   $st = central_db()->prepare("SELECT value, updated_at FROM app_kv WHERE key=? LIMIT 1");
@@ -3254,6 +3326,10 @@ function smtp_settings_get(): array {
   ];
 }
 function smtp_settings_put(array $raw): array {
+  if (function_exists('app') && app()->bound(\App\Services\Admin\SmtpSettingsRepository::class)) {
+    return app(\App\Services\Admin\SmtpSettingsRepository::class)->put($raw);
+  }
+
   require_super_admin();
   $password = s($raw['password'] ?? '');
   $username = s($raw['username'] ?? '');
@@ -3294,6 +3370,10 @@ function kv_get_on(PDO $d, string $k, $default = null) {
   return ($v === null && (string)$r['value'] !== 'null') ? $default : $v;
 }
 function smtp_test_send(array $raw): array {
+  if (function_exists('app') && app()->bound(\App\Services\Admin\SmtpSettingsRepository::class)) {
+    return app(\App\Services\Admin\SmtpSettingsRepository::class)->testSend($raw);
+  }
+
   require_super_admin();
   $to = s($raw['email'] ?? '');
   if($to === '') bad('Test email is required');
@@ -4204,6 +4284,10 @@ function staff_user_delete(int $clientId, string $empId): void {
 }
 
 function auth_users(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Auth\AuthUsersRepository::class)) {
+    return app(\App\Services\Auth\AuthUsersRepository::class)->all();
+  }
+
   $st = central_db()->prepare("SELECT value FROM app_kv WHERE key=?");
   $st->execute(['auth_users']);
   $r = $st->fetch();
@@ -4234,6 +4318,11 @@ function auth_users(): array {
   return $rows;
 }
 function auth_users_save(array $rows): void {
+  if (function_exists('app') && app()->bound(\App\Services\Auth\AuthUsersRepository::class)) {
+    app(\App\Services\Auth\AuthUsersRepository::class)->save($rows);
+    return;
+  }
+
   kv_set_on(central_db(), 'auth_users', array_values($rows));
 }
 function auth_user_verify(array $u, string $password): bool {
@@ -4370,8 +4459,20 @@ function auth_login(string $u,string $p): array {
 }
 
 function att_month_key(int $m,int $y): string { return sprintf('attendance_daily_%04d-%02d',$y,$m); }
-function att_daily_list(int $m,int $y): array { $map=kv_get(att_month_key($m,$y),[]); if(!is_array($map)) $map=[]; $out=[]; foreach($map as $k=>$st){ $p=explode('|',(string)$k,2); if(count($p)===2) $out[]=["empId"=>$p[0],"date"=>$p[1],"status"=>strtoupper((string)$st)]; } usort($out,fn($a,$b)=>strcmp($a['empId'].$a['date'],$b['empId'].$b['date'])); return $out; }
-function att_daily_upsert(int $m,int $y,array $records): array { $map=kv_get(att_month_key($m,$y),[]); if(!is_array($map)) $map=[]; $n=0; foreach($records as $r){ $e=up($r['empId']??''); $d=s($r['date']??''); if($e===''||$d==='') continue; $map[$e.'|'.$d]=strtoupper(s($r['status']??'P','P')); $n++; } kv_set(att_month_key($m,$y),$map); return ["upserted"=>$n]; }
+function att_daily_list(int $m,int $y): array {
+  if (function_exists('app') && app()->bound(\App\Services\Attendance\AttendanceDailyRepository::class)) {
+    return app(\App\Services\Attendance\AttendanceDailyRepository::class)->list($m, $y);
+  }
+
+  $map=kv_get(att_month_key($m,$y),[]); if(!is_array($map)) $map=[]; $out=[]; foreach($map as $k=>$st){ $p=explode('|',(string)$k,2); if(count($p)===2) $out[]=["empId"=>$p[0],"date"=>$p[1],"status"=>strtoupper((string)$st)]; } usort($out,fn($a,$b)=>strcmp($a['empId'].$a['date'],$b['empId'].$b['date'])); return $out;
+}
+function att_daily_upsert(int $m,int $y,array $records): array {
+  if (function_exists('app') && app()->bound(\App\Services\Attendance\AttendanceDailyRepository::class)) {
+    return app(\App\Services\Attendance\AttendanceDailyRepository::class)->upsert($m, $y, $records);
+  }
+
+  $map=kv_get(att_month_key($m,$y),[]); if(!is_array($map)) $map=[]; $n=0; foreach($records as $r){ $e=up($r['empId']??''); $d=s($r['date']??''); if($e===''||$d==='') continue; $map[$e.'|'.$d]=strtoupper(s($r['status']??'P','P')); $n++; } kv_set(att_month_key($m,$y),$map); return ["upserted"=>$n];
+}
 function att_generate(int $m,int $y,bool $fill=true,bool $sunday=true): array {
   if (function_exists('app') && app()->bound(\App\Services\Attendance\AttendanceGenerator::class)) {
     return app(\App\Services\Attendance\AttendanceGenerator::class)->generate($m, $y, $fill, $sunday);
@@ -5196,6 +5297,10 @@ function compliance_reset(int $m,int $y): array {
 }
 
 function dashboard_summary(int $m,int $y): array {
+  if (function_exists('app') && app()->bound(\App\Services\Dashboard\DashboardRepository::class)) {
+    return app(\App\Services\Dashboard\DashboardRepository::class)->summary($m, $y);
+  }
+
   $emps=employees_all(); $active=array_values(array_filter($emps,fn($e)=>strtolower((string)$e['status'])!=='inactive')); $pfc=count(array_filter($active,fn($e)=>strtolower((string)$e['pf'])==='yes')); $esic=count(array_filter($active,fn($e)=>strtolower((string)$e['esi'])==='yes'));
   $pit=find_period(idx('payroll_sheet_index'),$m,$y); $prows=[]; if($pit){ $sh=kv_get(idkey('payroll_sheet',(string)$pit['id']),null); if(is_array($sh)&&is_array($sh['rows']??null)) $prows=$sh['rows']; }
   $cnt=count($prows)?:count($active); $avg=count($prows)?round(array_sum(array_map(fn($r)=>f($r['paidDays']??0),$prows))/count($prows),1):0.0; $gross=round(array_sum(array_map(fn($r)=>f($r['earnedGross']??0),$prows)),2); $ded=round(array_sum(array_map(fn($r)=>f($r['totalDeductions']??0),$prows)),2); $net=round(array_sum(array_map(fn($r)=>f($r['netPayable']??0),$prows)),2);
