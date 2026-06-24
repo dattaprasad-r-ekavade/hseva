@@ -4488,6 +4488,9 @@ function esic_return_generate(int $m,int $y): array {
 }
 
 function fnf_generate(array $p): array {
+  if (function_exists('app') && app()->bound(\App\Services\Fnf\FnfGenerator::class)) {
+    return app(\App\Services\Fnf\FnfGenerator::class)->generate($p);
+  }
   $clientId = req_client_id();
   $eid=up($p['empId']??''); $exit=s($p['exitDate']??''); if($eid===''||$exit==='') bad('empId and exitDate are required');
   $resignation=s($p['resignationDate']??($p['resignation_date']??$exit));
@@ -4550,6 +4553,9 @@ function fnf_generate(array $p): array {
   return $row;
 }
 function gratuity_generate(array $p): array {
+  if (function_exists('app') && app()->bound(\App\Services\Gratuity\GratuityGenerator::class)) {
+    return app(\App\Services\Gratuity\GratuityGenerator::class)->generate($p);
+  }
   $clientId = req_client_id();
   $ctrl = control_get();
   $mode = gratuity_mode_norm($ctrl['gratuityMode'] ?? 'after_5yr');
@@ -4668,6 +4674,9 @@ function bonus_calc_amount(float $minimumWage, float $months, float $bonusPct): 
   return round(max(0.0, $minimumWage) * max(0.0, $months) * max(0.0, $bonusPct) / 100.0, 2);
 }
 function bonus_generate_preview(int $m,int $y): array {
+  if (function_exists('app') && app()->bound(\App\Services\Bonus\BonusGenerator::class)) {
+    return app(\App\Services\Bonus\BonusGenerator::class)->generatePreview($m, $y);
+  }
   if($m < 1 || $m > 12 || $y < 2000) bad('month and year are required');
   $ctrl = bonus_control_defaults(control_get());
   if(!$ctrl['enabled']) bad('Bonus module is disabled in control page');
@@ -4706,6 +4715,9 @@ function bonus_rows_norm(array $rows): array {
   return $out;
 }
 function bonus_save_sheet(array $p): array {
+  if (function_exists('app') && app()->bound(\App\Services\Bonus\BonusGenerator::class)) {
+    return app(\App\Services\Bonus\BonusGenerator::class)->saveSheet($p);
+  }
   $clientId = req_client_id();
   $m = (int)($p['month'] ?? 0);
   $y = (int)($p['year'] ?? 0);
@@ -4717,6 +4729,9 @@ function bonus_save_sheet(array $p): array {
   return $sheet;
 }
 function payslip_generate(int $m,int $y,string $eid,string $fmt='html'): array {
+  if (function_exists('app') && app()->bound(\App\Services\Payslips\PayslipGenerator::class)) {
+    return app(\App\Services\Payslips\PayslipGenerator::class)->generate($m, $y, $eid, $fmt);
+  }
   $clientId = req_client_id();
   $eid=up($eid);
   if($eid==='') bad('empId is required');

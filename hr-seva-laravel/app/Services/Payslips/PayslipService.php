@@ -2,34 +2,37 @@
 
 namespace App\Services\Payslips;
 
+use App\Services\Sheets\SheetCrudService;
+
 class PayslipService
 {
+    public function __construct(
+        private PayslipGenerator $generator,
+        private SheetCrudService $sheets,
+    ) {}
+
     public function generate(int $month, int $year, string $empId, string $format = 'html'): array
     {
-        return ['sheet' => payslip_generate($month, $year, $empId, $format)];
+        return ['sheet' => $this->generator->generate($month, $year, $empId, $format)];
     }
 
     public function index(): array
     {
-        return ['rows' => idx('payslip_index')];
+        return $this->sheets->index('payslip');
     }
 
     public function show(string $id): array
     {
-        return ['sheet' => get_sheet(idkey('payslip', $id), 'Payslip not found')];
+        return $this->sheets->show('payslip', $id, 'Payslip not found');
     }
 
     public function destroy(string $id): array
     {
-        del_sheet('payslip', $id);
-
-        return ['status' => 'deleted'];
+        return $this->sheets->destroy('payslip', $id);
     }
 
     public function clear(): array
     {
-        clr_sheet('payslip');
-
-        return ['status' => 'cleared'];
+        return $this->sheets->clear('payslip');
     }
 }

@@ -79,6 +79,34 @@ class SheetStorageService
         return $sheet;
     }
 
+    public function put(string $sheetType, string $sheetId, array $data, array $indexMeta = [], int $indexLimit = 500): array
+    {
+        $month = (int) ($data['month'] ?? ($indexMeta['month'] ?? 0));
+        $year = (int) ($data['year'] ?? ($indexMeta['year'] ?? 0));
+        $period = (string) ($data['period'] ?? ($data['monthKey'] ?? ($indexMeta['period'] ?? '')));
+
+        $this->tenants->tenant()->table('sheets')->updateOrInsert(
+            ['sheet_type' => $sheetType, 'sheet_id' => $sheetId],
+            [
+                'month' => $month,
+                'year' => $year,
+                'period' => $period,
+                'data' => json_encode($data, JSON_UNESCAPED_UNICODE),
+                'meta' => json_encode($data, JSON_UNESCAPED_UNICODE),
+            ]
+        );
+
+        $index = $this->index($sheetType);
+        array_unshift($index, ['id' => $sheetId] + $indexMeta);
+        $index = array_slice($index, 0, $indexLimit);
+        $this->tenants->tenant()->table('sheet_indexes')->updateOrInsert(
+            ['sheet_type' => $sheetType],
+            ['entries' => json_encode($index, JSON_UNESCAPED_UNICODE)]
+        );
+
+        return $data;
+    }
+
     public function delete(string $sheetType, string $sheetId): void
     {
         $this->tenants->tenant()->table('sheets')

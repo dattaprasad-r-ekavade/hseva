@@ -2,39 +2,42 @@
 
 namespace App\Services\Bonus;
 
+use App\Services\Sheets\SheetCrudService;
+
 class BonusService
 {
+    public function __construct(
+        private BonusGenerator $generator,
+        private SheetCrudService $sheets,
+    ) {}
+
     public function generate(int $month, int $year): array
     {
-        return ['sheet' => bonus_generate_preview($month, $year)];
+        return ['sheet' => $this->generator->generatePreview($month, $year)];
     }
 
     public function sheets(): array
     {
-        return ['rows' => idx('bonus_sheet_index')];
+        return $this->sheets->index('bonus_sheet');
     }
 
     public function saveSheet(array $payload): array
     {
-        return ['sheet' => bonus_save_sheet($payload)];
+        return ['sheet' => $this->generator->saveSheet($payload)];
     }
 
     public function show(string $id): array
     {
-        return ['sheet' => get_sheet(idkey('bonus_sheet', $id), 'Bonus sheet not found')];
+        return $this->sheets->show('bonus_sheet', $id, 'Bonus sheet not found');
     }
 
     public function destroy(string $id): array
     {
-        del_sheet('bonus_sheet', $id);
-
-        return ['status' => 'deleted'];
+        return $this->sheets->destroy('bonus_sheet', $id);
     }
 
     public function clear(): array
     {
-        clr_sheet('bonus_sheet');
-
-        return ['status' => 'cleared'];
+        return $this->sheets->clear('bonus_sheet');
     }
 }

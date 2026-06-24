@@ -2,34 +2,37 @@
 
 namespace App\Services\Fnf;
 
+use App\Services\Sheets\SheetCrudService;
+
 class FnfService
 {
+    public function __construct(
+        private FnfGenerator $generator,
+        private SheetCrudService $sheets,
+    ) {}
+
     public function generate(array $payload): array
     {
-        return ['sheet' => fnf_generate($payload)];
+        return ['sheet' => $this->generator->generate($payload)];
     }
 
     public function sheets(): array
     {
-        return ['rows' => idx('fnf_sheet_index')];
+        return $this->sheets->index('fnf_sheet');
     }
 
     public function show(string $id): array
     {
-        return ['sheet' => get_sheet(idkey('fnf_sheet', $id), 'FNF sheet not found')];
+        return $this->sheets->show('fnf_sheet', $id, 'FNF sheet not found');
     }
 
     public function destroy(string $id): array
     {
-        del_sheet('fnf_sheet', $id);
-
-        return ['status' => 'deleted'];
+        return $this->sheets->destroy('fnf_sheet', $id);
     }
 
     public function clear(): array
     {
-        clr_sheet('fnf_sheet');
-
-        return ['status' => 'cleared'];
+        return $this->sheets->clear('fnf_sheet');
     }
 }

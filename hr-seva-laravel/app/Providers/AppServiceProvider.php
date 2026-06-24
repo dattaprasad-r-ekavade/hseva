@@ -28,6 +28,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\Payroll\EcrSheetGenerator::class);
         $this->app->singleton(\App\Services\Payroll\EsicReturnGenerator::class);
         $this->app->singleton(\App\Services\Sheets\SheetCrudService::class);
+        $this->app->singleton(\App\Services\Fnf\FnfGenerator::class);
+        $this->app->singleton(\App\Services\Gratuity\GratuityGenerator::class);
+        $this->app->singleton(\App\Services\Bonus\BonusGenerator::class);
+        $this->app->singleton(\App\Services\Payslips\PayslipGenerator::class);
         $this->app->singleton(FaceAttendanceService::class);
         $this->app->singleton(ComplianceService::class);
         $this->app->singleton(\App\Services\Overtime\OvertimeService::class);

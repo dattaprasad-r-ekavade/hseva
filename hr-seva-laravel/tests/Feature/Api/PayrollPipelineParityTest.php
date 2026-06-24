@@ -110,5 +110,9 @@ class PayrollPipelineParityTest extends TestCase
         $this->assertTrue(app()->bound(\App\Services\Payroll\EcrSheetGenerator::class));
         $this->assertTrue(app()->bound(\App\Services\Payroll\EsicReturnGenerator::class));
         $this->assertTrue(app()->bound(\App\Services\Sheets\SheetCrudService::class));
+        $this->assertTrue(app()->bound(\App\Services\Fnf\FnfGenerator::class));
+        $this->assertTrue(app()->bound(\App\Services\Gratuity\GratuityGenerator::class));
+        $this->assertTrue(app()->bound(\App\Services\Bonus\BonusGenerator::class));
+        $this->assertTrue(app()->bound(\App\Services\Payslips\PayslipGenerator::class));
     }
 }
