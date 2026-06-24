@@ -1,0 +1,203 @@
+.advance-hero{
+  background:var(--card);
+  color:var(--text);
+  border:1px solid color-mix(in srgb, var(--brand-primary) 12%, transparent);
+  box-shadow:0 12px 28px rgba(69,69,76,.06);
+}
+
+.advance-hero .eyebrow{
+  font-size:.75rem;
+  font-weight:700;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--muted-2);
+}
+
+.advance-hero .hero-title{
+  font-size:1.65rem;
+  font-weight:700;
+  margin:0;
+  color:var(--text);
+}
+
+.advance-hero .hero-copy{
+  max-width:760px;
+  color:var(--muted);
+  font-size:.98rem;
+}
+
+.advance-stat{
+  min-height:118px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+.advance-stat .label{
+  color:var(--muted-2);
+  font-size:.82rem;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.advance-stat .value{
+  margin-top:.45rem;
+  font-size:1.7rem;
+  font-weight:700;
+  line-height:1.1;
+  color:var(--text);
+}
+
+.advance-stat .value.warn{ color:#9a6700; }
+.advance-stat .value.ok{ color:var(--text); }
+
+[data-bs-theme="dark"] .advance-stat .label{
+  color:rgba(231,230,247,.72);
+}
+
+[data-bs-theme="dark"] .advance-stat .value{
+  color:var(--text);
+}
+
+[data-bs-theme="dark"] .advance-stat .value.warn{
+  color:#f0c36d;
+}
+
+[data-bs-theme="dark"] .advance-stat .value.ok{
+  color:#e7e6f7;
+}
+
+.advance-section-title{
+  font-size:1.05rem;
+  font-weight:700;
+  margin:0;
+}
+
+.advance-section-copy{
+  color:var(--muted-2);
+  font-size:.92rem;
+}
+
+.advance-emi-box{
+  min-width:180px;
+  border-radius:16px;
+  background:color-mix(in srgb, var(--card2) 72%, var(--panel));
+  border:1px solid color-mix(in srgb, var(--brand-primary) 10%, transparent);
+  padding:1rem 1.1rem;
+}
+
+.advance-emi-box .label{
+  font-size:.72rem;
+  font-weight:700;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+  color:var(--muted-2);
+}
+
+.advance-emi-box .value{
+  margin-top:.3rem;
+  font-size:1.3rem;
+  font-weight:700;
+  color:var(--text);
+}
+
+[data-bs-theme="dark"] .advance-emi-box{
+  background:color-mix(in srgb, var(--card2) 88%, var(--panel));
+  border-color:color-mix(in srgb, var(--brand-quaternary) 12%, transparent);
+}
+
+[data-bs-theme="dark"] .advance-emi-box .value{
+  color:var(--text);
+}
+
+.advance-schedule-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:color-mix(in srgb, var(--card2) 60%, var(--panel));
+  padding:.8rem 1rem;
+}
+
+.advance-empty{
+  border:1px dashed var(--border);
+  border-radius:16px;
+  padding:1rem;
+  color:var(--muted-2);
+  text-align:center;
+}
+
+.advance-chip{
+  display:inline-flex;
+  align-items:center;
+  border-radius:999px;
+  padding:.25rem .65rem;
+  font-size:.78rem;
+  font-weight:600;
+  background:color-mix(in srgb, var(--text) 7%, transparent);
+  color:var(--text);
+  border:1px solid var(--border);
+}
+
+.advance-hero,
+.advance-stat,
+.advance-emi-box,
+.advance-schedule-row{
+  transition:border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+
+.advance-stat:hover,
+.advance-schedule-row:hover{
+  border-color:color-mix(in srgb, var(--brand-primary) 16%, transparent);
+  box-shadow:0 10px 24px rgba(69,69,76,.05);
+}
+
+#advanceMsg.alert{
+  margin-bottom:0;
+  min-width:240px;
+}
+
+#managePanel .form-label{
+  color:var(--text);
+  margin-bottom:.45rem;
+}
+
+#managePanel .btn.btn-primary{
+  min-width:180px;
+}
+
+.advance-hero #pageEyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+  padding:.38rem .7rem;
+  border-radius:999px;
+  background:color-mix(in srgb, var(--brand-quaternary) 58%, var(--panel));
+  border:1px solid color-mix(in srgb, var(--brand-primary) 10%, transparent);
+}
+
+.advance-hero #pageEyebrow::before{
+  content:"";
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--brand-tertiary);
+  flex:0 0 auto;
+}
+
+@media (max-width: 991.98px){
+  .advance-hero .hero-title{
+    font-size:1.4rem;
+  }
+
+  .advance-stat .value{
+    font-size:1.45rem;
+  }
+
+  .advance-emi-box{
+    min-width:100%;
+  }
+}

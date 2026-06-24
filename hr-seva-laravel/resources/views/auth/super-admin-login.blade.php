@@ -1,0 +1,69 @@
+<div class="admin-auth-wrap">
+    <div class="admin-auth-card row g-0">
+      <section class="col-lg-6 admin-left d-none d-lg-flex flex-column justify-content-between">
+        <div>
+          <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="brand-mark"><i class="bi bi-shield-lock fs-4"></i></div>
+            <div>
+              <div class="fw-semibold fs-5">HR Seva Control Desk</div>
+              <div class="small text-white-50">Administrative Access</div>
+            </div>
+          </div>
+
+          <h1 class="h3 fw-semibold mb-3">Operate the full client payroll and compliance network from one place.</h1>
+          <p class="text-white-50 mb-4">Secure access for authorized administrators only. Monitor client operations, configure access types, and govern subscription workflows centrally.</p>
+
+          <div class="d-grid gap-3">
+            <div class="admin-feature"><i class="bi bi-check2-circle"></i><span>Centralized client operations visibility</span></div>
+            <div class="admin-feature"><i class="bi bi-check2-circle"></i><span>Role-based access and policy control</span></div>
+            <div class="admin-feature"><i class="bi bi-check2-circle"></i><span>Subscriptions and billing governance</span></div>
+          </div>
+        </div>
+
+        <div class="small text-white-50">&copy; <span id="yr"></span> HR Seva</div>
+      </section>
+
+      <section class="col-12 col-lg-6 admin-right">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <div class="fw-semibold d-lg-none">HR Seva</div>
+            <div class="text-secondary small d-lg-none">Super Admin Access</div>
+          </div>
+          <span class="badge text-bg-light border"><i class="bi bi-shield-check me-1"></i>Secure Login</span>
+        </div>
+
+        <h2 class="h4 fw-semibold mb-1">Super Admin Login</h2>
+        <p class="text-secondary mb-4">Enter your admin credentials to continue.</p>
+
+        <form id="adminLoginForm" novalidate>
+          <div id="adminLoginMsg" class="alert d-none" role="alert"></div>
+
+          <div class="mb-3">
+            <label class="form-label" for="adminUserId">Admin User ID</label>
+            <input id="adminUserId" class="form-control" type="text" placeholder="admin.user" autocomplete="username" value="admin@hrseva.com" required>
+            <div class="invalid-feedback">Please enter Admin User ID.</div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="adminPassword">Password</label>
+            <div class="input-group">
+              <input id="adminPassword" class="form-control" type="password" placeholder="Enter password" autocomplete="current-password" value="123456" required>
+              <button id="toggleAdminPass" class="btn btn-outline-secondary" type="button" aria-label="Toggle password visibility">
+                <i class="bi bi-eye"></i>
+              </button>
+              <div class="invalid-feedback">Please enter password.</div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary w-100 py-2 fw-semibold" type="submit">
+            Sign In <i class="bi bi-arrow-right-short"></i>
+          </button>
+
+          <div class="text-center text-secondary small mt-3">Authorized personnel only. Activity may be monitored.</div>
+        </form>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../assets/js/app-common.js"></script>

@@ -1,0 +1,142 @@
+.admin-auth-wrap{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:#fff3e9;
+}
+
+.admin-auth-card{
+  width:min(960px, 100%);
+  border-radius:18px;
+  overflow:hidden;
+  border:1px solid rgba(22,64,75,.12);
+  box-shadow:0 24px 56px rgba(22,64,75,.10);
+  background:#ffffff;
+}
+
+.admin-left{
+  background:#16404b;
+  color:#fff3e9;
+  padding:34px;
+}
+
+.admin-right{
+  padding:34px;
+  background:#fffdf9;
+  color:#45454c;
+}
+
+.admin-right h2,
+.admin-right .fw-semibold,
+.admin-right .form-label,
+.admin-right .form-check-label,
+.admin-right .form-text{
+  color:#16404b;
+}
+
+.admin-right h2{
+  font-size:2rem;
+  line-height:1.1;
+}
+
+.admin-right .text-secondary{
+  color:rgba(22,64,75,.76) !important;
+}
+
+.admin-right .small{
+  color:rgba(22,64,75,.76);
+}
+
+.admin-right .form-control::placeholder{
+  color:rgba(22,64,75,.50);
+}
+
+.admin-right .form-control,
+.admin-right .input-group-text,
+.admin-right .form-check-input{
+  border-color:rgba(22,64,75,.16);
+}
+
+.admin-right .form-control{
+  border-radius:14px;
+  background:#fff3e9;
+  color:#16404b;
+  min-height:48px;
+}
+
+.admin-right .form-control:focus{
+  background:#ffffff;
+  border-color:rgba(22,64,75,.28);
+  box-shadow:0 0 0 .2rem rgba(212,215,194,.38);
+}
+
+.admin-right .input-group > .form-control{
+  border-top-right-radius:0;
+  border-bottom-right-radius:0;
+}
+
+.admin-right .input-group > .btn{
+  border-top-left-radius:0;
+  border-bottom-left-radius:0;
+  min-width:52px;
+  min-height:48px;
+}
+
+.admin-right #toggleAdminPass{
+  border-color:rgba(22,64,75,.16);
+  background:#fff3e9;
+  color:#16404b;
+}
+
+.admin-right #toggleAdminPass:hover,
+.admin-right #toggleAdminPass:focus{
+  background:#d4d7c2;
+  color:#16404b;
+  box-shadow:none;
+}
+
+.admin-right .btn-primary{
+  background:#16404b;
+  border-color:#16404b;
+  color:#fff3e9;
+  min-height:48px;
+  box-shadow:none;
+}
+
+.admin-right .btn-primary:hover,
+.admin-right .btn-primary:focus,
+.admin-right .btn-primary:active{
+  background:#123742 !important;
+  border-color:#123742 !important;
+  color:#fff3e9 !important;
+  box-shadow:none !important;
+}
+
+.admin-feature{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  color:rgba(255,243,233,.84);
+}
+
+.admin-left .brand-mark{
+  width:128px;
+  height:34px;
+  border-radius:0;
+  background:transparent;
+  border:0;
+  background-image:url("../../assets-02/images/common/logo-new-light.svg");
+  background-repeat:no-repeat;
+  background-position:left center;
+  background-size:contain;
+}
+
+.admin-left .brand-mark > i{
+  display:none;
+}
+
+.admin-feature i{
+  line-height:1.2;
+}

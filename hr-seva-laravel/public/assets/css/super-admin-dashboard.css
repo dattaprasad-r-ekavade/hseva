@@ -1,0 +1,81 @@
+body { background: var(--app-bg); color: var(--text); }
+.app { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 280px;
+  min-height: 100vh;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  padding: 18px;
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1030;
+}
+@media (min-width: 992px) {
+  .sidebar { display: flex; flex-direction: column; }
+  .content { margin-left: 280px; width: calc(100% - 280px); }
+}
+.brand { display: flex; align-items: center; gap: 10px; padding: 10px 10px 14px; }
+.brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--brand-tertiary) 26%, var(--panel));
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 18%, transparent);
+  color: var(--brand-primary);
+}
+.nav-section-title {
+  font-size: .75rem;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding: 14px 10px 8px;
+}
+.nav-link {
+  color: color-mix(in srgb, var(--text) 78%, transparent);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-link:hover { background: color-mix(in srgb, var(--text) 6%, transparent); color: var(--text); }
+.nav-link.active {
+  background: color-mix(in srgb, var(--bs-primary) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--bs-primary) 22%, transparent);
+  color: var(--bs-primary);
+}
+.sidebar-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 6px;
+  margin-right: -6px;
+}
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  background: color-mix(in srgb, var(--app-bg) 85%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.topbar-inner { padding: 14px 16px; }
+@media (min-width: 992px) { .topbar-inner { padding: 14px 24px; } }
+.glass {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+}
+.theme-icon-btn {
+  border: 0 !important;
+  background: transparent !important;
+  color: color-mix(in srgb, var(--text, #334155) 90%, transparent) !important;
+  padding: .2rem .35rem;
+  line-height: 1;
+}
+.theme-icon-btn i { font-size: 1.25rem; }

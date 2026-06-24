@@ -1,0 +1,146 @@
+name: HR Seva Laravel Tests
+
+on:
+  push:
+    paths:
+      - 'hr-seva-laravel/**'
+      - '.github/workflows/hr-seva-tests.yml'
+  pull_request:
+    paths:
+      - 'hr-seva-laravel/**'
+      - '.github/workflows/hr-seva-tests.yml'
+
+defaults:
+  run:
+    working-directory: hr-seva-laravel
+
+jobs:
+  sqlite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo_sqlite, sqlite3
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: PHPUnit (SQLite)
+        run: php artisan test
+
+      - name: Setup Node for Playwright
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Playwright
+        working-directory: hr-seva-laravel/qa
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Playwright smoke + portal tests
+        working-directory: hr-seva-laravel/qa
+        env:
+          SKIP_WEB_SERVER: ''
+        run: npm test
+
+  mysql:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: hr_seva_central
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo_mysql
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: PHPUnit (MySQL)
+        env:
+          HR_CENTRAL_DRIVER: mysql
+          HR_TENANT_DRIVER: mysql
+          HR_MYSQL_HOST: 127.0.0.1
+          HR_MYSQL_PORT: 3306
+          HR_MYSQL_USERNAME: root
+          HR_MYSQL_PASSWORD: root
+          HR_MYSQL_CENTRAL_DB: hr_seva_central
+          HR_MYSQL_TENANT_DB_PREFIX: hr_seva_tenant_
+        run: php artisan test
+
+  mysql-playwright:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: hr_seva_central
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo_mysql
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Setup Node for Playwright
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Playwright
+        working-directory: hr-seva-laravel/qa
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Playwright smoke + portal tests (MySQL)
+        working-directory: hr-seva-laravel/qa
+        env:
+          SKIP_WEB_SERVER: ''
+          HR_CENTRAL_DRIVER: mysql
+          HR_TENANT_DRIVER: mysql
+          HR_MYSQL_HOST: 127.0.0.1
+          HR_MYSQL_PORT: 3306
+          HR_MYSQL_USERNAME: root
+          HR_MYSQL_PASSWORD: root
+          HR_MYSQL_CENTRAL_DB: hr_seva_central
+          HR_MYSQL_TENANT_DB_PREFIX: hr_seva_tenant_
+        run: npm test
