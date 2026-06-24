@@ -2,20 +2,17 @@
 
 namespace App\Services\Auth;
 
-use App\Services\Tenant\TenantManager;
 use App\Support\HrSevaDefaults;
-use Illuminate\Support\Facades\DB;
 
 class AuthService
 {
     public function __construct(
-        private JwtService $jwt,
-        private TenantManager $tenants,
+        private AuthLoginRepository $loginRepository,
     ) {}
 
     public function login(string $username, string $password): array
     {
-        return auth_login(strtolower(trim($username)), trim($password));
+        return $this->loginRepository->login(strtolower(trim($username)), trim($password));
     }
 
     public function session(?array $token): array

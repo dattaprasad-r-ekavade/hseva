@@ -153,9 +153,69 @@ class CrudModulesParityTest extends TestCase
 
     public function test_crud_repositories_are_bound_in_container(): void
     {
-        $this->assertTrue(app()->bound(\App\Services\MasterData\MasterDataRepository::class));
-        $this->assertTrue(app()->bound(\App\Services\Incentives\IncentiveRepository::class));
-        $this->assertTrue(app()->bound(\App\Services\Overtime\OvertimeRepository::class));
-        $this->assertTrue(app()->bound(\App\Services\Compliance\ComplianceRepository::class));
+        $repos = [
+            \App\Services\MasterData\MasterDataRepository::class,
+            \App\Services\Incentives\IncentiveRepository::class,
+            \App\Services\Overtime\OvertimeRepository::class,
+            \App\Services\Compliance\ComplianceRepository::class,
+            \App\Services\Employees\EmployeeRepository::class,
+            \App\Services\Leaves\LeaveRepository::class,
+            \App\Services\Enquiries\EnquiryRepository::class,
+            \App\Services\Clients\ClientRepository::class,
+            \App\Services\Subscriptions\SubscriptionRepository::class,
+            \App\Services\Access\AccessRepository::class,
+            \App\Services\Billing\BillingRepository::class,
+            \App\Services\Loans\LoanRepository::class,
+            \App\Services\Advances\AdvanceRepository::class,
+            \App\Services\FaceAttendance\FaceAttendanceRepository::class,
+            \App\Services\Auth\AuthLoginRepository::class,
+        ];
+        foreach ($repos as $repo) {
+            $this->assertTrue(app()->bound($repo), $repo.' should be bound');
+        }
+    }
+
+    public function test_employee_and_leave_crud(): void
+    {
+        $token = $this->superAdminToken();
+        [, $headers] = $this->tenantContext($token);
+
+        $this->withHeaders($headers)
+            ->postJson('/api/employees', [
+                'id' => 'EMP200',
+                'name' => 'Leave Test Employee',
+                'status' => 'Active',
+                'dept' => 'HR',
+                'desig' => 'Exec',
+                'type' => 'Full-time',
+                'mobile' => '9999999998',
+                'email' => 'emp200@example.com',
+                'doj' => '2024-06-01',
+                'pf' => 'Yes',
+                'uan' => '100000000200',
+                'esi' => 'Yes',
+                'esiNo' => '1234567891',
+                'baseCtc' => 25000,
+            ])
+            ->assertCreated();
+
+        $leave = $this->withHeaders($headers)
+            ->postJson('/api/leaves', [
+                'empId' => 'EMP200',
+                'empName' => 'Leave Test Employee',
+                'fromDate' => '2026-06-10',
+                'toDate' => '2026-06-11',
+                'days' => 2,
+                'leaveType' => 'CL',
+                'reason' => 'Personal',
+                'status' => 'Approved',
+            ])
+            ->assertCreated()
+            ->json('row');
+
+        $this->withHeaders($headers)
+            ->getJson('/api/leaves/summary?month=6&year=2026')
+            ->assertOk()
+            ->assertJsonFragment(['empId' => 'EMP200', 'clDays' => 2]);
     }
 }

@@ -4,24 +4,26 @@ namespace App\Services\Leaves;
 
 class LeaveService
 {
+    public function __construct(private LeaveRepository $repository) {}
+
     public function list(?int $month = null, ?int $year = null, ?string $leaveType = null, ?string $status = null): array
     {
-        return leaves_list($month, $year, $leaveType, $status);
+        return $this->repository->list($month, $year, $leaveType, $status);
     }
 
     public function upsert(array $body, ?bool $mustExist = null): array
     {
-        return leave_upsert($body, $mustExist);
+        return $this->repository->upsert($body, $mustExist);
     }
 
     public function delete(int $id): void
     {
-        leave_delete($id);
+        $this->repository->delete($id);
     }
 
     public function clear(): array
     {
-        db()->exec('DELETE FROM leaves');
+        $this->repository->clear();
 
         return ['status' => 'cleared'];
     }
@@ -30,7 +32,7 @@ class LeaveService
     {
         $saved = [];
         foreach ($rows as $row) {
-            $saved[] = leave_upsert((array) $row, null);
+            $saved[] = $this->repository->upsert((array) $row, null);
         }
 
         return ['rows' => $saved, 'count' => count($saved)];
@@ -38,6 +40,6 @@ class LeaveService
 
     public function summary(int $month, int $year): array
     {
-        return leaves_summary($month, $year);
+        return $this->repository->summary($month, $year);
     }
 }

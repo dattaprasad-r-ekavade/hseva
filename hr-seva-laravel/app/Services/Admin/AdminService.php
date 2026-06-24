@@ -2,26 +2,30 @@
 
 namespace App\Services\Admin;
 
+use App\Services\Enquiries\EnquiryRepository;
+
 class AdminService
 {
+    public function __construct(private EnquiryRepository $enquiries) {}
+
     public function enquiries(): array
     {
-        return ['rows' => admin_enquiries_all()];
+        return ['rows' => $this->enquiries->all()];
     }
 
     public function storeEnquiry(array $payload): array
     {
-        return ['row' => admin_enquiry_create($payload)];
+        return ['row' => $this->enquiries->adminCreate($payload)];
     }
 
     public function updateEnquiry(int $id, array $payload): array
     {
-        return ['row' => admin_enquiry_update($id, $payload)];
+        return ['row' => $this->enquiries->update($id, $payload)];
     }
 
     public function destroyEnquiry(int $id): array
     {
-        admin_enquiry_delete($id);
+        $this->enquiries->delete($id);
 
         return ['status' => 'deleted'];
     }

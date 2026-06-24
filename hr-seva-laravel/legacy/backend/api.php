@@ -709,6 +709,10 @@ function face_attendance_settings_seed(PDO $d): void {
   ]);
 }
 function face_attendance_view_ctx(): array {
+  if (function_exists('app') && app()->bound(\App\Services\FaceAttendance\FaceAttendanceRepository::class)) {
+    return app(\App\Services\FaceAttendance\FaceAttendanceRepository::class)->viewContext();
+  }
+
   $ctx = auth_ctx(true);
   $role = strtolower((string)($ctx['role'] ?? ''));
   if(!in_array($role, ['super_admin','client','client_admin','agency_admin','employee'], true)) j(['detail'=>'Forbidden'],403);
@@ -720,9 +724,17 @@ function face_attendance_manage_ctx(): array {
   return $ctx;
 }
 function face_attendance_emp_scope(array $ctx): string {
+  if (function_exists('app') && app()->bound(\App\Services\FaceAttendance\FaceAttendanceRepository::class)) {
+    return app(\App\Services\FaceAttendance\FaceAttendanceRepository::class)->employeeScope($ctx);
+  }
+
   return strtolower((string)($ctx['role'] ?? '')) === 'employee' ? up($ctx['empId'] ?? '') : '';
 }
 function face_attendance_settings_get(): array {
+  if (function_exists('app') && app()->bound(\App\Services\FaceAttendance\FaceAttendanceRepository::class)) {
+    return app(\App\Services\FaceAttendance\FaceAttendanceRepository::class)->settingsGet();
+  }
+
   face_attendance_settings_seed(db());
   $r = db()->query("SELECT * FROM attendance_settings WHERE id=1 LIMIT 1")->fetch() ?: [];
   $defs = face_attendance_default_settings();
@@ -742,6 +754,10 @@ function face_attendance_settings_get(): array {
   ];
 }
 function face_attendance_settings_put(array $raw): array {
+  if (function_exists('app') && app()->bound(\App\Services\FaceAttendance\FaceAttendanceRepository::class)) {
+    return app(\App\Services\FaceAttendance\FaceAttendanceRepository::class)->settingsPut($raw);
+  }
+
   $cur = face_attendance_settings_get();
   $row = [
     'inAllowedFrom' => s($raw['inAllowedFrom'] ?? $cur['inAllowedFrom'], $cur['inAllowedFrom']),
@@ -819,6 +835,10 @@ function face_attendance_registration_payload(array $r): array {
   ];
 }
 function face_attendance_registration_rows(?string $employeeId = null): array {
+  if (function_exists('app') && app()->bound(\App\Services\FaceAttendance\FaceAttendanceRepository::class)) {
+    return app(\App\Services\FaceAttendance\FaceAttendanceRepository::class)->registrationRows($employeeId);
+  }
+
   $sql = "SELECT id, employee_id, face_image, created_at, updated_at FROM employee_faces";
   $params = [];
   if($employeeId !== null && $employeeId !== ''){
@@ -857,6 +877,10 @@ function face_attendance_registered_match(array $scanDescriptor): ?array {
   return $best;
 }
 function face_attendance_register(array $payload): array {
+  if (function_exists('app') && app()->bound(\App\Services\FaceAttendance\FaceAttendanceRepository::class)) {
+    return app(\App\Services\FaceAttendance\FaceAttendanceRepository::class)->register($payload);
+  }
+
   $ctx = face_attendance_manage_ctx();
   $emp = face_attendance_employee($ctx, $payload, true);
   $descriptor = face_attendance_descriptor_value($payload['faceDescriptor'] ?? $payload['descriptor'] ?? []);
@@ -870,6 +894,11 @@ function face_attendance_register(array $payload): array {
   return face_attendance_registration_rows($empId)[0] ?? ['employeeId'=>$empId,'employeeName'=>(string)($emp['name'] ?? $empId),'faceImage'=>$image,'__updatedAt'=>$now];
 }
 function face_attendance_delete_registration(string $employeeId): void {
+  if (function_exists('app') && app()->bound(\App\Services\FaceAttendance\FaceAttendanceRepository::class)) {
+    app(\App\Services\FaceAttendance\FaceAttendanceRepository::class)->deleteRegistration($employeeId);
+    return;
+  }
+
   face_attendance_manage_ctx();
   $empId = up($employeeId);
   if($empId === '') bad('employeeId is required');
@@ -959,6 +988,10 @@ function face_attendance_rebuild_from_logs(): void {
   }
 }
 function face_attendance_sheet_rows(array $query, array $ctx): array {
+  if (function_exists('app') && app()->bound(\App\Services\FaceAttendance\FaceAttendanceRepository::class)) {
+    return app(\App\Services\FaceAttendance\FaceAttendanceRepository::class)->sheetRows($query, $ctx);
+  }
+
   face_attendance_rebuild_from_logs();
   $params = [];
   $where = [];
@@ -996,6 +1029,10 @@ function face_attendance_sheet_rows(array $query, array $ctx): array {
   }, $rows));
 }
 function face_attendance_fetch_one(int $id): ?array {
+  if (function_exists('app') && app()->bound(\App\Services\FaceAttendance\FaceAttendanceRepository::class)) {
+    return app(\App\Services\FaceAttendance\FaceAttendanceRepository::class)->fetchOne($id);
+  }
+
   if($id <= 0) return null;
   $st = db()->prepare("SELECT * FROM attendance WHERE id=? LIMIT 1");
   $st->execute([$id]);
@@ -1010,6 +1047,10 @@ function face_attendance_total_hours(string $date, string $inTime, string $outTi
   return round(($outTs - $inTs) / 3600, 2);
 }
 function face_attendance_update_record(int $id, array $payload): array {
+  if (function_exists('app') && app()->bound(\App\Services\FaceAttendance\FaceAttendanceRepository::class)) {
+    return app(\App\Services\FaceAttendance\FaceAttendanceRepository::class)->updateRecord($id, $payload);
+  }
+
   face_attendance_manage_ctx();
   $st = db()->prepare("SELECT * FROM attendance WHERE id=? LIMIT 1");
   $st->execute([$id]);
@@ -1040,12 +1081,21 @@ function face_attendance_update_record(int $id, array $payload): array {
   return $saved;
 }
 function face_attendance_delete_record(int $id): void {
+  if (function_exists('app') && app()->bound(\App\Services\FaceAttendance\FaceAttendanceRepository::class)) {
+    app(\App\Services\FaceAttendance\FaceAttendanceRepository::class)->deleteRecord($id);
+    return;
+  }
+
   face_attendance_manage_ctx();
   $st = db()->prepare("DELETE FROM attendance WHERE id=?");
   $st->execute([$id]);
   if($st->rowCount() === 0) nf('Attendance record not found');
 }
 function face_attendance_report_rows(array $query, array $ctx): array {
+  if (function_exists('app') && app()->bound(\App\Services\FaceAttendance\FaceAttendanceRepository::class)) {
+    return app(\App\Services\FaceAttendance\FaceAttendanceRepository::class)->reportRows($query, $ctx);
+  }
+
   $rows = face_attendance_sheet_rows($query, $ctx);
   $grouped = [];
   foreach($rows as $row){
@@ -1084,6 +1134,10 @@ function face_attendance_mark_status(string $inStatus, string $outStatus, string
   return implode(', ', array_values(array_unique($parts)));
 }
 function face_attendance_scan(array $payload): array {
+  if (function_exists('app') && app()->bound(\App\Services\FaceAttendance\FaceAttendanceRepository::class)) {
+    return app(\App\Services\FaceAttendance\FaceAttendanceRepository::class)->scan($payload);
+  }
+
   $ctx = face_attendance_view_ctx();
   $scanDescriptor = face_attendance_descriptor_value($payload['faceDescriptor'] ?? $payload['descriptor'] ?? []);
   if(count($scanDescriptor) < 32) bad('Face scan data is required');
@@ -1254,6 +1308,10 @@ function advance_manage_ctx(): array {
   return $ctx;
 }
 function advance_emp_scope(array $ctx): string {
+  if (function_exists('app') && app()->bound(\App\Services\Advances\AdvanceRepository::class)) {
+    return app(\App\Services\Advances\AdvanceRepository::class)->employeeScope($ctx);
+  }
+
   $role = strtolower((string)($ctx['role'] ?? ''));
   if($role !== 'employee') return '';
   return up($ctx['empId'] ?? '');
@@ -1468,6 +1526,10 @@ function advance_existing_month_total(PDO $d, string $empId, int $year, int $mon
   return round(f($row['total'] ?? 0), 2);
 }
 function advance_eligibility(string $empId, string $asOfDate): array {
+  if (function_exists('app') && app()->bound(\App\Services\Advances\AdvanceRepository::class)) {
+    return app(\App\Services\Advances\AdvanceRepository::class)->eligibility($empId, $asOfDate);
+  }
+
   $empId = up($empId);
   if($empId === '') bad('empId is required');
   if(!preg_match('/^\d{4}-\d{2}-\d{2}$/', $asOfDate)) bad('date must be YYYY-MM-DD');
@@ -1917,6 +1979,10 @@ function auth_forgot(array $raw): array {
   return ['ok' => true, 'message' => 'If this email is registered, reset instructions will be sent.'];
 }
 function public_enquiry_create(array $raw): array {
+  if (function_exists('app') && app()->bound(\App\Services\Enquiries\EnquiryRepository::class)) {
+    return app(\App\Services\Enquiries\EnquiryRepository::class)->create($raw);
+  }
+
   $fullName = s($raw['fullName'] ?? '');
   $companyName = s($raw['companyName'] ?? '');
   $workEmail = s($raw['workEmail'] ?? '');
@@ -1948,15 +2014,27 @@ function public_enquiry_create(array $raw): array {
   return $payload;
 }
 function admin_enquiries_all(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Enquiries\EnquiryRepository::class)) {
+    return app(\App\Services\Enquiries\EnquiryRepository::class)->all();
+  }
+
   require_super_admin();
   $rows = central_db()->query("SELECT * FROM public_enquiries ORDER BY id DESC")->fetchAll();
   return array_map('enquiry_row_payload', $rows ?: []);
 }
 function admin_enquiry_create(array $raw): array {
+  if (function_exists('app') && app()->bound(\App\Services\Enquiries\EnquiryRepository::class)) {
+    return app(\App\Services\Enquiries\EnquiryRepository::class)->adminCreate($raw);
+  }
+
   require_super_admin();
   return public_enquiry_create($raw);
 }
 function admin_enquiry_update(int $id, array $raw): array {
+  if (function_exists('app') && app()->bound(\App\Services\Enquiries\EnquiryRepository::class)) {
+    return app(\App\Services\Enquiries\EnquiryRepository::class)->update($id, $raw);
+  }
+
   require_super_admin();
   if($id <= 0) bad('Invalid enquiry id');
   $d = central_db();
@@ -1995,6 +2073,11 @@ function admin_enquiry_update(int $id, array $raw): array {
   return enquiry_row_payload($fresh ?: []);
 }
 function admin_enquiry_delete(int $id): void {
+  if (function_exists('app') && app()->bound(\App\Services\Enquiries\EnquiryRepository::class)) {
+    app(\App\Services\Enquiries\EnquiryRepository::class)->delete($id);
+    return;
+  }
+
   require_super_admin();
   if($id <= 0) bad('Invalid enquiry id');
   $d = central_db();
@@ -2003,6 +2086,10 @@ function admin_enquiry_delete(int $id): void {
   if($q->rowCount() <= 0) nf('Enquiry not found');
 }
 function advance_fetch_one(PDO $d, string $id): ?array {
+  if (function_exists('app') && app()->bound(\App\Services\Advances\AdvanceRepository::class)) {
+    return app(\App\Services\Advances\AdvanceRepository::class)->fetchOne($d, $id);
+  }
+
   $q = $d->prepare("SELECT * FROM salary_advances WHERE id=? LIMIT 1");
   $q->execute([$id]);
   $r = $q->fetch();
@@ -2024,6 +2111,10 @@ function advance_schedule_rows(float $amount, string $repaymentType, int $emiMon
   return $rows;
 }
 function advance_create(array $payload): array {
+  if (function_exists('app') && app()->bound(\App\Services\Advances\AdvanceRepository::class)) {
+    return app(\App\Services\Advances\AdvanceRepository::class)->create($payload);
+  }
+
   $ctx = advance_manage_ctx();
   $clientId = req_client_id();
   $d = db();
@@ -2066,6 +2157,10 @@ function advance_create(array $payload): array {
   return $fresh;
 }
 function advance_rows(array $ctx, bool $outstandingOnly = false): array {
+  if (function_exists('app') && app()->bound(\App\Services\Advances\AdvanceRepository::class)) {
+    return app(\App\Services\Advances\AdvanceRepository::class)->rows($ctx, $outstandingOnly);
+  }
+
   $d = db();
   $empScope = advance_emp_scope($ctx);
   $sql = "SELECT * FROM salary_advances";
@@ -2091,6 +2186,10 @@ function advance_rows(array $ctx, bool $outstandingOnly = false): array {
   return $out;
 }
 function advance_history_rows(array $ctx): array {
+  if (function_exists('app') && app()->bound(\App\Services\Advances\AdvanceRepository::class)) {
+    return app(\App\Services\Advances\AdvanceRepository::class)->historyRows($ctx);
+  }
+
   $d = db();
   $empScope = advance_emp_scope($ctx);
   $sql = "SELECT d.*, a.employee_name, a.amount AS advance_amount, a.repayment_type FROM advance_deductions d JOIN salary_advances a ON a.id=d.advance_id";
@@ -2123,6 +2222,11 @@ function advance_history_rows(array $ctx): array {
   return $rows;
 }
 function advance_delete(string $id): void {
+  if (function_exists('app') && app()->bound(\App\Services\Advances\AdvanceRepository::class)) {
+    app(\App\Services\Advances\AdvanceRepository::class)->delete($id);
+    return;
+  }
+
   advance_manage_ctx();
   $id = s($id);
   if($id === '') bad('Invalid advance id');
@@ -2137,6 +2241,10 @@ function advance_delete(string $id): void {
   invalidate_salary_dependent_sheets();
 }
 function advance_payroll_apply(PDO $d, string $empId, int $month, int $year, float $maxAvailable, string $payrollSheetId = ''): array {
+  if (function_exists('app') && app()->bound(\App\Services\Advances\AdvanceRepository::class)) {
+    return app(\App\Services\Advances\AdvanceRepository::class)->payrollApply($d, $empId, $month, $year, $maxAvailable, $payrollSheetId);
+  }
+
   $empId = up($empId);
   if($empId === '' || $maxAvailable <= 0) return ['amount'=>0.0,'items'=>[]];
   $q = $d->prepare("SELECT d.id, d.advance_id, d.scheduled_amount, a.amount AS advance_amount FROM advance_deductions d JOIN salary_advances a ON a.id=d.advance_id WHERE d.emp_id=? AND d.deduction_year=? AND d.deduction_month=? AND a.status IN ('Active','Closed') ORDER BY a.disbursed_on ASC, d.id ASC");
@@ -2170,6 +2278,10 @@ function advance_payroll_apply(PDO $d, string $empId, int $month, int $year, flo
   return ['amount'=>$total,'items'=>$items];
 }
 function advance_outstanding_for_employee(PDO $d, string $empId, string $asOfDate = ''): array {
+  if (function_exists('app') && app()->bound(\App\Services\Advances\AdvanceRepository::class)) {
+    return app(\App\Services\Advances\AdvanceRepository::class)->outstandingForEmployee($d, $empId, $asOfDate);
+  }
+
   $empId = up($empId);
   if($empId === '') return ['amount'=>0.0,'items'=>[]];
   $sql = "SELECT * FROM salary_advances WHERE emp_id=?";
@@ -2425,6 +2537,10 @@ function loan_deduction_history_rows(PDO $d, string $loanId): array {
   return $rows;
 }
 function loan_fetch_one(PDO $d, string $id): ?array {
+  if (function_exists('app') && app()->bound(\App\Services\Loans\LoanRepository::class)) {
+    return app(\App\Services\Loans\LoanRepository::class)->fetchOne($d, $id);
+  }
+
   $q = $d->prepare("SELECT * FROM loans WHERE id=? LIMIT 1");
   $q->execute([$id]);
   $row = $q->fetch();
@@ -2463,6 +2579,10 @@ function loan_schedule_rows(float $amount, string $repaymentType, float $emiAmou
   return $rows;
 }
 function loan_create_or_update(array $payload, ?string $existingId = null): array {
+  if (function_exists('app') && app()->bound(\App\Services\Loans\LoanRepository::class)) {
+    return app(\App\Services\Loans\LoanRepository::class)->createOrUpdate($payload, $existingId);
+  }
+
   $ctx = loan_manage_ctx();
   $d = db();
   $isEdit = $existingId !== null && trim($existingId) !== '';
@@ -2543,6 +2663,10 @@ function loan_create_or_update(array $payload, ?string $existingId = null): arra
   return loan_fetch_one($d, $id) ?? ['id'=>$id];
 }
 function loan_rows(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Loans\LoanRepository::class)) {
+    return app(\App\Services\Loans\LoanRepository::class)->rows();
+  }
+
   loan_view_ctx();
   $rows = db()->query("SELECT * FROM loans ORDER BY created_at DESC, id DESC")->fetchAll();
   $out = [];
@@ -2556,6 +2680,11 @@ function loan_rows(): array {
   return $out;
 }
 function loan_delete(string $id): void {
+  if (function_exists('app') && app()->bound(\App\Services\Loans\LoanRepository::class)) {
+    app(\App\Services\Loans\LoanRepository::class)->delete($id);
+    return;
+  }
+
   loan_delete_ctx();
   $d = db();
   $row = loan_fetch_one($d, $id);
@@ -2570,6 +2699,10 @@ function loan_delete(string $id): void {
   invalidate_salary_dependent_sheets();
 }
 function loan_payroll_apply(PDO $d, string $empId, int $month, int $year, float $maxAvailable, string $payrollSheetId = ''): array {
+  if (function_exists('app') && app()->bound(\App\Services\Loans\LoanRepository::class)) {
+    return app(\App\Services\Loans\LoanRepository::class)->payrollApply($d, $empId, $month, $year, $maxAvailable, $payrollSheetId);
+  }
+
   $empId = up($empId);
   if($empId === '' || $maxAvailable <= 0) return ['amount'=>0.0,'items'=>[]];
   $q = $d->prepare("SELECT d.id, d.loan_id, d.scheduled_amount, l.requested_amount FROM loan_deductions d JOIN loans l ON l.id=d.loan_id WHERE d.emp_id=? AND d.deduction_year=? AND d.deduction_month=? AND l.status IN ('Active','Closed') ORDER BY l.created_at ASC, d.id ASC");
@@ -2603,6 +2736,10 @@ function loan_payroll_apply(PDO $d, string $empId, int $month, int $year, float 
   return ['amount'=>$total,'items'=>$items];
 }
 function loan_outstanding_for_employee(PDO $d, string $empId, string $asOfDate = ''): array {
+  if (function_exists('app') && app()->bound(\App\Services\Loans\LoanRepository::class)) {
+    return app(\App\Services\Loans\LoanRepository::class)->outstandingForEmployee($d, $empId, $asOfDate);
+  }
+
   $empId = up($empId);
   if($empId === '') return ['amount'=>0.0,'items'=>[]];
   $sql = "SELECT * FROM loans WHERE emp_id=?";
@@ -2903,6 +3040,10 @@ function invalidate_salary_dependent_sheets(): void {
 function norm_emp(array $r): array { $id=up($r['id']??''); $name=s($r['name']??''); if($id===''||$name==='') bad('Employee id and name are required'); return ["id"=>$id,"name"=>$name,"status"=>s($r['status']??'Active','Active'),"dept"=>s($r['dept']??''),"desig"=>s($r['desig']??''),"type"=>s($r['type']??'Full-time','Full-time'),"mobile"=>s($r['mobile']??''),"email"=>s($r['email']??''),"doj"=>s($r['doj']??''),"pf"=>s($r['pf']??'Yes','Yes'),"uan"=>s($r['uan']??''),"esi"=>s($r['esi']??'Yes','Yes'),"esiNo"=>s($r['esiNo']??''),"pfNo"=>s($r['pfNo']??''),"bankName"=>s($r['bankName']??''),"bankAc"=>s($r['bankAc']??''),"ifsc"=>s($r['ifsc']??''),"aadharNo"=>s($r['aadharNo']??''),"panCard"=>s($r['panCard']??''),"address"=>s($r['address']??''),"baseCtc"=>f($r['baseCtc']??0)]; }
 function norm_leave(array $r): array { $x=["empId"=>up($r['empId']??''),"empName"=>s($r['empName']??''),"fromDate"=>s($r['fromDate']??''),"toDate"=>s($r['toDate']??''),"leaveType"=>up($r['leaveType']??''),"reason"=>s($r['reason']??''),"days"=>f($r['days']??0),"dept"=>s($r['dept']??''),"desig"=>s($r['desig']??''),"company"=>s($r['company']??''),"status"=>s($r['status']??'Approved','Approved'),"halfDay"=>s($r['halfDay']??'No','No'),"markedBy"=>s($r['markedBy']??'Client HR','Client HR'),"id"=>$r['id']??null]; if($x['empId']===''||$x['empName']===''||$x['fromDate']===''||$x['toDate']===''||$x['reason']===''||$x['days']<=0) bad('Invalid leave data'); if(!in_array($x['leaveType'],['CL','SL','EL','LOP'],true)) bad('leaveType must be CL/SL/EL/LOP'); return $x; }
 function employees_all(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Employees\EmployeeRepository::class)) {
+    return app(\App\Services\Employees\EmployeeRepository::class)->all();
+  }
+
   $rows=db()->query("SELECT * FROM employees ORDER BY id ASC")->fetchAll();
   return array_map(fn($r)=>["id"=>$r['id'],"name"=>$r['name'],"status"=>$r['status'],"dept"=>$r['dept'],"desig"=>$r['desig'],"type"=>$r['type'],"mobile"=>$r['mobile'],"email"=>$r['email'],"doj"=>$r['doj'],"pf"=>$r['pf'],"uan"=>$r['uan'],"esi"=>$r['esi'],"esiNo"=>$r['esi_no'],"pfNo"=>$r['pf_no'],"bankName"=>$r['bank_name'],"bankAc"=>$r['bank_ac'],"ifsc"=>$r['ifsc'],"aadharNo"=>$r['aadhar_no'],"panCard"=>$r['pan_card'],"address"=>$r['address'],"baseCtc"=>(float)($r['base_ctc'] ?? 0),"__updatedAt"=>$r['updated_at']],$rows);
 }
@@ -2910,9 +3051,17 @@ function employee_is_active(array $emp): bool {
   return strtolower(trim((string)($emp['status'] ?? 'active'))) !== 'inactive';
 }
 function employees_active_all(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Employees\EmployeeRepository::class)) {
+    return app(\App\Services\Employees\EmployeeRepository::class)->activeAll();
+  }
+
   return array_values(array_filter(employees_all(), 'employee_is_active'));
 }
 function emp_upsert(array $raw, ?bool $mustExist=null): array {
+  if (function_exists('app') && app()->bound(\App\Services\Employees\EmployeeRepository::class)) {
+    return app(\App\Services\Employees\EmployeeRepository::class)->upsert($raw, $mustExist);
+  }
+
   $n=norm_emp($raw); $q=db()->prepare("SELECT id, base_ctc FROM employees WHERE id=?"); $q->execute([$n['id']]); $old=$q->fetch(); $exists=(bool)$old;
   if($mustExist===true && !$exists) nf('Employee not found');
   if($mustExist===false && $exists) j(['detail'=>'Employee id already exists'],409);
@@ -2928,6 +3077,11 @@ function emp_upsert(array $raw, ?bool $mustExist=null): array {
   return $row;
 }
 function emp_delete(string $id): void {
+  if (function_exists('app') && app()->bound(\App\Services\Employees\EmployeeRepository::class)) {
+    app(\App\Services\Employees\EmployeeRepository::class)->delete($id);
+    return;
+  }
+
   $st=db()->prepare("DELETE FROM employees WHERE id=?");
   $st->execute([up($id)]);
   if($st->rowCount()===0) nf('Employee not found');
@@ -2935,6 +3089,10 @@ function emp_delete(string $id): void {
 }
 
 function leaves_list(?int $m=null, ?int $y=null, ?string $lt=null, ?string $stt=null): array {
+  if (function_exists('app') && app()->bound(\App\Services\Leaves\LeaveRepository::class)) {
+    return app(\App\Services\Leaves\LeaveRepository::class)->list($m, $y, $lt, $stt);
+  }
+
   $sql="SELECT * FROM leaves WHERE 1=1"; $args=[];
   if($m!==null){$sql.=" AND CAST(strftime('%m', from_date) AS INTEGER)=?"; $args[]=$m;}
   if($y!==null){$sql.=" AND CAST(strftime('%Y', from_date) AS INTEGER)=?"; $args[]=$y;}
@@ -2943,6 +3101,10 @@ function leaves_list(?int $m=null, ?int $y=null, ?string $lt=null, ?string $stt=
   return array_map(fn($r)=>["id"=>(int)$r['id'],"empId"=>$r['emp_id'],"empName"=>$r['emp_name'],"dept"=>$r['dept'],"desig"=>$r['desig'],"company"=>$r['company'],"fromDate"=>$r['from_date'],"toDate"=>$r['to_date'],"days"=>(float)$r['days'],"leaveType"=>$r['leave_type'],"reason"=>$r['reason'],"status"=>$r['status'],"halfDay"=>$r['half_day'],"markedBy"=>$r['marked_by'],"__updatedAt"=>$r['updated_at']],$q->fetchAll());
 }
 function leave_upsert(array $raw, ?bool $mustExist=null): array {
+  if (function_exists('app') && app()->bound(\App\Services\Leaves\LeaveRepository::class)) {
+    return app(\App\Services\Leaves\LeaveRepository::class)->upsert($raw, $mustExist);
+  }
+
   $n=norm_leave($raw); $id=$n['id']!==null?(int)$n['id']:null; if($mustExist===true && $id===null) bad('leave id required');
   $isNew = $id === null;
   if($id!==null){$q=db()->prepare("SELECT id FROM leaves WHERE id=?");$q->execute([$id]); if($mustExist===true && !$q->fetch()) nf('Leave not found');}
@@ -2984,6 +3146,11 @@ function attendance_unmark_leave(string $empId,string $fromDate,string $toDate,s
   foreach($maps as $k => $v) kv_set($k, $v);
 }
 function leave_delete(int $id): void {
+  if (function_exists('app') && app()->bound(\App\Services\Leaves\LeaveRepository::class)) {
+    app(\App\Services\Leaves\LeaveRepository::class)->delete($id);
+    return;
+  }
+
   $q = db()->prepare("SELECT emp_id, from_date, to_date, leave_type FROM leaves WHERE id=?");
   $q->execute([$id]);
   $row = $q->fetch();
@@ -2994,6 +3161,10 @@ function leave_delete(int $id): void {
   attendance_unmark_leave((string)$row['emp_id'], (string)$row['from_date'], (string)$row['to_date'], (string)$row['leave_type']);
 }
 function leaves_summary(int $m,int $y): array {
+  if (function_exists('app') && app()->bound(\App\Services\Leaves\LeaveRepository::class)) {
+    return app(\App\Services\Leaves\LeaveRepository::class)->summary($m, $y);
+  }
+
   $q=db()->prepare("SELECT emp_id AS empId, emp_name AS empName, SUM(CASE WHEN leave_type='CL' THEN days ELSE 0 END) AS clDays, SUM(CASE WHEN leave_type='SL' THEN days ELSE 0 END) AS slDays, SUM(CASE WHEN leave_type='EL' THEN days ELSE 0 END) AS elDays, SUM(CASE WHEN leave_type='LOP' THEN days ELSE 0 END) AS lopDays, SUM(days) AS totalDays FROM leaves WHERE CAST(strftime('%m', from_date) AS INTEGER)=? AND CAST(strftime('%Y', from_date) AS INTEGER)=? AND status='Approved' GROUP BY emp_id, emp_name ORDER BY emp_id ASC");
   $q->execute([$m,$y]); return $q->fetchAll();
 }
@@ -3162,6 +3333,10 @@ function norm_client(array $r, bool $isUpdate=false): array {
   ];
 }
 function clients_all(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Clients\ClientRepository::class)) {
+    return app(\App\Services\Clients\ClientRepository::class)->clientsAll();
+  }
+
   $rows = central_db()->query("SELECT c.*, COALESCE(a.access_type, 'custom') AS access_type, COALESCE(p.plan_name, '') AS subscription_type_name FROM clients c LEFT JOIN client_access a ON a.client_id=c.id LEFT JOIN subscription_plans p ON p.id=c.subscription_plan_id ORDER BY c.id DESC")->fetchAll();
   return array_map(fn($r) => [
     "id" => (int)$r['id'],
@@ -3181,6 +3356,10 @@ function clients_all(): array {
   ], $rows);
 }
 function client_upsert(array $raw, ?bool $mustExist=null): array {
+  if (function_exists('app') && app()->bound(\App\Services\Clients\ClientRepository::class)) {
+    return app(\App\Services\Clients\ClientRepository::class)->clientUpsert($raw, $mustExist);
+  }
+
   $n = norm_client($raw, $mustExist === true);
   $id = $n['id'];
   $d = central_db();
@@ -3282,6 +3461,11 @@ function client_upsert(array $raw, ?bool $mustExist=null): array {
   return $row;
 }
 function client_delete(int $id): void {
+  if (function_exists('app') && app()->bound(\App\Services\Clients\ClientRepository::class)) {
+    app(\App\Services\Clients\ClientRepository::class)->clientDelete($id);
+    return;
+  }
+
   $d = central_db();
   $st = $d->prepare("DELETE FROM clients WHERE id=?");
   $st->execute([$id]);
@@ -3291,6 +3475,10 @@ function client_delete(int $id): void {
   if($st->rowCount() === 0) nf('Client not found');
 }
 function client_exists(int $id): bool {
+  if (function_exists('app') && app()->bound(\App\Services\Clients\ClientRepository::class)) {
+    return app(\App\Services\Clients\ClientRepository::class)->clientExists($id);
+  }
+
   $q = central_db()->prepare("SELECT id FROM clients WHERE id=?");
   $q->execute([$id]);
   return (bool)$q->fetch();
@@ -3304,6 +3492,10 @@ function access_default_permissions(): array {
   ];
 }
 function access_type_rows(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    return app(\App\Services\Access\AccessRepository::class)->accessTypeRows();
+  }
+
   $rows = central_db()->query("SELECT code, name, permissions, is_system, updated_at FROM access_types ORDER BY is_system DESC, name ASC")->fetchAll();
   return array_map(function($r){
     $perm = json_decode((string)($r['permissions'] ?? '[]'), true);
@@ -3317,6 +3509,10 @@ function access_type_rows(): array {
   }, $rows);
 }
 function access_type_get(string $code): ?array {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    return app(\App\Services\Access\AccessRepository::class)->accessTypeGet($code);
+  }
+
   $st = central_db()->prepare("SELECT code, name, permissions, is_system, updated_at FROM access_types WHERE code=? LIMIT 1");
   $st->execute([strtolower(trim($code))]);
   $r = $st->fetch();
@@ -3331,6 +3527,10 @@ function access_type_get(string $code): ?array {
   ];
 }
 function access_type_permissions(string $code): array {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    return app(\App\Services\Access\AccessRepository::class)->accessTypePermissions($code);
+  }
+
   $row = access_type_get($code);
   if($row) return access_norm_permissions($row['permissions'] ?? []);
   return access_default_permissions();
@@ -3346,6 +3546,10 @@ function access_type_code_from_name(string $name): string {
   return $code;
 }
 function access_type_create(array $payload): array {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    return app(\App\Services\Access\AccessRepository::class)->accessTypeCreate($payload);
+  }
+
   $name = s($payload['name'] ?? '');
   if($name === '') bad('Access type name is required');
   $perm = access_norm_permissions($payload['permissions'] ?? []);
@@ -3356,6 +3560,10 @@ function access_type_create(array $payload): array {
   return access_type_get($code) ?? ["code"=>$code,"name"=>$name,"isSystem"=>false,"permissions"=>$perm,"__updatedAt"=>$ts];
 }
 function access_type_update(string $code, array $payload): array {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    return app(\App\Services\Access\AccessRepository::class)->accessTypeUpdate($code, $payload);
+  }
+
   $row = access_type_get($code);
   if(!$row) nf('Access type not found');
   if(!empty($row['isSystem'])) j(["detail"=>"System access type cannot be edited"],409);
@@ -3368,6 +3576,11 @@ function access_type_update(string $code, array $payload): array {
   return access_type_get($row['code']) ?? ["code"=>$row['code'],"name"=>$name,"isSystem"=>false,"permissions"=>$perm,"__updatedAt"=>$ts];
 }
 function access_type_delete(string $code): void {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    app(\App\Services\Access\AccessRepository::class)->accessTypeDelete($code);
+    return;
+  }
+
   $row = access_type_get($code);
   if(!$row) nf('Access type not found');
   if(!empty($row['isSystem'])) j(["detail"=>"System access type cannot be deleted"],409);
@@ -3390,6 +3603,10 @@ function subscription_norm(array $r): array {
   return ["id" => isset($r['id']) ? (int)$r['id'] : null, "clientId"=>$clientId, "planName"=>$planName, "startDate"=>$startDate, "endDate"=>$endDate, "renewalDate"=>$renewalDate, "status"=>$status, "amount"=>$amount, "notes"=>$notes];
 }
 function subscriptions_all(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Subscriptions\SubscriptionRepository::class)) {
+    return app(\App\Services\Subscriptions\SubscriptionRepository::class)->subscriptionsAll();
+  }
+
   $rows = central_db()->query("SELECT s.*, c.company_name AS client_name, c.user_id AS user_id FROM subscriptions s LEFT JOIN clients c ON c.id=s.client_id ORDER BY s.updated_at DESC, s.id DESC")->fetchAll();
   return array_map(fn($r)=>[
     "id" => (int)$r['id'],
@@ -3407,6 +3624,10 @@ function subscriptions_all(): array {
   ], $rows);
 }
 function subscription_upsert(array $raw, ?bool $mustExist=null): array {
+  if (function_exists('app') && app()->bound(\App\Services\Subscriptions\SubscriptionRepository::class)) {
+    return app(\App\Services\Subscriptions\SubscriptionRepository::class)->subscriptionUpsert($raw, $mustExist);
+  }
+
   $n = subscription_norm($raw);
   $id = $n['id'];
   $d = central_db();
@@ -3435,6 +3656,11 @@ function subscription_upsert(array $raw, ?bool $mustExist=null): array {
   return $row;
 }
 function subscription_delete(int $id): void {
+  if (function_exists('app') && app()->bound(\App\Services\Subscriptions\SubscriptionRepository::class)) {
+    app(\App\Services\Subscriptions\SubscriptionRepository::class)->subscriptionDelete($id);
+    return;
+  }
+
   $st = central_db()->prepare("DELETE FROM subscriptions WHERE id=?");
   $st->execute([$id]);
   if($st->rowCount()===0) nf('Subscription not found');
@@ -3452,6 +3678,10 @@ function plan_norm(array $r): array {
   return ["id" => isset($r['id']) ? (int)$r['id'] : null, "planName"=>$name, "durationMonths"=>$duration, "amount"=>$amount, "status"=>$status, "features"=>$features, "accessTypeCode"=>$accessTypeCode];
 }
 function plans_all(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Subscriptions\SubscriptionRepository::class)) {
+    return app(\App\Services\Subscriptions\SubscriptionRepository::class)->plansAll();
+  }
+
   $rows = central_db()->query("SELECT p.*, a.name AS access_type_name FROM subscription_plans p LEFT JOIN access_types a ON a.code=p.access_type_code ORDER BY p.updated_at DESC, p.id DESC")->fetchAll();
   return array_map(fn($r)=>[
     "id" => (int)$r['id'],
@@ -3466,6 +3696,10 @@ function plans_all(): array {
   ], $rows);
 }
 function plan_upsert(array $raw, ?bool $mustExist=null): array {
+  if (function_exists('app') && app()->bound(\App\Services\Subscriptions\SubscriptionRepository::class)) {
+    return app(\App\Services\Subscriptions\SubscriptionRepository::class)->planUpsert($raw, $mustExist);
+  }
+
   $n = plan_norm($raw);
   $id = $n['id'];
   $d = central_db();
@@ -3493,11 +3727,20 @@ function plan_upsert(array $raw, ?bool $mustExist=null): array {
   return $n + ["__updatedAt"=>$ts];
 }
 function plan_delete(int $id): void {
+  if (function_exists('app') && app()->bound(\App\Services\Subscriptions\SubscriptionRepository::class)) {
+    app(\App\Services\Subscriptions\SubscriptionRepository::class)->planDelete($id);
+    return;
+  }
+
   $st = central_db()->prepare("DELETE FROM subscription_plans WHERE id=?");
   $st->execute([$id]);
   if($st->rowCount()===0) nf('Plan not found');
 }
 function subscription_info_get(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Subscriptions\SubscriptionRepository::class)) {
+    return app(\App\Services\Subscriptions\SubscriptionRepository::class)->subscriptionInfoGet();
+  }
+
   $cid = req_client_id();
   $plans = plans_all();
   if($cid <= 0){
@@ -3541,6 +3784,10 @@ function subscription_info_get(): array {
   return ["clientId"=>$cid, "currentPlan"=>$current, "plans"=>$plans];
 }
 function client_access_template_get(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Billing\BillingRepository::class)) {
+    return app(\App\Services\Billing\BillingRepository::class)->clientAccessTemplateGet();
+  }
+
   $cid = req_client_id();
   if($cid <= 0) bad('clientId is required');
   $q = central_db()->prepare("SELECT c.id, c.subscription_plan_id, p.access_type_code FROM clients c LEFT JOIN subscription_plans p ON p.id=c.subscription_plan_id WHERE c.id=? LIMIT 1");
@@ -3573,6 +3820,10 @@ function billing_amount_by_access_type(string $accessType): float {
   return 3200.0;
 }
 function client_billing_get(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Billing\BillingRepository::class)) {
+    return app(\App\Services\Billing\BillingRepository::class)->clientBillingGet();
+  }
+
   $cid = req_client_id();
   if($cid <= 0) j(["detail"=>"Client session required"],401);
   $q = central_db()->prepare("SELECT c.id, c.company_name, p.plan_name, p.status FROM clients c LEFT JOIN subscription_plans p ON p.id=c.subscription_plan_id WHERE c.id=? LIMIT 1");
@@ -3649,6 +3900,10 @@ function client_billing_get(): array {
   ];
 }
 function client_invoices_get(): array {
+  if (function_exists('app') && app()->bound(\App\Services\Billing\BillingRepository::class)) {
+    return app(\App\Services\Billing\BillingRepository::class)->clientInvoicesGet();
+  }
+
   $bill = client_billing_get();
   $rows = [];
   foreach(($bill['rows'] ?? []) as $r){
@@ -3666,6 +3921,10 @@ function client_invoices_get(): array {
   ];
 }
 function access_norm_permissions($raw): array {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    return app(\App\Services\Access\AccessRepository::class)->accessNormPermissions($raw);
+  }
+
   $base = access_default_permissions();
   $src = is_array($raw) ? $raw : [];
   foreach($base as $k => $v){
@@ -3674,6 +3933,10 @@ function access_norm_permissions($raw): array {
   return $base;
 }
 function access_get(int $clientId): array {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    return app(\App\Services\Access\AccessRepository::class)->accessGet($clientId);
+  }
+
   if($clientId <= 0 || !client_exists($clientId)) nf('Client not found');
   $q = central_db()->prepare("SELECT permissions, access_type, updated_at FROM client_access WHERE client_id=?");
   $q->execute([$clientId]);
@@ -3686,6 +3949,10 @@ function access_get(int $clientId): array {
   return ["clientId"=>$clientId,"accessType"=>$type,"permissions"=>access_norm_permissions($decoded),"__updatedAt"=>(string)$row['updated_at']];
 }
 function access_put(int $clientId, array $payload): array {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    return app(\App\Services\Access\AccessRepository::class)->accessPut($clientId, $payload);
+  }
+
   if($clientId <= 0 || !client_exists($clientId)) nf('Client not found');
   $type = strtolower(s($payload['accessType'] ?? 'custom', 'custom'));
   $srcPerm = $payload['permissions'] ?? null;
@@ -3720,6 +3987,10 @@ function staff_role_code_from_name(int $clientId, string $name): string {
   return $code;
 }
 function staff_role_get(int $clientId, string $code): ?array {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    return app(\App\Services\Access\AccessRepository::class)->staffRoleGet($clientId, $code);
+  }
+
   if($clientId <= 0) return null;
   $q = central_db()->prepare("SELECT client_id, code, name, permissions, created_at, updated_at FROM staff_roles WHERE client_id=? AND code=? LIMIT 1");
   $q->execute([$clientId, strtolower(trim($code))]);
@@ -3736,6 +4007,10 @@ function staff_role_get(int $clientId, string $code): ?array {
   ];
 }
 function staff_role_rows(int $clientId): array {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    return app(\App\Services\Access\AccessRepository::class)->staffRoleRows($clientId);
+  }
+
   if($clientId <= 0 || !client_exists($clientId)) return [];
   $q = central_db()->prepare("SELECT client_id, code, name, permissions, created_at, updated_at FROM staff_roles WHERE client_id=? ORDER BY name ASC");
   $q->execute([$clientId]);
@@ -3753,6 +4028,10 @@ function staff_role_rows(int $clientId): array {
   }, $rows);
 }
 function staff_role_create(int $clientId, array $payload): array {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    return app(\App\Services\Access\AccessRepository::class)->staffRoleCreate($clientId, $payload);
+  }
+
   if($clientId <= 0 || !client_exists($clientId)) bad('clientId is required');
   $name = s($payload['name'] ?? '');
   if($name === '') bad('Role name is required');
@@ -3764,6 +4043,10 @@ function staff_role_create(int $clientId, array $payload): array {
   return staff_role_get($clientId, $code) ?? ["clientId"=>$clientId,"code"=>$code,"name"=>$name,"permissions"=>$perm,"__updatedAt"=>$ts];
 }
 function staff_role_update(int $clientId, string $code, array $payload): array {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    return app(\App\Services\Access\AccessRepository::class)->staffRoleUpdate($clientId, $code, $payload);
+  }
+
   $row = staff_role_get($clientId, $code);
   if(!$row) nf('Role not found');
   $name = s($payload['name'] ?? $row['name']);
@@ -3775,6 +4058,11 @@ function staff_role_update(int $clientId, string $code, array $payload): array {
   return staff_role_get($clientId, $row['code']) ?? ["clientId"=>$clientId,"code"=>$row['code'],"name"=>$name,"permissions"=>$perm,"__updatedAt"=>$ts];
 }
 function staff_role_delete(int $clientId, string $code): void {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    app(\App\Services\Access\AccessRepository::class)->staffRoleDelete($clientId, $code);
+    return;
+  }
+
   $row = staff_role_get($clientId, $code);
   if(!$row) nf('Role not found');
   $q = central_db()->prepare("SELECT COUNT(*) AS cnt FROM staff_users WHERE client_id=? AND role_code=?");
@@ -3785,11 +4073,19 @@ function staff_role_delete(int $clientId, string $code): void {
   $st->execute([$clientId, $row['code']]);
 }
 function staff_role_permissions(int $clientId, string $code): array {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    return app(\App\Services\Access\AccessRepository::class)->staffRolePermissions($clientId, $code);
+  }
+
   $row = staff_role_get($clientId, $code);
   if(!$row) return access_default_permissions();
   return staff_role_norm_permissions($row['permissions'] ?? []);
 }
 function staff_user_rows(int $clientId): array {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    return app(\App\Services\Access\AccessRepository::class)->staffUserRows($clientId);
+  }
+
   if($clientId <= 0 || !client_exists($clientId)) return [];
   $emps = employees_all();
   $emap = [];
@@ -3821,6 +4117,10 @@ function staff_user_rows(int $clientId): array {
   return $rows;
 }
 function staff_user_get_by_username(string $username): ?array {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    return app(\App\Services\Access\AccessRepository::class)->staffUserGetByUsername($username);
+  }
+
   $u = strtolower(trim($username));
   if($u === '') return null;
   $q = central_db()->prepare("SELECT id, client_id, emp_id, username, password_hash, role_code, status, created_at, updated_at FROM staff_users WHERE lower(username)=? LIMIT 1");
@@ -3840,6 +4140,10 @@ function staff_user_get_by_username(string $username): ?array {
   ];
 }
 function staff_user_upsert(int $clientId, string $empId, array $payload): array {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    return app(\App\Services\Access\AccessRepository::class)->staffUserUpsert($clientId, $empId, $payload);
+  }
+
   if($clientId <= 0 || !client_exists($clientId)) bad('clientId is required');
   $empId = up($empId);
   if($empId === '') bad('empId is required');
@@ -3887,6 +4191,11 @@ function staff_user_upsert(int $clientId, string $empId, array $payload): array 
   return $fallback;
 }
 function staff_user_delete(int $clientId, string $empId): void {
+  if (function_exists('app') && app()->bound(\App\Services\Access\AccessRepository::class)) {
+    app(\App\Services\Access\AccessRepository::class)->staffUserDelete($clientId, $empId);
+    return;
+  }
+
   $empId = up($empId);
   if($clientId <= 0 || $empId === '') bad('clientId and empId are required');
   $st = central_db()->prepare("DELETE FROM staff_users WHERE client_id=? AND emp_id=?");
@@ -3934,6 +4243,10 @@ function auth_user_verify(array $u, string $password): bool {
   return $plain !== '' && hash_equals($plain, $password);
 }
 function auth_login(string $u,string $p): array {
+  if (function_exists('app') && app()->bound(\App\Services\Auth\AuthLoginRepository::class)) {
+    return app(\App\Services\Auth\AuthLoginRepository::class)->login($u, $p);
+  }
+
   $u=strtolower(trim($u)); $p=trim($p); if($u===''||$p==='') bad('username and password are required');
   login_rate_limit_check($u);
   $users = auth_users();

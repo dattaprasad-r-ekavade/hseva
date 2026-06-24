@@ -4,20 +4,22 @@ namespace App\Services\Loans;
 
 class LoanService
 {
+    public function __construct(private LoanRepository $repository) {}
+
     public function index(): array
     {
-        return ['rows' => loan_rows()];
+        return ['rows' => $this->repository->rows()];
     }
 
     public function store(array $payload): array
     {
-        return ['row' => loan_create_or_update($payload)];
+        return ['row' => $this->repository->createOrUpdate($payload)];
     }
 
     public function show(string $loanId): array
     {
         loan_view_ctx();
-        $row = loan_fetch_one(db(), $loanId);
+        $row = $this->repository->fetchOne(db(), $loanId);
         if (! $row) {
             nf('Loan not found');
         }
@@ -27,14 +29,12 @@ class LoanService
 
     public function update(string $loanId, array $payload): array
     {
-        $payload['id'] = $loanId;
-
-        return ['row' => loan_create_or_update($payload)];
+        return ['row' => $this->repository->createOrUpdate($payload, $loanId)];
     }
 
     public function destroy(string $loanId): array
     {
-        loan_delete($loanId);
+        $this->repository->delete($loanId);
 
         return ['status' => 'deleted'];
     }

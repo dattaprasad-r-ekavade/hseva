@@ -4,73 +4,75 @@ namespace App\Services\Access;
 
 class AccessService
 {
+    public function __construct(private AccessRepository $repository) {}
+
     public function getClientAccess(int $clientId): array
     {
-        return ['row' => access_get($clientId)];
+        return ['row' => $this->repository->accessGet($clientId)];
     }
 
     public function putClientAccess(int $clientId, array $payload): array
     {
-        return ['row' => access_put($clientId, $payload)];
+        return ['row' => $this->repository->accessPut($clientId, $payload)];
     }
 
     public function accessTypes(): array
     {
-        return ['rows' => access_type_rows()];
+        return ['rows' => $this->repository->accessTypeRows()];
     }
 
     public function createAccessType(array $payload): array
     {
-        return ['row' => access_type_create($payload)];
+        return ['row' => $this->repository->accessTypeCreate($payload)];
     }
 
     public function updateAccessType(string $code, array $payload): array
     {
-        return ['row' => access_type_update($code, $payload)];
+        return ['row' => $this->repository->accessTypeUpdate($code, $payload)];
     }
 
     public function deleteAccessType(string $code): array
     {
-        access_type_delete($code);
+        $this->repository->accessTypeDelete($code);
 
         return ['status' => 'deleted'];
     }
 
     public function staffRoles(int $clientId): array
     {
-        return ['rows' => staff_role_rows($clientId)];
+        return ['rows' => $this->repository->staffRoleRows($clientId)];
     }
 
     public function createStaffRole(int $clientId, array $payload): array
     {
-        return ['row' => staff_role_create($clientId, $payload)];
+        return ['row' => $this->repository->staffRoleCreate($clientId, $payload)];
     }
 
     public function updateStaffRole(int $clientId, string $code, array $payload): array
     {
-        return ['row' => staff_role_update($clientId, $code, $payload)];
+        return ['row' => $this->repository->staffRoleUpdate($clientId, $code, $payload)];
     }
 
     public function deleteStaffRole(int $clientId, string $code): array
     {
-        staff_role_delete($clientId, $code);
+        $this->repository->staffRoleDelete($clientId, $code);
 
         return ['status' => 'deleted'];
     }
 
     public function staffUsers(int $clientId): array
     {
-        return ['rows' => staff_user_rows($clientId)];
+        return ['rows' => $this->repository->staffUserRows($clientId)];
     }
 
     public function upsertStaffUser(int $clientId, string $empId, array $payload): array
     {
-        return ['row' => staff_user_upsert($clientId, $empId, $payload)];
+        return ['row' => $this->repository->staffUserUpsert($clientId, $empId, $payload)];
     }
 
     public function deleteStaffUser(int $clientId, string $empId): array
     {
-        staff_user_delete($clientId, $empId);
+        $this->repository->staffUserDelete($clientId, $empId);
 
         return ['status' => 'deleted'];
     }

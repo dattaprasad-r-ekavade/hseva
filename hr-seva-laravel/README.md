@@ -75,9 +75,9 @@ SQLite is the default for now to preserve 1-to-1 behaviour with the existing dep
 
 ## API parity
 
-All API endpoints are registered as explicit Laravel routes (`routes/api.php`, `routes/api-modules.php`). Core sheet generators run through native `app/Services/*` classes (`AttendanceGenerator`, `PayrollGenerator`, `PfSheetGenerator`, `EsicSheetGenerator`, `EcrSheetGenerator`, `FnfGenerator`, `GratuityGenerator`, `BonusGenerator`, `PayslipGenerator`, etc.) with legacy `api.php` bridges for backward compatibility. Request/response JSON shapes match the original app.
+All API endpoints are registered as explicit Laravel routes (`routes/api.php`, `routes/api-modules.php`). Business logic runs through native `app/Services/*` classes (generators, repositories) with legacy `api.php` bridges for backward compatibility. Request/response JSON shapes match the original app.
 
-PHPUnit contract tests under `tests/Feature/Api/` cover auth, payroll pipeline parity, settlement modules (FNF, gratuity, bonus, payslips), CRUD modules (master data, incentives, overtime, compliance), normalized storage, and full API route reachability. CI runs these on SQLite and MySQL (see `.github/workflows/hr-seva-tests.yml`).
+PHPUnit contract tests under `tests/Feature/Api/` cover auth, payroll pipeline parity, settlement modules, CRUD modules (employees, leaves, master data, incentives, overtime, compliance, loans, advances), normalized storage, and full API route reachability. CI runs these on SQLite and MySQL (see `.github/workflows/hr-seva-tests.yml`).
 
 ## Development
 

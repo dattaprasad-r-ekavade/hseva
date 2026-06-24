@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Services\Auth\AuthLoginRepository;
 use App\Services\Compliance\ComplianceRepository;
 use App\Services\Compliance\ComplianceService;
+use App\Services\FaceAttendance\FaceAttendanceRepository;
 use App\Services\FaceAttendance\FaceAttendanceService;
 use App\Services\Payroll\PayrollGenerator;
 use App\Services\Payroll\StatutoryCalculator;
@@ -33,10 +35,21 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\Gratuity\GratuityGenerator::class);
         $this->app->singleton(\App\Services\Bonus\BonusGenerator::class);
         $this->app->singleton(\App\Services\Payslips\PayslipGenerator::class);
+        $this->app->singleton(\App\Services\Employees\EmployeeRepository::class);
+        $this->app->singleton(\App\Services\Leaves\LeaveRepository::class);
+        $this->app->singleton(\App\Services\Enquiries\EnquiryRepository::class);
+        $this->app->singleton(\App\Services\Access\AccessRepository::class);
+        $this->app->singleton(\App\Services\Clients\ClientRepository::class);
+        $this->app->singleton(\App\Services\Subscriptions\SubscriptionRepository::class);
+        $this->app->singleton(\App\Services\Billing\BillingRepository::class);
         $this->app->singleton(\App\Services\MasterData\MasterDataRepository::class);
         $this->app->singleton(\App\Services\Incentives\IncentiveRepository::class);
         $this->app->singleton(\App\Services\Overtime\OvertimeRepository::class);
+        $this->app->singleton(\App\Services\Advances\AdvanceRepository::class);
+        $this->app->singleton(\App\Services\Loans\LoanRepository::class);
         $this->app->singleton(ComplianceRepository::class);
+        $this->app->singleton(AuthLoginRepository::class);
+        $this->app->singleton(FaceAttendanceRepository::class);
         $this->app->singleton(FaceAttendanceService::class);
         $this->app->singleton(ComplianceService::class);
         $this->app->singleton(\App\Services\Overtime\OvertimeService::class);

@@ -4,68 +4,70 @@ namespace App\Services\FaceAttendance;
 
 class FaceAttendanceService
 {
+    public function __construct(private FaceAttendanceRepository $repository) {}
+
     public function settings(): array
     {
-        return face_attendance_settings_get();
+        return $this->repository->settingsGet();
     }
 
     public function updateSettings(array $payload): array
     {
-        return face_attendance_settings_put($payload);
+        return $this->repository->settingsPut($payload);
     }
 
     public function registrations(?string $employeeId = null): array
     {
-        return face_attendance_registration_rows($employeeId);
+        return $this->repository->registrationRows($employeeId);
     }
 
     public function register(array $payload): array
     {
-        return face_attendance_register($payload);
+        return $this->repository->register($payload);
     }
 
     public function deleteRegistration(string $employeeId): void
     {
-        face_attendance_delete_registration($employeeId);
+        $this->repository->deleteRegistration($employeeId);
     }
 
     public function scan(array $payload): array
     {
-        return face_attendance_scan($payload);
+        return $this->repository->scan($payload);
     }
 
     public function sheet(array $query, array $ctx): array
     {
-        return face_attendance_sheet_rows($query, $ctx);
+        return $this->repository->sheetRows($query, $ctx);
     }
 
     public function report(array $query, array $ctx): array
     {
-        return face_attendance_report_rows($query, $ctx);
+        return $this->repository->reportRows($query, $ctx);
     }
 
     public function record(int $id): ?array
     {
-        return face_attendance_fetch_one($id);
+        return $this->repository->fetchOne($id);
     }
 
     public function updateRecord(int $id, array $payload): array
     {
-        return face_attendance_update_record($id, $payload);
+        return $this->repository->updateRecord($id, $payload);
     }
 
     public function deleteRecord(int $id): void
     {
-        face_attendance_delete_record($id);
+        $this->repository->deleteRecord($id);
     }
 
     public function viewContext(): array
     {
-        return face_attendance_view_ctx();
+        return $this->repository->viewContext();
     }
 
     public function employeeScope(array $ctx): string
     {
-        return face_attendance_emp_scope($ctx);
+        return $this->repository->employeeScope($ctx);
     }
 }
