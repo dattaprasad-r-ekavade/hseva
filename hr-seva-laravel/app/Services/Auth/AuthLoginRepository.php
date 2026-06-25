@@ -2,11 +2,14 @@
 
 namespace App\Services\Auth;
 
+use App\Services\Subscriptions\SubscriptionAccessService;
+
 class AuthLoginRepository
 {
     public function __construct(
         private JwtService $jwt,
         private AuthUsersRepository $users,
+        private SubscriptionAccessService $subscriptions,
     ) {}
 
     public function login(string $username, string $password): array
@@ -51,7 +54,7 @@ class AuthLoginRepository
         $q->execute([$u]);
         $row = $q->fetch();
         if ($row) {
-            $sub = client_subscription_access_state((int) $row['id']);
+            $sub = $this->subscriptions->accessState((int) $row['id']);
             if (empty($sub['active'])) {
                 j(['detail' => 'Subscription expired. Access denied.', 'reason' => $sub['reason'] ?? '', 'endDate' => $sub['endDate'] ?? null], 403);
             }
@@ -115,7 +118,7 @@ class AuthLoginRepository
                 login_rate_limit_fail($u);
                 j(['detail' => 'Invalid staff account'], 403);
             }
-            $sub = client_subscription_access_state($cid);
+            $sub = $this->subscriptions->accessState($cid);
             if (empty($sub['active'])) {
                 j(['detail' => 'Subscription expired. Access denied.', 'reason' => $sub['reason'] ?? '', 'endDate' => $sub['endDate'] ?? null], 403);
             }

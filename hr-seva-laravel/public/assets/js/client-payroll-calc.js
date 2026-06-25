@@ -16,7 +16,7 @@ const $ = (id) => document.getElementById(id);
     const KEY_EMP_LOCAL = "hr_client_employees_v1";
     const KEY_OVR = "hr_client_payroll_overrides_v2";
     const KEY_SALARY_FILES = "hr_salary_sheet_files_v2";
-    const API_BASES = ["/api", "/backend/api.php?path=/api", "/backend/api.php?path=/api"];
+    const API_BASES = ["/api"];
     const API_PAYROLL_SHEETS = "/payroll/sheets";
     const API_PAYROLL_CLEAR = "/payroll/clear";
     const monthNames = {1:"Jan",2:"Feb",3:"Mar",4:"Apr",5:"May",6:"Jun",7:"Jul",8:"Aug",9:"Sep",10:"Oct",11:"Nov",12:"Dec"};

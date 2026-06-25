@@ -47,7 +47,10 @@ const DEFAULT_AUTH_USERS = [
 ];
 const FACE_ATTENDANCE_DEFAULT_MODEL_URL = '/assets/vendor/face-api-models';
 const FACE_ATTENDANCE_DEFAULT_TIMEZONE = 'Asia/Kolkata';
+if (! function_exists('now_iso')) {
 function now_iso(): string { return gmdate('Y-m-d\\TH:i:s\\Z'); }
+}
+if (! function_exists('j')) {
 function j($x,int $s=200): void {
   if (class_exists(\App\Exceptions\LegacyApiResponseException::class)) {
     throw new \App\Exceptions\LegacyApiResponseException($x, $s);
@@ -57,13 +60,26 @@ function j($x,int $s=200): void {
   echo json_encode($x,JSON_UNESCAPED_UNICODE);
   exit;
 }
+}
+if (! function_exists('bad')) {
 function bad(string $m): void { j(["detail"=>$m],400); }
+}
+if (! function_exists('nf')) {
 function nf(string $m): void { j(["detail"=>$m],404); }
+}
 function meth(string $m): void { if($_SERVER['REQUEST_METHOD']!==$m) j(["detail"=>"Method Not Allowed"],405); }
+if (! function_exists('s')) {
 function s($v,$d=''){ $x=trim((string)$v); return $x===''?$d:$x; }
+}
+if (! function_exists('up')) {
 function up($v){ return strtoupper(trim((string)$v)); }
+}
+if (! function_exists('f')) {
 function f($v,$d=0.0){ return is_numeric($v)?(float)$v:(float)$d; }
+}
+if (! function_exists('b')) {
 function b($v){ if(is_bool($v)) return $v; $x=strtolower(trim((string)$v)); return in_array($x,['1','true','yes','y'],true); }
+}
 require_once __DIR__ . '/mail.php';
 function app_secret(): string {
   $env = getenv('HR_APP_SECRET');
@@ -113,6 +129,9 @@ function auth_header_token(): string {
   return '';
 }
 function client_subscription_access_state(int $clientId): array {
+  if (function_exists('app') && app()->bound(\App\Services\Subscriptions\SubscriptionAccessService::class)) {
+    return app(\App\Services\Subscriptions\SubscriptionAccessService::class)->accessState($clientId);
+  }
   if($clientId <= 0) return ["active"=>false, "reason"=>"Invalid client", "endDate"=>null];
   $q = central_db()->prepare("SELECT id, status, end_date, renewal_date, updated_at FROM subscriptions WHERE client_id=? ORDER BY end_date DESC, renewal_date DESC, id DESC LIMIT 1");
   $q->execute([$clientId]);

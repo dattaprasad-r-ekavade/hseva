@@ -4,7 +4,7 @@ const yrEl = $("yr");
 if (yrEl) yrEl.textContent = new Date().getFullYear();
 
 const KEY_PF_RETURNS = "hr_client_pf_returns_v2";
-const API_BASES = ["/api", "/backend/api.php?path=/api", "/backend/api.php?path=/api"];
+const API_BASES = ["/api"];
 
 function round2(n) { return Math.round(Number(n||0)); }
 function money(n) { return round2(n).toLocaleString("en-IN", { maximumFractionDigits:0 }); }

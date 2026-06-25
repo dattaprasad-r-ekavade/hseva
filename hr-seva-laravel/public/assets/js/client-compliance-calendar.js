@@ -4,7 +4,7 @@ const yrEl = $("yr");
 if (yrEl) yrEl.textContent = new Date().getFullYear();
 
 const KEY = "hr_client_compliance_challan_v1";
-const API_BASES = ["/api", "/backend/api.php?path=/api", "/backend/api.php?path=/api"];
+const API_BASES = ["/api"];
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const htmlEl = document.documentElement;

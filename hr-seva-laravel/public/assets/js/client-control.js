@@ -130,11 +130,8 @@
     const KEY = "hr_client_control_v1";
     const API_BASES = [
       "api",
-      "backend/api.php?path=/api",
       "../api",
-      "../backend/api.php?path=/api",
-      "/api",
-      "/backend/api.php?path=/api"
+      "/api"
     ];
     let currentMode = "SQLite API";
 

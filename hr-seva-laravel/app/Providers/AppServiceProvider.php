@@ -45,6 +45,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(\App\Services\Enquiries\EnquiryRepository::class);
         $this->app->singleton(\App\Services\Access\AccessRepository::class);
         $this->app->singleton(\App\Services\Clients\ClientRepository::class);
+        $this->app->singleton(\App\Services\Subscriptions\SubscriptionAccessService::class);
         $this->app->singleton(\App\Services\Subscriptions\SubscriptionRepository::class);
         $this->app->singleton(\App\Services\Billing\BillingRepository::class);
         $this->app->singleton(\App\Services\MasterData\MasterDataRepository::class);

@@ -1,7 +1,7 @@
 
 (function(){
   "use strict";
-  const API_BASES=["/api","/backend/api.php?path=/api","/backend/api.php?path=/api"];
+  const API_BASES=["/api"];
   const $=(id)=>document.getElementById(id);
   const isSuper=(location.pathname||"").toLowerCase().includes('/super-admin/');
   const state={clients:[],employees:[],shifts:[],assignments:[],rosterRows:[],reportRows:[],weekLocked:false,calendar:null,rosterMap:{},rosterNotes:{},rosterHalfDay:{},currentCell:null,selectedCellShift:"",monthDates:[],selectedCells:new Set()};
