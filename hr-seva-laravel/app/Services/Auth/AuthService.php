@@ -2,20 +2,16 @@
 
 namespace App\Services\Auth;
 
-use App\Services\Tenant\TenantManager;
-use App\Support\HrSevaDefaults;
-use Illuminate\Support\Facades\DB;
-
 class AuthService
 {
     public function __construct(
-        private JwtService $jwt,
-        private TenantManager $tenants,
+        private AuthLoginRepository $loginRepository,
+        private AuthUsersRepository $users,
     ) {}
 
     public function login(string $username, string $password): array
     {
-        return auth_login(strtolower(trim($username)), trim($password));
+        return $this->loginRepository->login(strtolower(trim($username)), trim($password));
     }
 
     public function session(?array $token): array
@@ -38,14 +34,11 @@ class AuthService
 
     public function seedSuperAdmins(): void
     {
-        $users = array_map(fn ($u) => [
-            'username' => $u['username'],
-            'password' => $u['password'],
-            'passwordHash' => password_hash($u['password'], PASSWORD_DEFAULT),
-            'name' => $u['name'],
-            'role' => $u['role'],
-        ], HrSevaDefaults::AUTH_USERS);
+        $this->users->seedSuperAdmins();
+    }
 
-        kv_set_on(central_db(), 'auth_users', $users);
+    public function forgot(array $data): array
+    {
+        return $this->loginRepository->forgot($data);
     }
 }

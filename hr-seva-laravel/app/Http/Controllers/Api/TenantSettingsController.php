@@ -15,10 +15,10 @@ class TenantSettingsController extends Controller
     public function control(Request $request): JsonResponse
     {
         if ($request->isMethod('GET')) {
-            return $this->ok(control_get());
+            return $this->ok($this->settings->getControlSettings());
         }
         if ($request->isMethod('PUT')) {
-            return $this->ok(control_put($request->json()->all()));
+            return $this->ok($this->settings->putControlSettings($request->json()->all()));
         }
 
         return $this->ok(['detail' => 'Method Not Allowed'], 405);
@@ -26,16 +26,16 @@ class TenantSettingsController extends Controller
 
     public function resetControl(): JsonResponse
     {
-        return $this->ok(control_put(DEFAULT_CONTROL));
+        return $this->ok($this->settings->putControlSettings(DEFAULT_CONTROL));
     }
 
     public function profile(Request $request): JsonResponse
     {
         if ($request->isMethod('GET')) {
-            return $this->ok(profile_get());
+            return $this->ok($this->settings->getCompanyProfile());
         }
         if ($request->isMethod('PUT')) {
-            return $this->ok(profile_put($request->json()->all()));
+            return $this->ok($this->settings->putCompanyProfile($request->json()->all()));
         }
 
         return $this->ok(['detail' => 'Method Not Allowed'], 405);
@@ -43,7 +43,7 @@ class TenantSettingsController extends Controller
 
     public function resetProfile(): JsonResponse
     {
-        return $this->ok(profile_put(DEFAULT_PROFILE));
+        return $this->ok($this->settings->putCompanyProfile(DEFAULT_PROFILE));
     }
 
     private function ok(mixed $payload, int $status = 200): JsonResponse

@@ -75,7 +75,9 @@ SQLite is the default for now to preserve 1-to-1 behaviour with the existing dep
 
 ## API parity
 
-All API endpoints are registered as explicit Laravel routes (`routes/api.php`, `routes/api-modules.php`). Business logic still lives in `legacy/backend/` functions, wrapped by `app/Services/*` classes. Request/response JSON shapes match the original app.
+All API endpoints are registered as explicit Laravel routes (`routes/api.php`, `routes/api-modules.php`). Business logic runs through native `app/Services/*` classes (generators, repositories) with legacy `api.php` bridges for backward compatibility. Request/response JSON shapes match the original app.
+
+PHPUnit contract tests under `tests/Feature/Api/` cover auth, payroll pipeline parity, settlement modules, CRUD modules (employees, leaves, master data, incentives, overtime, compliance, loans, advances), normalized storage, and full API route reachability. CI runs these on SQLite and MySQL (see `.github/workflows/hr-seva-tests.yml`).
 
 ## Development
 

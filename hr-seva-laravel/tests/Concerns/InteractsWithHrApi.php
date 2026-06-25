@@ -39,4 +39,13 @@ trait InteractsWithHrApi
             'X-Client-Id' => (string) $clientId,
         ];
     }
+
+    protected function tenantContext(string $token, ?int $clientId = null): array
+    {
+        if ($clientId === null) {
+            $clientId = $this->createTestClient($token);
+        }
+
+        return [$clientId, $this->tenantHeaders($token, $clientId)];
+    }
 }

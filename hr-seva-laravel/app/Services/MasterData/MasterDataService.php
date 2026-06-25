@@ -4,36 +4,38 @@ namespace App\Services\MasterData;
 
 class MasterDataService
 {
+    public function __construct(private MasterDataRepository $repository) {}
+
     public function attendanceStatuses(bool $activeOnly = false): array
     {
-        return ['rows' => attendance_status_rows($activeOnly)];
+        return ['rows' => $this->repository->attendanceStatuses($activeOnly)];
     }
 
     public function upsertAttendanceStatus(array $payload, bool $isUpdate = false): array
     {
-        return ['row' => attendance_status_upsert($payload, $isUpdate)];
+        return ['row' => $this->repository->upsertAttendanceStatus($payload, $isUpdate)];
     }
 
     public function deleteAttendanceStatus(string $code): array
     {
-        attendance_status_delete($code);
+        $this->repository->deleteAttendanceStatus($code);
 
         return ['status' => 'deleted'];
     }
 
     public function employeeTypes(bool $activeOnly = false): array
     {
-        return ['rows' => employee_type_rows($activeOnly)];
+        return ['rows' => $this->repository->employeeTypes($activeOnly)];
     }
 
     public function upsertEmployeeType(array $payload, bool $isUpdate = false): array
     {
-        return ['row' => employee_type_upsert($payload, $isUpdate)];
+        return ['row' => $this->repository->upsertEmployeeType($payload, $isUpdate)];
     }
 
     public function deleteEmployeeType(string $code): array
     {
-        employee_type_delete($code);
+        $this->repository->deleteEmployeeType($code);
 
         return ['status' => 'deleted'];
     }

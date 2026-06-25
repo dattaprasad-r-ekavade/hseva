@@ -2,9 +2,16 @@
 
 namespace App\Services\Payroll;
 
+use App\Services\Sheets\SheetCrudService;
+use App\Services\Storage\SheetStorageService;
+
 class PayrollService
 {
-    public function __construct(private PayrollGenerator $generator) {}
+    public function __construct(
+        private PayrollGenerator $generator,
+        private SheetCrudService $sheets,
+        private SheetStorageService $storage,
+    ) {}
 
     public function generate(int $month, int $year, string $absentMode = 'LOP'): array
     {
@@ -13,37 +20,35 @@ class PayrollService
 
     public function sheets(): array
     {
-        return ['rows' => idx('payroll_sheet_index')];
+        return $this->sheets->index('payroll_sheet');
     }
 
     public function sheet(string $id): array
     {
-        return ['sheet' => get_sheet(idkey('payroll_sheet', $id), 'Payroll sheet not found')];
+        return $this->sheets->show('payroll_sheet', $id, 'Payroll sheet not found');
     }
 
     public function deleteSheet(string $id): array
     {
-        del_sheet('payroll_sheet', $id);
-
-        return ['status' => 'deleted'];
+        return $this->sheets->destroy('payroll_sheet', $id);
     }
 
     public function clear(): array
     {
-        clr_sheet('payroll_sheet');
-        ovr_set([]);
+        $this->sheets->clear('payroll_sheet');
+        $this->storage->setPayrollOverrides([]);
 
         return ['status' => 'cleared'];
     }
 
     public function overrides(): array
     {
-        return ['rows' => ovr_all()];
+        return ['rows' => $this->storage->payrollOverrides()];
     }
 
     public function setOverride(string $empId, array $body): array
     {
-        $all = ovr_all();
+        $all = $this->storage->payrollOverrides();
         $all[strtoupper($empId)] = [
             'gross' => array_key_exists('gross', $body) ? ($body['gross'] === null ? null : (float) $body['gross']) : null,
             'ctc' => array_key_exists('ctc', $body) ? ($body['ctc'] === null ? null : (float) $body['ctc']) : null,
@@ -52,16 +57,16 @@ class PayrollService
             'ptAppl' => (bool) ($body['ptAppl'] ?? true),
             'lwfAppl' => (bool) ($body['lwfAppl'] ?? true),
         ];
-        ovr_set($all);
+        $this->storage->setPayrollOverrides($all);
 
         return ['row' => $all[strtoupper($empId)]];
     }
 
     public function deleteOverride(string $empId): array
     {
-        $all = ovr_all();
+        $all = $this->storage->payrollOverrides();
         unset($all[strtoupper($empId)]);
-        ovr_set($all);
+        $this->storage->setPayrollOverrides($all);
 
         return ['status' => 'deleted'];
     }

@@ -4,19 +4,21 @@ namespace App\Services\Incentives;
 
 class IncentiveService
 {
+    public function __construct(private IncentiveRepository $repository) {}
+
     public function index(): array
     {
-        return ['rows' => incentive_rows()];
+        return ['rows' => $this->repository->all()];
     }
 
     public function store(array $payload): array
     {
-        return ['row' => incentive_create($payload)];
+        return ['row' => $this->repository->create($payload)];
     }
 
     public function show(string $id): array
     {
-        $row = incentive_fetch_one($id);
+        $row = $this->repository->find($id);
         if (! $row) {
             nf('Incentive not found');
         }
@@ -26,14 +28,14 @@ class IncentiveService
 
     public function destroy(string $id): array
     {
-        incentive_delete($id);
+        $this->repository->delete($id);
 
         return ['status' => 'deleted'];
     }
 
     public function clear(): array
     {
-        incentive_clear();
+        $this->repository->clear();
 
         return ['status' => 'cleared'];
     }

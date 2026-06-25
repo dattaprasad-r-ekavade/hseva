@@ -4,46 +4,48 @@ namespace App\Services\Compliance;
 
 class ComplianceService
 {
+    public function __construct(private ComplianceRepository $repository) {}
+
     public function tasks(int $month, int $year): array
     {
-        return compliance_list($month, $year);
+        return $this->repository->tasks($month, $year);
     }
 
     public function saveTasks(int $month, int $year, array $rows): array
     {
-        return compliance_save($month, $year, $rows);
+        return $this->repository->saveTasks($month, $year, $rows);
     }
 
     public function resetTasks(int $month, int $year): array
     {
-        return compliance_reset($month, $year);
+        return $this->repository->resetTasks($month, $year);
     }
 
     public function clearTasks(): array
     {
-        db()->exec("DELETE FROM app_kv WHERE key LIKE 'compliance_%'");
+        $this->repository->clearTasks();
 
         return ['status' => 'cleared'];
     }
 
     public function challans(): array
     {
-        return compliance_challan_list();
+        return $this->repository->challans();
     }
 
     public function upsertChallan(array $payload): array
     {
-        return compliance_challan_upsert($payload);
+        return $this->repository->upsertChallan($payload);
     }
 
     public function deleteChallan(string $id): void
     {
-        compliance_challan_delete($id);
+        $this->repository->deleteChallan($id);
     }
 
     public function clearChallans(): array
     {
-        compliance_challan_clear();
+        $this->repository->clearChallans();
 
         return ['status' => 'cleared'];
     }

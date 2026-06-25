@@ -2,34 +2,37 @@
 
 namespace App\Services\Payroll;
 
+use App\Services\Sheets\SheetCrudService;
+
 class EsicSheetService
 {
+    public function __construct(
+        private EsicSheetGenerator $generator,
+        private SheetCrudService $sheets,
+    ) {}
+
     public function generate(int $month, int $year): array
     {
-        return ['sheet' => esic_generate($month, $year)];
+        return ['sheet' => $this->generator->generate($month, $year)];
     }
 
     public function sheets(): array
     {
-        return ['rows' => idx('esic_sheet_index')];
+        return $this->sheets->index('esic_sheet');
     }
 
     public function show(string $id): array
     {
-        return ['sheet' => get_sheet(idkey('esic_sheet', $id), 'ESIC sheet not found')];
+        return $this->sheets->show('esic_sheet', $id, 'ESIC sheet not found');
     }
 
     public function destroy(string $id): array
     {
-        del_sheet('esic_sheet', $id);
-
-        return ['status' => 'deleted'];
+        return $this->sheets->destroy('esic_sheet', $id);
     }
 
     public function clear(): array
     {
-        clr_sheet('esic_sheet');
-
-        return ['status' => 'cleared'];
+        return $this->sheets->clear('esic_sheet');
     }
 }

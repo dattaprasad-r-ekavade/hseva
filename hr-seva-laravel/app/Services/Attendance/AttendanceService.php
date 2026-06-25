@@ -2,51 +2,57 @@
 
 namespace App\Services\Attendance;
 
+use App\Services\Sheets\SheetCrudService;
+use App\Services\Storage\SheetStorageService;
+
 class AttendanceService
 {
+    public function __construct(
+        private AttendanceGenerator $generator,
+        private SheetCrudService $sheets,
+        private SheetStorageService $storage,
+        private AttendanceDailyRepository $daily,
+    ) {}
+
     public function dailyList(int $month, int $year): array
     {
-        return att_daily_list($month, $year);
+        return $this->daily->list($month, $year);
     }
 
     public function dailyUpsert(int $month, int $year, array $records): array
     {
-        return att_daily_upsert($month, $year, $records);
+        return $this->daily->upsert($month, $year, $records);
     }
 
     public function generate(int $month, int $year, bool $fillDefault = true, bool $sundayWeeklyOff = true): array
     {
-        return att_generate($month, $year, $fillDefault, $sundayWeeklyOff);
+        return $this->generator->generate($month, $year, $fillDefault, $sundayWeeklyOff);
     }
 
     public function sheets(): array
     {
-        return idx('attendance_sheet_index');
+        return $this->sheets->index('attendance_sheet')['rows'];
     }
 
     public function sheet(string $id): array
     {
-        return get_sheet(idkey('attendance_sheet', $id), 'Attendance sheet not found');
+        return $this->sheets->show('attendance_sheet', $id, 'Attendance sheet not found')['sheet'];
     }
 
-    public function deleteSheet(string $id): void
+    public function deleteSheet(string $id): array
     {
-        del_sheet('attendance_sheet', $id);
+        return $this->sheets->destroy('attendance_sheet', $id);
     }
 
     public function clearSheets(): array
     {
-        clr_sheet('attendance_sheet');
-
-        return ['status' => 'cleared'];
+        return $this->sheets->clear('attendance_sheet');
     }
 
     public function clearAll(): array
     {
-        if (function_exists('app') && app()->bound(\App\Services\Storage\SheetStorageService::class)) {
-            app(\App\Services\Storage\SheetStorageService::class)->clearAttendanceDaily();
-        }
-        clr_sheet('attendance_sheet');
+        $this->storage->clearAttendanceDaily();
+        $this->storage->clear('attendance_sheet');
 
         return ['status' => 'cleared'];
     }

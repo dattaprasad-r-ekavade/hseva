@@ -2,25 +2,32 @@
 
 namespace App\Services\Billing;
 
+use App\Services\Subscriptions\SubscriptionRepository;
+
 class BillingService
 {
+    public function __construct(
+        private BillingRepository $repository,
+        private SubscriptionRepository $subscriptions,
+    ) {}
+
     public function subscriptionInfo(): array
     {
-        return subscription_info_get();
+        return $this->subscriptions->subscriptionInfoGet();
     }
 
     public function accessTemplate(): array
     {
-        return client_access_template_get();
+        return $this->repository->clientAccessTemplateGet();
     }
 
     public function billing(): array
     {
-        return client_billing_get();
+        return $this->repository->clientBillingGet();
     }
 
     public function invoices(): array
     {
-        return client_invoices_get();
+        return $this->repository->clientInvoicesGet();
     }
 }

@@ -4,16 +4,19 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\LegacyApiResponseException;
 use App\Http\Controllers\Controller;
+use App\Services\Dashboard\DashboardRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
+    public function __construct(private DashboardRepository $dashboard) {}
+
     public function summary(Request $request): JsonResponse
     {
         try {
             return response()->json(
-                dashboard_summary(
+                $this->dashboard->summary(
                     (int) $request->query('month', date('n')),
                     (int) $request->query('year', date('Y'))
                 ),

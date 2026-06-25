@@ -4,31 +4,31 @@ namespace App\Services\Overtime;
 
 class OvertimeService
 {
+    public function __construct(private OvertimeRepository $repository) {}
+
     public function index(): array
     {
         $ctx = overtime_view_ctx();
-        $rows = overtime_rows($ctx);
+        $rows = $this->repository->rows($ctx);
 
-        return ['rows' => $rows, 'stats' => overtime_stats($rows)];
+        return ['rows' => $rows, 'stats' => $this->repository->stats($rows)];
     }
 
     public function store(array $payload): array
     {
-        return ['row' => overtime_create($payload)];
+        return ['row' => $this->repository->create($payload)];
     }
 
     public function destroy(string $id): array
     {
-        overtime_delete($id);
+        $this->repository->delete($id);
 
         return ['status' => 'deleted'];
     }
 
     public function clear(): array
     {
-        overtime_manage_ctx();
-        db()->exec('DELETE FROM overtime_entries');
-        invalidate_salary_dependent_sheets();
+        $this->repository->clear();
 
         return ['status' => 'cleared'];
     }

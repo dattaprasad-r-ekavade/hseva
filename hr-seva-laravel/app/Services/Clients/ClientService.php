@@ -4,27 +4,28 @@ namespace App\Services\Clients;
 
 class ClientService
 {
+    public function __construct(private ClientRepository $repository) {}
+
     public function all(): array
     {
-        return ['rows' => clients_all()];
+        return ['rows' => $this->repository->clientsAll()];
     }
 
     public function upsert(array $payload, ?bool $mustExist = null): array
     {
-        return ['row' => client_upsert($payload, $mustExist)];
+        return ['row' => $this->repository->clientUpsert($payload, $mustExist)];
     }
 
     public function delete(int $id): array
     {
-        client_delete($id);
+        $this->repository->clientDelete($id);
 
         return ['status' => 'deleted'];
     }
 
     public function clear(): array
     {
-        central_db()->exec('DELETE FROM clients');
-        central_db()->exec('DELETE FROM client_access');
+        $this->repository->clear();
 
         return ['status' => 'cleared'];
     }
