@@ -17,6 +17,7 @@
 /qa/node_modules
 /qa/test-results
 /qa/playwright-report
+/qa/artifacts
 /public/build
 /public/fonts-manifest.dev.json
 /public/hot
