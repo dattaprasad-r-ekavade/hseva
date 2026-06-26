@@ -1,4 +1,4 @@
-const API_BASES = ["/api", "/backend/api.php?path=/api"];
+const API_BASES = ["/api"];
 const tbody = document.getElementById("subsTbody");
 const form = document.getElementById("subForm");
 const modalEl = document.getElementById("subscriptionModal");

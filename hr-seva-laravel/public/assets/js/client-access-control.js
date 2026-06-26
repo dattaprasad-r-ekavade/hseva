@@ -1,4 +1,4 @@
-const API_BASES = ["/api", "/backend/api.php?path=/api"];
+const API_BASES = ["/api"];
 const KEY_AUTH = "hr_auth_session_v1";
 const KEY_SUPERADMIN_CLIENT_ID = "hr_superadmin_selected_client_id_v1";
 const KEY_SUPERADMIN_CLIENT_LABEL = "hr_superadmin_selected_client_label_v1";

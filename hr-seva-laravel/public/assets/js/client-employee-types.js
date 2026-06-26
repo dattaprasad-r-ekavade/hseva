@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const API_BASES = ["/api", "/backend/api.php?path=/api", "/backend/api.php?path=/api"];
+  const API_BASES = ["/api"];
   let rows = [];
 
   function applyTheme(theme) {

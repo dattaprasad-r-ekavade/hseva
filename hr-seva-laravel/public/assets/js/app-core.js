@@ -190,7 +190,7 @@
 
   window.HRCommon.syncControlSettings = async function () {
     var KEY_CONTROL = "hr_client_control_v1";
-    var apiBases = ["/api", "/backend/api.php?path=/api"];
+    var apiBases = ["/api"];
     for (var i = 0; i < apiBases.length; i++) {
       var base = apiBases[i];
       try {

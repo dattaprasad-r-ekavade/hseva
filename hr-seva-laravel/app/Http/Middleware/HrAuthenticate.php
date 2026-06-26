@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Exceptions\LegacyApiResponseException;
 use App\Services\Auth\JwtService;
+use App\Services\Subscriptions\SubscriptionAccessService;
 use App\Services\Tenant\TenantManager;
 use Closure;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ class HrAuthenticate
     public function __construct(
         private JwtService $jwt,
         private TenantManager $tenants,
+        private SubscriptionAccessService $subscriptions,
     ) {}
 
     public function handle(Request $request, Closure $next)
@@ -28,7 +30,7 @@ class HrAuthenticate
 
         if (in_array($role, ['client', 'employee'], true) && $clientId > 0) {
             $this->tenants->setClientId($clientId);
-            $sub = client_subscription_access_state($clientId);
+            $sub = $this->subscriptions->accessState($clientId);
             if (empty($sub['active'])) {
                 throw new LegacyApiResponseException([
                     'detail' => 'Subscription expired. Access denied.',

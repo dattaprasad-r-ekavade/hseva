@@ -2,7 +2,7 @@ const KEY_CONTROL = "hr_client_control_v1";
     const KEY_EMP_EXTRA = "hr_emp_extra_v1";
     const KEY_EMP_LOCAL = "hr_client_employees_v1";
     const KEY_LEAVES = "hr_client_leaves_v1";
-    const API_BASES = ["/api", "/backend/api.php?path=/api"];
+    const API_BASES = ["/api"];
     const $ = (id) => document.getElementById(id);
     const qp = new URLSearchParams(location.search);
     const empId = String(qp.get("empId") || "").toUpperCase();

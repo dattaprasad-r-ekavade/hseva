@@ -76,12 +76,10 @@
       if (typeof input === "string") url = input;
       else if (input && typeof input.url === "string") url = input.url;
       var lower = String(url || "").toLowerCase();
-      var isApi = /(^|\/|\.\.\/)api\//.test(lower) || lower.indexOf("backend/api.php?path=/api") >= 0;
+      var isApi = /(^|\/|\.\.\/)api\//.test(lower);
       var isAuthRoute =
         /(^|\/|\.\.\/)api\/auth\/login/.test(lower) ||
-        /(^|\/|\.\.\/)api\/auth\/forgot/.test(lower) ||
-        lower.indexOf("backend/api.php?path=/api/auth/login") >= 0 ||
-        lower.indexOf("backend/api.php?path=/api/auth/forgot") >= 0;
+        /(^|\/|\.\.\/)api\/auth\/forgot/.test(lower);
       if (isApi && !isAuthRoute) {
         var auth = getAuthSession();
         var token = auth && auth.token ? String(auth.token) : "";
@@ -246,7 +244,7 @@
     if (searchBtn) searchBtn.addEventListener("click", commitSearch);
     if (clearBtn) clearBtn.addEventListener("click", function () { setSelection(null, true); });
 
-    var apiBases = ["/api", "/backend/api.php?path=/api", "/backend/api.php?path=/api"];
+    var apiBases = ["/api"];
     for (var b = 0; b < apiBases.length; b++) {
       var base = apiBases[b];
       try {

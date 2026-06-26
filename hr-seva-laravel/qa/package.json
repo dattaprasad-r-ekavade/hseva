@@ -2,7 +2,9 @@
   "name": "hr-seva-qa",
   "private": true,
   "scripts": {
-    "test": "playwright test",
+    "test": "playwright test --project=smoke",
+    "test:tour": "playwright test --project=onboarding-tour",
+    "tour:gif": "bash scripts/make-tour-gif.sh",
     "test:ui": "playwright test --ui"
   },
   "devDependencies": {

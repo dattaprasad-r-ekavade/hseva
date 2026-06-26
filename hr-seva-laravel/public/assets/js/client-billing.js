@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const API_BASES = ["/api", "/backend/api.php?path=/api", "/backend/api.php?path=/api"];
+  const API_BASES = ["/api"];
   const tbody = document.getElementById("billingTbody");
   const paidAmount = document.getElementById("paidAmount");
   const pendingAmount = document.getElementById("pendingAmount");

@@ -15,7 +15,7 @@ document.getElementById("themeToggle")?.addEventListener("click", () => {
   applyTheme(current === "dark" ? "light" : "dark");
 });
 
-const API_BASES = ["/api", "/backend/api.php?path=/api"];
+const API_BASES = ["/api"];
 const KEY_CONTROL = "hr_client_control_v1";
 const KEY_EMP_EXTRA = "hr_emp_extra_v1";
 const KEY_LEAVES = "hr_client_leaves_v1";

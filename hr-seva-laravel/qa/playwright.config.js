@@ -1,4 +1,5 @@
 const { defineConfig } = require('@playwright/test');
+const path = require('path');
 
 const baseURL = process.env.BASE_URL || 'http://127.0.0.1:8012';
 
@@ -11,13 +12,33 @@ module.exports = defineConfig({
     headless: true,
     trace: 'on-first-retry',
   },
+  projects: [
+    {
+      name: 'smoke',
+      testIgnore: /onboarding-tour/,
+    },
+    {
+      name: 'onboarding-tour',
+      testMatch: /onboarding-tour/,
+      timeout: 180000,
+      use: {
+        headless: true,
+        video: 'on',
+        viewport: { width: 1440, height: 900 },
+        launchOptions: {
+          slowMo: 80,
+        },
+      },
+      outputDir: path.join(__dirname, 'artifacts', 'onboarding-tour'),
+    },
+  ],
   webServer: process.env.SKIP_WEB_SERVER
     ? undefined
     : {
-        command: 'php artisan serve --host=127.0.0.1 --port=8012',
-        cwd: '..',
+        command: 'bash scripts/serve-for-qa.sh',
+        cwd: __dirname,
         url: baseURL,
-        reuseExistingServer: true,
-        timeout: 120000,
+        reuseExistingServer: !process.env.CI,
+        timeout: 180000,
       },
 });

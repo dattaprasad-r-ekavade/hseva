@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const API_BASES = ["/api", "/backend/api.php?path=/api", "/backend/api.php?path=/api"];
+  const API_BASES = ["/api"];
   const state = { rows: [], filtered: [], editingId: 0 };
   const modalEl = document.getElementById("enquiryModal");
   const modal = modalEl ? bootstrap.Modal.getOrCreateInstance(modalEl) : null;
