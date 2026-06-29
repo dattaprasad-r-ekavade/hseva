@@ -12,7 +12,7 @@ document.getElementById("themeToggle")?.addEventListener("click", () => {
   applyTheme(current === "dark" ? "light" : "dark");
 });
 
-const API_BASES = ["/api", "/backend/api.php?path=/api"];
+const API_BASES = ["/api"];
 const KEY_CLIENTS_LOCAL = "hr_client_module_cache_v1";
 let clients = [];
 let editId = null;

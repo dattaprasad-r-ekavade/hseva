@@ -2,7 +2,9 @@
   "name": "hr-seva-qa",
   "private": true,
   "scripts": {
-    "test": "playwright test",
+    "test": "playwright test --project=smoke",
+    "test:e2e": "playwright test --project=e2e",
+    "test:all": "playwright test",
     "test:ui": "playwright test --ui"
   },
   "devDependencies": {

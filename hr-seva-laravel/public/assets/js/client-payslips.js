@@ -3,11 +3,8 @@
   const on = (id, ev, fn) => { const el = $(id); if (el) el.addEventListener(ev, fn); };
   const API_BASES = [
     "../api",
-    "../backend/api.php?path=/api",
     "/api",
-    "/backend/api.php?path=/api",
-    "api",
-    "backend/api.php?path=/api"
+    "api"
   ];
   const API_PAYSLIPS = "/payslips";
   const API_PAYSLIP_GEN = "/payslips/generate";

@@ -2851,7 +2851,7 @@
             const messageBox = document.getElementById('freeTrialFormMessage');
             const successState = document.getElementById('freeTrialSuccessState');
             const trialModal = document.getElementById('uc-contact-modal');
-            const API_BASES = ['/api', '/backend/api.php?path=/api', '/backend/api.php?path=/api'];
+            const API_BASES = ['/api'];
             let currentStep = 0;
 
             function showTrialMessage(text, ok) {

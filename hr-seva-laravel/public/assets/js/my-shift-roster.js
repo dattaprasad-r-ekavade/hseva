@@ -1,5 +1,5 @@
 (function(){
-  const API_BASES=["/api","/backend/api.php?path=/api","/backend/api.php?path=/api"];
+  const API_BASES=["/api"];
   const $=(id)=>document.getElementById(id);
   const qs=new URLSearchParams(location.search);
   function esc(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");}

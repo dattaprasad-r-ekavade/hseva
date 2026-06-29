@@ -147,7 +147,7 @@ class SheetStorageService
     public function setAttendanceDaily(int $month, int $year, array $map): void
     {
         if (! $this->tableExists('attendance_daily')) {
-            hr_init_normalized_schema($this->tenants->tenant()->getPdo());
+            app(\App\Services\Database\NormalizedSchemaInstaller::class)->install($this->tenants->tenant()->getPdo());
         }
 
         $this->tenants->tenant()->table('attendance_daily')->updateOrInsert(

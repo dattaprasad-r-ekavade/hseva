@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const API_BASES = ["/api", "/backend/api.php?path=/api", "/backend/api.php?path=/api"];
+  const API_BASES = ["/api"];
   const BUILTINS = [
     { code: "P", shortLabel: "P", fullLabel: "Present", buttonClass: "btn-outline-success", sortOrder: 10, isActive: true, noteRequired: false, isPaid: true },
     { code: "A", shortLabel: "A", fullLabel: "Absent", buttonClass: "btn-outline-danger", sortOrder: 15, isActive: true, noteRequired: false, isPaid: false },
