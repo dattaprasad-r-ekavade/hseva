@@ -45,7 +45,7 @@ const DEFAULT_AUTH_USERS = [
   ["username"=>"admin","password"=>"123456","name"=>"Admin","role"=>"super_admin"],
   ["username"=>"admin@hrseva.com","password"=>"123456","name"=>"Admin","role"=>"super_admin"]
 ];
-const FACE_ATTENDANCE_DEFAULT_MODEL_URL = '/assets/vendor/face-api-models';
+const FACE_ATTENDANCE_DEFAULT_MODEL_URL = 'https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@0.22.2/weights';
 const FACE_ATTENDANCE_DEFAULT_TIMEZONE = 'Asia/Kolkata';
 if (! function_exists('now_iso')) {
 function now_iso(): string { return gmdate('Y-m-d\\TH:i:s\\Z'); }

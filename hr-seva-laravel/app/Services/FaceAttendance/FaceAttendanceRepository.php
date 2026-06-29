@@ -2,6 +2,7 @@
 
 namespace App\Services\FaceAttendance;
 
+use App\Support\FaceAttendanceDefaults;
 use DateTimeImmutable;
 use DateTimeZone;
 use PDO;
@@ -19,8 +20,8 @@ class FaceAttendanceRepository
             'outAllowedTill' => '23:00',
             'graceTime' => 10,
             'faceMatchThreshold' => 0.48,
-            'timezone' => FACE_ATTENDANCE_DEFAULT_TIMEZONE,
-            'modelUrl' => FACE_ATTENDANCE_DEFAULT_MODEL_URL,
+            'timezone' => FaceAttendanceDefaults::TIMEZONE,
+            'modelUrl' => FaceAttendanceDefaults::MODEL_URL,
             'autoCaptureSeconds' => 2,
             'scanDistanceCm' => 45,
             '__updatedAt' => now_iso(),
@@ -97,8 +98,8 @@ class FaceAttendanceRepository
             'outAllowedTill' => s($raw['outAllowedTill'] ?? $cur['outAllowedTill'], $cur['outAllowedTill']),
             'graceTime' => max(0, (int) ($raw['graceTime'] ?? $cur['graceTime'])),
             'faceMatchThreshold' => max(0.1, min(1.5, f($raw['faceMatchThreshold'] ?? $cur['faceMatchThreshold']))),
-            'timezone' => s($raw['timezone'] ?? $cur['timezone'], FACE_ATTENDANCE_DEFAULT_TIMEZONE),
-            'modelUrl' => s($raw['modelUrl'] ?? $cur['modelUrl'], FACE_ATTENDANCE_DEFAULT_MODEL_URL),
+            'timezone' => s($raw['timezone'] ?? $cur['timezone'], FaceAttendanceDefaults::TIMEZONE),
+            'modelUrl' => s($raw['modelUrl'] ?? $cur['modelUrl'], FaceAttendanceDefaults::MODEL_URL),
             'autoCaptureSeconds' => max(1, (int) ($raw['autoCaptureSeconds'] ?? $cur['autoCaptureSeconds'])),
             'scanDistanceCm' => max(20, min(150, (int) ($raw['scanDistanceCm'] ?? $cur['scanDistanceCm']))),
             '__updatedAt' => now_iso(),
@@ -479,9 +480,9 @@ class FaceAttendanceRepository
     private function timezone(array $settings): DateTimeZone
     {
         try {
-            return new DateTimeZone((string) ($settings['timezone'] ?? FACE_ATTENDANCE_DEFAULT_TIMEZONE));
+            return new DateTimeZone((string) ($settings['timezone'] ?? FaceAttendanceDefaults::TIMEZONE));
         } catch (Throwable $e) {
-            return new DateTimeZone(FACE_ATTENDANCE_DEFAULT_TIMEZONE);
+            return new DateTimeZone(FaceAttendanceDefaults::TIMEZONE);
         }
     }
 

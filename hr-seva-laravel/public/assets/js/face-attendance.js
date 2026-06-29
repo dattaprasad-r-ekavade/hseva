@@ -10,7 +10,7 @@
   const authEmpId = String(auth?.user?.empId || "").toUpperCase();
   const today = new Date();
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const MODEL_URL_FALLBACK = "/assets/vendor/face-api-models";
+  const MODEL_URL_FALLBACK = "https://cdn.jsdelivr.net/gh/justadudewhohacks/face-api.js@0.22.2/weights";
   let mediaStream = null;
   let autoScanTimer = null;
   let modelsLoaded = false;
